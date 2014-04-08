@@ -15,25 +15,20 @@ namespace MobileGame
     {
         private int[,,] currentMap;
         private Tile[,,] tileArray;
-        private List<Tile> colliderList;
-        private List<Tile> specialBlockList;
+        private List<SimpleTile> colliderList;
+        private List<SpecialTile> specialBlockList;
         private int tileSize;
 
 
         public MapManager()
         {
             tileSize = TextureManager.PlatformTile.Height;
-            colliderList = new List<Tile>();
-            specialBlockList = new List<Tile>();
+            colliderList = new List<SimpleTile>();
+            specialBlockList = new List<SpecialTile>();
 
             LoadLevel();
 
             Console.WriteLine(colliderList.Count);
-        }
-
-        public void Update()
-        {
-
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -50,7 +45,7 @@ namespace MobileGame
                 T.Draw(spriteBatch);
         }
 
-        public List<Tile> ColliderList
+        public List<SimpleTile> ColliderList
         {
             get
             {
@@ -58,7 +53,7 @@ namespace MobileGame
             }
         }
 
-        public List<Tile> SpecialBlocksList
+        public List<SpecialTile> SpecialBlocksList
         {
             get
             {
@@ -69,7 +64,7 @@ namespace MobileGame
         //Should expand this function in the future to include reading a level from file and such
         private void LoadLevel()
         {
-            currentMap = new int[,,] { 
+            currentMap = new int[,,] {
                                         {
                                             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                                             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1},
@@ -93,9 +88,9 @@ namespace MobileGame
                                             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
                                             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0},
                                             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                         }
                                         
@@ -120,7 +115,7 @@ namespace MobileGame
                 {
                     int tileType = levelToBuild[0, y, x];
 
-                    Tile tempTile = new Tile(x, y, tileType);
+                    SimpleTile tempTile = new SimpleTile(x, y, tileType);
 
                     tileArray[0, x, y] = tempTile;
 
@@ -135,10 +130,11 @@ namespace MobileGame
                 for (int x = 0; x < mapWidth; x++)
                 {
                     int tileType = levelToBuild[1, y, x];
-                    Tile tempTile = new Tile(x, y, tileType);
 
-                    if (tileType != 0)
-                        specialBlockList.Add(tempTile);
+                    if (tileType == 1)
+                        specialBlockList.Add(new JumpTile(x, y));
+                    else if (tileType == 2)
+                        specialBlockList.Add(new TeleportTile(x, y));
                 }
             }
 

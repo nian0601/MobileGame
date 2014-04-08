@@ -38,7 +38,7 @@ namespace MobileGame
             isOnGround = false;
         }
 
-        public void Update(List<Tile> collisionList)
+        public void Update(List<SimpleTile> collisionList)
         {
             ListenToInput();
             CheckIfOnGround(collisionList);
@@ -83,7 +83,7 @@ namespace MobileGame
                 
         }
 
-        private void CheckIfOnGround(List<Tile> collisionList)
+        private void CheckIfOnGround(List<SimpleTile> collisionList)
         {
             Point collisionPointLeft = new Point(HitBox().Left + 1, HitBox().Top + HitBox().Height);
             Point collisionPointRight = new Point(HitBox().Right - 1, HitBox().Top + HitBox().Height);
@@ -105,12 +105,16 @@ namespace MobileGame
             if (isOnGround)
             {
                 velocity.Y -= jumpPower;
-
-                Console.WriteLine("Vel: " + velocity.Y + ", Power: " + jumpPower);
             }
         }
 
-        private void HorizontalCollision(List<Tile> collisionList)
+        public void ResetPosition()
+        {
+            position = new Vector2(50, 100);
+        }
+
+        //Collision in the X-Axis
+        private void HorizontalCollision(List<SimpleTile> collisionList)
         {
             for (int i = 0; i < collisionList.Count; i++)
             {
@@ -128,7 +132,8 @@ namespace MobileGame
             }
         }
 
-        private void VerticalCollision(List<Tile> collisionList)
+        //Collision in the Y-Axis
+        private void VerticalCollision(List<SimpleTile> collisionList)
         {
             for (int i = 0; i < collisionList.Count; i++)
             {
