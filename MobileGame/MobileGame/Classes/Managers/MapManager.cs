@@ -17,6 +17,7 @@ namespace MobileGame
         private Tile[,,] tileArray;
         private List<SimpleTile> colliderList;
         private List<SpecialTile> specialBlockList;
+        private List<Enemy> enemyList;
         private int tileSize;
 
 
@@ -25,6 +26,7 @@ namespace MobileGame
             tileSize = TextureManager.PlatformTile.Height;
             colliderList = new List<SimpleTile>();
             specialBlockList = new List<SpecialTile>();
+            enemyList = new List<Enemy>();
 
             LoadLevel();
 
@@ -61,6 +63,14 @@ namespace MobileGame
             }
         }
 
+        public List<Enemy> EnemiesList
+        {
+            get
+            {
+                return enemyList;
+            }
+        }
+
         //Should expand this function in the future to include reading a level from file and such
         private void LoadLevel()
         {
@@ -90,7 +100,7 @@ namespace MobileGame
                                             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
                                             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0},
+                                            {0, 0, 4, 0, 3, 0, 4, 0, 3, 0, 0, 0, 0, 4, 0, 0, 0, 2, 0, 0},
                                             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                         }
                                         
@@ -135,6 +145,10 @@ namespace MobileGame
                         specialBlockList.Add(new JumpTile(x, y));
                     else if (tileType == 2)
                         specialBlockList.Add(new TeleportTile(x, y));
+                    else if (tileType == 3)
+                        enemyList.Add(new Enemy(x, y));
+                    else if (tileType == 4)
+                        specialBlockList.Add(new EnemyCollideTile(x, y));
                 }
             }
 

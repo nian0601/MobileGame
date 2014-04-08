@@ -17,15 +17,18 @@ namespace MobileGame
         protected Vector2 index;
         protected Vector2 pixelPos;
         protected int tileSize;
+        protected bool shouldDraw;
 
         public Tile(int x, int y)
         {   
             index = new Vector2(x, y);
+            shouldDraw = true;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(tileTexture, pixelPos, Color.White);
+            if(shouldDraw)
+                spriteBatch.Draw(tileTexture, pixelPos, Color.White);
         }
 
         public Rectangle HitBox()

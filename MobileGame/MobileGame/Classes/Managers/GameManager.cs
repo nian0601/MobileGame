@@ -29,6 +29,23 @@ namespace MobileGame
                 }
             }
 
+            //The loop that updates all the enemies
+            for (int i = 0; i < mapManager.EnemiesList.Count; i++)
+            {
+                mapManager.EnemiesList[i].Update();
+
+                if (mapManager.EnemiesList[i].HitBox().Intersects(player.HitBox()))
+                    player.ResetPosition();
+
+                //Loops through all special blocks and checks if any enemies collides with them. This only used to check if an enemy collides with an EnemyCollideTile for the moment
+                for (int t = 0; t < mapManager.SpecialBlocksList.Count; t++)
+                {
+                    if (mapManager.EnemiesList[i].HitBox().Intersects(mapManager.SpecialBlocksList[t].HitBox()))
+                        mapManager.SpecialBlocksList[t].CollideWithUnit(mapManager.EnemiesList[i]);
+                }
+            }
+                
+
             //The player handles collision against the generic platforms itself inside the update.
             player.Update(mapManager.ColliderList); 
         }
@@ -36,6 +53,10 @@ namespace MobileGame
         public void Draw(SpriteBatch spriteBatch)
         {
             mapManager.Draw(spriteBatch);
+
+            for (int i = 0; i < mapManager.EnemiesList.Count; i++)
+                mapManager.EnemiesList[i].Draw(spriteBatch);
+
             player.Draw(spriteBatch);
         }
     }

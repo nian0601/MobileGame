@@ -16,6 +16,8 @@ namespace MobileGame
         public static Texture2D GoalTile { get; private set; }
         public static Texture2D LayerdGoalTile { get; private set; }
 
+        public static Texture2D EnemyTex { get; private set; }
+
         public static void LoadContents(ContentManager Content)
         {
             AirTile = Content.Load<Texture2D>("Tiles/AirTile");
@@ -23,6 +25,8 @@ namespace MobileGame
             PlayerTile = Content.Load<Texture2D>("Tiles/PlayerTile");
             GoalTile = Content.Load<Texture2D>("Tiles/GoalTile");
             LayerdGoalTile = Content.Load<Texture2D>("Tiles/LayerdGoalTile");
+
+            EnemyTex = Content.Load<Texture2D>("Units/Enemy");
         }
     }
 }

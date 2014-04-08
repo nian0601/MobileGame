@@ -16,5 +16,10 @@ namespace MobileGame
         {
 
         }
+
+        public virtual void CollideWithUnit(Enemy Unit)
+        {
+
+        }
     }
 }
