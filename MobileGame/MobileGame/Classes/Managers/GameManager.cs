@@ -20,7 +20,18 @@ namespace MobileGame
 
         public void Update()
         {
+            for (int i = 0; i < mapManager.SpecialBlocksList.Count; i++)
+            {
+                if (mapManager.SpecialBlocksList[i].HitBox().Intersects(player.HitBox()))
+                {
+                    Console.WriteLine("COLLIDING WITH SPECIAL BLOCK!");
+                    player.Jump();
+                }
+            }
+
             player.Update(mapManager.ColliderList);
+
+            
         }
 
         public void Draw(SpriteBatch spriteBatch)

@@ -76,6 +76,9 @@
     <None Include="Content\Tiles\GoalTile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Content\Tiles\LayerdGoalTile.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Content\Tiles\PlatformTile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

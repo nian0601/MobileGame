@@ -14,6 +14,7 @@ namespace MobileGame
         public static Texture2D PlatformTile { get; private set; }
         public static Texture2D PlayerTile { get; private set; }
         public static Texture2D GoalTile { get; private set; }
+        public static Texture2D LayerdGoalTile { get; private set; }
 
         public static void LoadContents(ContentManager Content)
         {
@@ -21,6 +22,7 @@ namespace MobileGame
             PlatformTile = Content.Load<Texture2D>("Tiles/PlatformTile");
             PlayerTile = Content.Load<Texture2D>("Tiles/PlayerTile");
             GoalTile = Content.Load<Texture2D>("Tiles/GoalTile");
+            LayerdGoalTile = Content.Load<Texture2D>("Tiles/LayerdGoalTile");
         }
     }
 }

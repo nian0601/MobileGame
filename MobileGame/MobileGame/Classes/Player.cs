@@ -100,7 +100,7 @@ namespace MobileGame
             }
         }
 
-        private void Jump()
+        public void Jump()
         {
             if (isOnGround)
             {

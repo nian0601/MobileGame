@@ -13,9 +13,10 @@ namespace MobileGame
 {
     class MapManager
     {
-        private int[,] currentMap;
-        private Tile[,] tileArray;
+        private int[,,] currentMap;
+        private Tile[,,] tileArray;
         private List<Tile> colliderList;
+        private List<Tile> specialBlockList;
         private int tileSize;
 
 
@@ -23,6 +24,7 @@ namespace MobileGame
         {
             tileSize = TextureManager.PlatformTile.Height;
             colliderList = new List<Tile>();
+            specialBlockList = new List<Tile>();
 
             LoadLevel();
 
@@ -36,13 +38,16 @@ namespace MobileGame
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            for (int x = 0; x < tileArray.GetLength(0); x++)
+            for (int x = 0; x < tileArray.GetLength(1); x++)
             {
-                for (int y = 0; y < tileArray.GetLength(1); y++)
+                for (int y = 0; y < tileArray.GetLength(2); y++)
                 {
-                    tileArray[x, y].Draw(spriteBatch, ConvertIndexToPixels(x, y));
+                    tileArray[0, x, y].Draw(spriteBatch);
                 }
             }
+
+            foreach (Tile T in specialBlockList)
+                T.Draw(spriteBatch);
         }
 
         public List<Tile> ColliderList
@@ -53,47 +58,87 @@ namespace MobileGame
             }
         }
 
+        public List<Tile> SpecialBlocksList
+        {
+            get
+            {
+                return specialBlockList;
+            }
+        }
+
         //Should expand this function in the future to include reading a level from file and such
         private void LoadLevel()
         {
-            currentMap = new int[,] { 
-                                        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                                        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1},
-                                        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1},
-                                        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1},
-                                        {1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1},
-                                        {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1},
-                                        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                                        {1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1},
-                                        {1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                                        {1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 2, 2, 1, 0, 0, 0, 0, 0, 1},
-                                        {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                                        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+            currentMap = new int[,,] { 
+                                        {
+                                            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1},
+                                            {1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1},
+                                            {1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                                        },
+                                        {
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                        }
+                                        
                                     };
 
             BuildLevel(currentMap);
         }
 
-        private void BuildLevel(int[,] level)
+        private void BuildLevel(int[,,] level)
         {
-            int[,] levelToBuild = level;
+            int[,,] levelToBuild = level;
 
-            int mapHeight = levelToBuild.GetLength(0);
-            int mapWidth = levelToBuild.GetLength(1);
-            tileArray = new Tile[mapWidth, mapHeight];
+            int layers = levelToBuild.GetLength(0);
+            int mapHeight = levelToBuild.GetLength(1);
+            int mapWidth = levelToBuild.GetLength(2);
+            tileArray = new Tile[layers, mapWidth, mapHeight];
 
+            //LOOPS THROUGH THE PLATFORM LAYER
             for (int y = 0; y < mapHeight; y++)
             {
                 for (int x = 0; x < mapWidth; x++)
                 {
-                    int tileType = levelToBuild[y, x];
+                    int tileType = levelToBuild[0, y, x];
 
                     Tile tempTile = new Tile(x, y, tileType);
 
-                    tileArray[x, y] = tempTile;
+                    tileArray[0, x, y] = tempTile;
 
                     if (tileType != 0)
                         colliderList.Add(tempTile);
+                }
+            }
+
+            //LOOPS THROUGH THE SPECIAL BLOCK'S LAYER
+            for (int y = 0; y < mapHeight; y++)
+            {
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    int tileType = levelToBuild[1, y, x];
+                    Tile tempTile = new Tile(x, y, tileType);
+
+                    if (tileType != 0)
+                        specialBlockList.Add(tempTile);
                 }
             }
 
