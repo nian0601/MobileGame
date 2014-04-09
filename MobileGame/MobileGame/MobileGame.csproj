@@ -47,12 +47,14 @@
     <Compile Include="Classes\Enemies\IEnemy.cs" />
     <Compile Include="Classes\Enemies\FastEnemy.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Classes\Projectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Classes\Managers\TextureManager.cs" />
     <Compile Include="Classes\Tiles\Tile.cs" />
     <Compile Include="Classes\Tiles\SimpleTile.cs" />
     <Compile Include="Classes\Tiles\SpecialTile.cs" />
     <Compile Include="Classes\Enemies\SimpleEnemy.cs" />
+    <Compile Include="Classes\Enemies\ShootingEnemy.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">

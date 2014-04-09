@@ -170,5 +170,13 @@ namespace MobileGame
 
             return new Rectangle((int)position.X, (int)position.Y, playerTex.Width, playerTex.Height);
         }
+
+        public Vector2 Position
+        {
+            get
+            {
+                return position;
+            }
+        }
     }
 }

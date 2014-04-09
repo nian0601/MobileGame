@@ -134,7 +134,7 @@ namespace MobileGame
                     else if (tileType == 2)
                         specialBlockList.Add(new TeleportTile(x, y));
                     else if (tileType == 3)
-                        EnemyManager.AddEnemy(new SimpleEnemy(x, y));   
+                        EnemyManager.AddEnemy(new ShootingEnemy(x, y));   
                     else if (tileType == 4)
                         specialBlockList.Add(new EnemyCollideTile(x, y));
                 }

@@ -62,6 +62,14 @@ namespace MobileGame
             return new Rectangle((int)position.X, (int)position.Y, enemyTex.Width, enemyTex.Height);
         }
 
+        public virtual Vector2 Position
+        {
+            get
+            {
+                return position;
+            }
+        }
+
         private Boolean PixelCol(Rectangle rectA, Color[] arrayA, Rectangle rectB, Color[] arrayB)
         {
             int top = Math.Max(rectA.Top, rectB.Top);
