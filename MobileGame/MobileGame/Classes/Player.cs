@@ -23,6 +23,8 @@ namespace MobileGame
 
         private bool isOnGround;
 
+        private Color[] colorArray;
+
         public Player()
         {
             position = new Vector2(50, 100);
@@ -36,6 +38,9 @@ namespace MobileGame
             jumpPower = 5.0f;
 
             isOnGround = false;
+
+            colorArray = new Color[playerTex.Width * playerTex.Height];
+            playerTex.GetData(colorArray);
         }
 
         public void Update(List<SimpleTile> collisionList)
@@ -55,6 +60,14 @@ namespace MobileGame
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(playerTex, position, Color.White);
+        }
+
+        public Color[] ColorArray
+        {
+            get
+            {
+                return colorArray;
+            }
         }
 
         private void ListenToInput()

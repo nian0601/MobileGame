@@ -35,7 +35,7 @@ namespace MobileGame
                 mapManager.EnemiesList[i].Update();
 
                 if (mapManager.EnemiesList[i].HitBox().Intersects(player.HitBox()))
-                    player.ResetPosition();
+                    mapManager.EnemiesList[i].CollideWithPlayer(player);
 
                 //Loops through all special blocks and checks if any enemies collides with them. This only used to check if an enemy collides with an EnemyCollideTile for the moment
                 for (int t = 0; t < mapManager.SpecialBlocksList.Count; t++)
