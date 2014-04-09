@@ -35,7 +35,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Classes\Enemy.cs" />
+    <Compile Include="Classes\Enemies\Enemy.cs" />
     <Compile Include="Classes\Game1.cs" />
     <Compile Include="Classes\KeyMouseReader.cs" />
     <Compile Include="Classes\Managers\MapManager.cs" />
