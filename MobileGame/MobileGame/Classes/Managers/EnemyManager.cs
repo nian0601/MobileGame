@@ -9,7 +9,7 @@ namespace MobileGame
 {
     static class EnemyManager
     {
-        private static List<Enemy> enemyList = new List<Enemy>();
+        private static List<IEnemy> enemyList = new List<IEnemy>();
 
         //Is not used at the moment, each enemy is updated individually in GameManager.cs when the enemyList is being looped through anyway
         //Might be useful later though, if i change my mind. Lets keep it for now
@@ -27,17 +27,17 @@ namespace MobileGame
                 enemyList[i].Draw(spritebatch);
         }
 
-        public static void AddEnemy(Enemy newEnemy)
+        public static void AddEnemy(IEnemy newEnemy)
         {
             enemyList.Add(newEnemy);
         }
 
-        public static void RemoveEnemy(Enemy remEnemy)
+        public static void RemoveEnemy(IEnemy remEnemy)
         {
             enemyList.Remove(remEnemy);
         }
 
-        public static List<Enemy> EnemyList
+        public static List<IEnemy> EnemyList
         {
             get
             {

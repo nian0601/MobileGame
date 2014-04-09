@@ -35,7 +35,6 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Classes\Enemies\Enemy.cs" />
     <Compile Include="Classes\Game1.cs" />
     <Compile Include="Classes\KeyMouseReader.cs" />
     <Compile Include="Classes\Managers\MapManager.cs" />
@@ -45,12 +44,15 @@
     <Compile Include="Classes\Tiles\TeleportTile.cs" />
     <Compile Include="Classes\Tiles\EnemyCollideTile.cs" />
     <Compile Include="Classes\Managers\EnemyManager.cs" />
+    <Compile Include="Classes\Enemies\IEnemy.cs" />
+    <Compile Include="Classes\Enemies\FastEnemy.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Classes\Managers\TextureManager.cs" />
     <Compile Include="Classes\Tiles\Tile.cs" />
     <Compile Include="Classes\Tiles\SimpleTile.cs" />
     <Compile Include="Classes\Tiles\SpecialTile.cs" />
+    <Compile Include="Classes\Enemies\SimpleEnemy.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">

@@ -17,13 +17,13 @@ namespace MobileGame
             pixelPos = new Vector2(index.X * tileSize, index.Y * tileSize);
         }
 
-        public override void CollideWithUnit(Enemy Unit)
+        public override void CollideWithUnit(IEnemy Unit)
         {
             Point unitCollisionPointLeft = new Point(Unit.HitBox().Left + 2, Unit.HitBox().Top + Unit.HitBox().Height - 2);
             Point unitCollisionPointRight = new Point(Unit.HitBox().Right - 2, Unit.HitBox().Top + Unit.HitBox().Height - 2);
 
-            if(HitBox().Contains(unitCollisionPointLeft) && HitBox().Contains(unitCollisionPointRight))
-                Unit.FlipVelocity();
+            if (HitBox().Contains(unitCollisionPointLeft) && HitBox().Contains(unitCollisionPointRight))
+                Unit.CollideWithEnemyCollider();
 
             base.CollideWithUnit(Unit);
         }

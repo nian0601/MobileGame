@@ -7,29 +7,26 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MobileGame
 {
-    class Enemy
+    class SimpleEnemy : IEnemy
     {
-        private Texture2D enemyTex;
+        protected Texture2D enemyTex;
+        protected Vector2 position;
+        protected Vector2 velocity;
 
-        private Vector2 position;
-        private Vector2 velocity;
+        protected Color[] colorArray;
 
-        private Random rand;
+        protected Random rand;
 
-        private Color[] colorArray;
-
-        public Enemy(int x, int y)
+        public SimpleEnemy(int x, int y)
         {
-            rand = new Random();
-
             enemyTex = TextureManager.EnemyTex;
-
             position = new Vector2(x * enemyTex.Width, y * enemyTex.Height);
 
             colorArray = new Color[enemyTex.Width * enemyTex.Height];
             enemyTex.GetData(colorArray);
 
-            //Retared way to do this, but was the first way i thought of at the time. Should probbably do this a more propper way later.
+            rand = new Random();
+
             int value = rand.Next(1, 3);
             if (value == 1)
                 velocity = new Vector2(1, 0);
@@ -37,35 +34,32 @@ namespace MobileGame
                 velocity = new Vector2(-1, 0);
         }
 
-        public void Update()
+        public virtual void Update()
         {
             position += velocity;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(enemyTex, position, Color.White);
         }
 
-        public Rectangle HitBox()
+        public virtual void CollideWithPlayer(Player player)
         {
-            Rectangle temp = new Rectangle((int)position.X, (int)position.Y, enemyTex.Width, enemyTex.Height);
-
-            return new Rectangle((int)position.X, (int)position.Y, enemyTex.Width, enemyTex.Height);
+            if (PixelCol(HitBox(), colorArray, player.HitBox(), player.ColorArray))
+                player.ResetPosition();
         }
 
-        public void FlipVelocity()
+        public virtual void CollideWithEnemyCollider()
         {
             velocity *= -1;
         }
 
-        //This function is empty for now. But later on this should be used to preform a more detailed collision detection than simple rect to rect
-        //This will make it possible to use enemies that are of more irregular shapes.
-        //It will also make the game more fair, since the player wont instantly die/take damage/w.e from simply being inside the enemy rect
-        public void CollideWithPlayer(Player player)
+        public virtual Rectangle HitBox()
         {
-            if(PixelCol(HitBox(), colorArray, player.HitBox(), player.ColorArray))
-                player.ResetPosition();
+            Rectangle temp = new Rectangle((int)position.X, (int)position.Y, enemyTex.Width, enemyTex.Height);
+
+            return new Rectangle((int)position.X, (int)position.Y, enemyTex.Width, enemyTex.Height);
         }
 
         private Boolean PixelCol(Rectangle rectA, Color[] arrayA, Rectangle rectB, Color[] arrayB)
