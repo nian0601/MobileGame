@@ -11,7 +11,6 @@ namespace MobileGame
     {
         public SimpleTile(int x, int y, int tileType) : base(x, y)
         {
-            Console.WriteLine(tileType);
             if (tileType == 0)
                 tileTexture = TextureManager.AirTile;
             else if (tileType == 1)

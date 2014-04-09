@@ -17,7 +17,6 @@ namespace MobileGame
         private Tile[,,] tileArray;
         private List<SimpleTile> colliderList;
         private List<SpecialTile> specialBlockList;
-        private List<Enemy> enemyList;
         private int tileSize;
 
 
@@ -26,11 +25,8 @@ namespace MobileGame
             tileSize = TextureManager.PlatformTile.Height;
             colliderList = new List<SimpleTile>();
             specialBlockList = new List<SpecialTile>();
-            enemyList = new List<Enemy>();
 
             LoadLevel();
-
-            Console.WriteLine(colliderList.Count);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -60,14 +56,6 @@ namespace MobileGame
             get
             {
                 return specialBlockList;
-            }
-        }
-
-        public List<Enemy> EnemiesList
-        {
-            get
-            {
-                return enemyList;
             }
         }
 
@@ -146,7 +134,7 @@ namespace MobileGame
                     else if (tileType == 2)
                         specialBlockList.Add(new TeleportTile(x, y));
                     else if (tileType == 3)
-                        enemyList.Add(new Enemy(x, y));
+                        EnemyManager.AddEnemy(new Enemy(x, y));   
                     else if (tileType == 4)
                         specialBlockList.Add(new EnemyCollideTile(x, y));
                 }
