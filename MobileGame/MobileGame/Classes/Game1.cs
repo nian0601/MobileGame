@@ -57,7 +57,7 @@ namespace MobileGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             KeyMouseReader.Update();
-            gameManager.Update();
+            gameManager.Update(gameTime.ElapsedGameTime.Milliseconds);
 
             // TODO: Add your update logic here
 

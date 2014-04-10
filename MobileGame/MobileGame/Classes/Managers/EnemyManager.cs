@@ -10,16 +10,14 @@ namespace MobileGame
     static class EnemyManager
     {
         private static List<SimpleEnemy> enemyList = new List<SimpleEnemy>();
-        private static List<ShootingEnemy> shootingEnemies = new List<ShootingEnemy>();
-        private static List<Projectile> projectileList = new List<Projectile>();
 
         //Is not used at the moment, each enemy is updated individually in GameManager.cs when the enemyList is being looped through anyway
         //Might be useful later though, if i change my mind. Lets keep it for now
-        public static void Update(Player player, List<SpecialTile> collideList)
+        public static void Update(Player player, List<SpecialTile> collideList, float elapsedTime)
         {
             for (int i = 0; i < enemyList.Count; i++)
             {
-                enemyList[i].Update();
+                enemyList[i].Update(elapsedTime, player);
 
                 if (enemyList[i].HitBox().Intersects(player.HitBox()))
                     enemyList[i].CollideWithPlayer(player);
@@ -30,18 +28,9 @@ namespace MobileGame
                     if (enemyList[i].HitBox().Intersects(collideList[t].HitBox()))
                         collideList[t].CollideWithUnit(enemyList[i]);
                 }
+
+                enemyList[i].SpecialAbility(player);
             }
-
-            for (int i = 0; i < shootingEnemies.Count; i++)
-            {
-                shootingEnemies[i].Update();
-
-                if (GetDistance(shootingEnemies[i].Position, player.Position) < shootingEnemies[i].Range)
-                    projectileList.Add(shootingEnemies[i].Shoot(player.Position));
-            }
-
-            for (int i = 0; i < projectileList.Count; i++)
-                projectileList[i].Update();
         }
 
         //This is not being used at the moment either, for the same reason as Update()
@@ -50,22 +39,11 @@ namespace MobileGame
         {
             for (int i = 0; i < enemyList.Count; i++)
                 enemyList[i].Draw(spritebatch);
-
-            for (int i = 0; i < shootingEnemies.Count; i++)
-                shootingEnemies[i].Draw(spritebatch);
-
-            for (int i = 0; i < projectileList.Count; i++)
-                projectileList[i].Draw(spritebatch);
         }
 
         public static void AddEnemy(SimpleEnemy newEnemy)
         {
             enemyList.Add(newEnemy);
-        }
-
-        public static void AddEnemy(ShootingEnemy newEnemy)
-        {
-            shootingEnemies.Add(newEnemy);
         }
 
         public static void RemoveEnemy(SimpleEnemy remEnemy)
@@ -79,18 +57,6 @@ namespace MobileGame
             {
                 return enemyList;
             }
-        }
-
-        private static float GetDistance(Vector2 PosOne, Vector2 PosTwo)
-        {
-            Vector2 tempDis;
-
-            tempDis.X = PosTwo.X - PosOne.X;
-            tempDis.Y = PosTwo.Y - PosTwo.Y;
-
-            float dist = tempDis.Length();
-
-            return dist;
         }
     }
 }

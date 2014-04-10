@@ -34,7 +34,12 @@ namespace MobileGame
                 velocity = new Vector2(-1, 0);
         }
 
-        public virtual void Update()
+        public virtual void Update(float elapsedTime)
+        {
+            position += velocity;
+        }
+
+        public virtual void Update(float elapsedTime, Player player)
         {
             position += velocity;
         }
@@ -53,6 +58,11 @@ namespace MobileGame
         public virtual void CollideWithEnemyCollider()
         {
             velocity *= -1;
+        }
+
+        public virtual void SpecialAbility(Player player)
+        {
+
         }
 
         public virtual Rectangle HitBox()

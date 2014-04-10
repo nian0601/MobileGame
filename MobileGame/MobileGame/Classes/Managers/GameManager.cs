@@ -18,9 +18,9 @@ namespace MobileGame
             player = new Player();
         }
 
-        public void Update()
+        public void Update(float elapsedTime)
         {
-            //Collision against specialblocks is handled outside the player class. Enemy vs specialblocks and enemy vs player should be handled out here aswell
+            //Collision against specialblocks is handled outside the player class
             for (int i = 0; i < mapManager.SpecialBlocksList.Count; i++)
             {
                 if (mapManager.SpecialBlocksList[i].HitBox().Intersects(player.HitBox()))
@@ -29,7 +29,7 @@ namespace MobileGame
                 }
             }
 
-            EnemyManager.Update(player, mapManager.SpecialBlocksList);
+            EnemyManager.Update(player, mapManager.SpecialBlocksList, elapsedTime);
 
             //The player handles collision against the generic platforms itself inside the update.
             player.Update(mapManager.ColliderList); 
