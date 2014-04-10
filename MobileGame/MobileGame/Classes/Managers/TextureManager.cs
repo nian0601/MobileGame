@@ -21,6 +21,22 @@ namespace MobileGame
 
         public static Texture2D EnemyTex { get; private set; }
 
+        public static Texture2D BottomLeftCorner { get; private set; }
+        public static Texture2D BottomLeftTile { get; private set; }
+        public static Texture2D BottomMiddleTile { get; private set; }
+        public static Texture2D BottomRightCorner { get; private set; }
+        public static Texture2D BottomRightTile { get; private set; }
+
+        public static Texture2D MiddleLeftTile { get; private set; }
+        public static Texture2D MiddleTile { get; private set; }
+        public static Texture2D MiddleRightTile { get; private set; }
+
+        public static Texture2D TopLeftCorner { get; private set; }
+        public static Texture2D TopLeftTile { get; private set; }
+        public static Texture2D TopMiddleTile { get; private set; }
+        public static Texture2D TopRightCorner { get; private set; }
+        public static Texture2D TopRightTile { get; private set; }
+
         public static void LoadContents(ContentManager Content)
         {
             AirTile = Content.Load<Texture2D>("Tiles/AirTile");
@@ -33,6 +49,22 @@ namespace MobileGame
             TestBigTile = Content.Load<Texture2D>("Tiles/TestBigTile");
 
             EnemyTex = Content.Load<Texture2D>("Units/Enemy");
+
+            BottomLeftCorner = Content.Load<Texture2D>("Tiles/NewTiles/BottomLeftCorner");
+            BottomLeftTile = Content.Load<Texture2D>("Tiles/NewTiles/BottomLeftTile");
+            BottomMiddleTile = Content.Load<Texture2D>("Tiles/NewTiles/BottomMiddleTile");
+            BottomRightCorner = Content.Load<Texture2D>("Tiles/NewTiles/BottomRightCorner");
+            BottomRightTile = Content.Load<Texture2D>("Tiles/NewTiles/BottomRightTile");
+
+            MiddleLeftTile = Content.Load<Texture2D>("Tiles/NewTiles/MiddleLeftTile");
+            MiddleTile = Content.Load<Texture2D>("Tiles/NewTiles/MiddleTile");
+            MiddleRightTile = Content.Load<Texture2D>("Tiles/NewTiles/MiddleRightTile");
+
+            TopLeftCorner = Content.Load<Texture2D>("Tiles/NewTiles/TopLeftCorner");
+            TopLeftTile = Content.Load<Texture2D>("Tiles/NewTiles/TopLeftTile");
+            TopMiddleTile = Content.Load<Texture2D>("Tiles/NewTiles/TopMiddleTile");
+            TopRightCorner = Content.Load<Texture2D>("Tiles/NewTiles/TopRightCorner");
+            TopRightTile = Content.Load<Texture2D>("Tiles/NewTiles/TopRightTile");
         }
     }
 }

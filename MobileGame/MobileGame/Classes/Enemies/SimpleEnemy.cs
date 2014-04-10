@@ -55,6 +55,24 @@ namespace MobileGame
                 player.ResetPosition();
         }
 
+        public virtual void CollideWithTile(List<SimpleTile> collisionList)
+        {
+            for (int i = 0; i < collisionList.Count; i++)
+            {
+                if (collisionList[i].HitBox().Intersects(HitBox()))
+                {
+                    if (velocity.X >= 0)
+                        position.X = collisionList[i].HitBox().Left - HitBox().Width;
+                    else if (velocity.X < 0)
+                        position.X = collisionList[i].HitBox().Left + collisionList[i].HitBox().Width;
+
+                    velocity.X *= -1;
+                    break;
+
+                }
+            }
+        }
+
         public virtual void CollideWithEnemyCollider()
         {
             velocity *= -1;

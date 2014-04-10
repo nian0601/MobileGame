@@ -13,7 +13,7 @@ namespace MobileGame
 
         //Is not used at the moment, each enemy is updated individually in GameManager.cs when the enemyList is being looped through anyway
         //Might be useful later though, if i change my mind. Lets keep it for now
-        public static void Update(Player player, List<SpecialTile> collideList, float elapsedTime)
+        public static void Update(Player player, float elapsedTime, List<SimpleTile> simpleCollideList)
         {
             for (int i = 0; i < enemyList.Count; i++)
             {
@@ -22,12 +22,7 @@ namespace MobileGame
                 if (enemyList[i].HitBox().Intersects(player.HitBox()))
                     enemyList[i].CollideWithPlayer(player);
 
-                //Loops through all special blocks and checks if any enemies collides with them. This only used to check if an enemy collides with an EnemyCollideTile for the moment
-                for (int t = 0; t < collideList.Count; t++)
-                {
-                    if (enemyList[i].HitBox().Intersects(collideList[t].HitBox()))
-                        collideList[t].CollideWithUnit(enemyList[i]);
-                }
+                enemyList[i].CollideWithTile(simpleCollideList);
 
                 enemyList[i].SpecialAbility(player);
             }

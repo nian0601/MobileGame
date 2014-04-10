@@ -29,7 +29,7 @@ namespace MobileGame
                 }
             }
 
-            EnemyManager.Update(player, mapManager.SpecialBlocksList, elapsedTime);
+            EnemyManager.Update(player, elapsedTime, mapManager.ColliderList);
 
             //The player handles collision against the generic platforms itself inside the update.
             player.Update(mapManager.ColliderList); 
