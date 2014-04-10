@@ -11,7 +11,7 @@ namespace MobileGame
     {
         public JumpTile(int x, int y): base(x, y)
         {
-            tileTexture = TextureManager.LayerdGoalTile;
+            tileTexture = TextureManager.JumpTile;
 
             tileSize = tileTexture.Height;
             pixelPos = new Vector2(index.X * tileSize, index.Y * tileSize);

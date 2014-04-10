@@ -11,9 +11,9 @@ namespace MobileGame
     {
         public TeleportTile(int x, int y) : base(x, y)
         {
-            tileTexture = TextureManager.LayerdGoalTile;
+            tileTexture = TextureManager.TeleportTile;
 
-            tileSize = tileTexture.Height;
+            tileSize = tileTexture.Width;
             pixelPos = new Vector2(index.X * tileSize, index.Y * tileSize);
         }
 

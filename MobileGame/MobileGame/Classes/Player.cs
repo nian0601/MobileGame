@@ -27,7 +27,7 @@ namespace MobileGame
 
         public Player()
         {
-            position = new Vector2(50, 100);
+            position = new Vector2(150, 120);
             playerTex = TextureManager.PlayerTile;
 
             velocity = new Vector2(2, 1);
