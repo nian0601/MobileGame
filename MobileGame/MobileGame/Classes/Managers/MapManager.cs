@@ -138,6 +138,7 @@ namespace MobileGame
                 }
             }
 
+            FindConnectedTiles(new Vector2(0, 11));
         }
 
         private Vector2 ConvertIndexToPixels(int X, int Y)
@@ -154,6 +155,86 @@ namespace MobileGame
             int y = (int)pos.Y / tileSize;
 
             return new Point(x, y);
+        }
+
+        //This function tries to determine what texture all of the platforms should use, so that they fit together and form proper platforms
+        private void AssignTileTypes()
+        {
+            for (int i = 0; i < colliderList.Count; i++)
+            {
+
+            }
+        }
+
+        private void FindConnectedTiles(Vector2 centerIndex)
+        {
+            List<int> tempList = new List<int>();
+
+            //These variables will be used to check if we are trying to look at tiles that are outside the array-index
+            //If that is the case we will treat that "tile" as air, since air dosnt affect which kind of texture we should use
+            int xMax = 1;
+            int xMin = -1;
+            int yMax = 1;
+            int yMin = -1;
+
+            
+            if (centerIndex.X == 0)
+            {
+                xMin = 0;
+                xMax = 1;
+            }
+            else if (centerIndex.X == tileArray.GetUpperBound(1))
+            {
+                xMin = -1;
+                xMax = 0;
+            }
+
+            if (centerIndex.Y == 0)
+            {
+                yMin = 0;
+                yMax = 1;
+            }
+            else if (centerIndex.Y == tileArray.GetUpperBound(2))
+            {
+                yMin = -1;
+                yMax = 0;
+            }
+
+            //Loops through the 9 tiles that form a 3x3 square around the centerIndex (included the centerTile in the loop)
+            //If we find a tile that is air or a tile that is outside the arrayIndex we add a "0" to the list
+            //If we find a platformtile we add a "1" to the list
+            for (int x = -1; x <= 1; x++)
+            {
+                for (int y = -1; y <= 1; y++)
+                {
+                    if (x == 0 && y == 0)
+                    {
+                        Console.WriteLine("Found centertile");
+                    }
+                    else if (x > xMax || x < xMin)
+                    {
+                        Console.WriteLine("Outside x-bounds");
+                        tempList.Add(0);
+                    }
+                    else if (y > yMax || y < yMin)
+                    {
+                        Console.WriteLine("Outside y-bounds");
+                        tempList.Add(0);
+                    }
+                    else if (colliderList.Contains(tileArray[0, (int)centerIndex.X + x, (int)centerIndex.Y + y]))
+                    {
+                        Console.WriteLine("Found platform-tile");
+                        tempList.Add(1);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Found empty tile");
+                        tempList.Add(0);
+                    }
+                }
+            }
+
+            Console.WriteLine(tempList.Count);
         }
     }
 }

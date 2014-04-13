@@ -35,5 +35,21 @@ namespace MobileGame
         {
             return new Rectangle((int)pixelPos.X, (int)pixelPos.Y, tileSize, tileSize);
         }
+
+        public Vector2 PixelPosition
+        {
+            get
+            {
+                return pixelPos;
+            }
+        }
+
+        public Vector2 IndexPos
+        {
+            get
+            {
+                return index;
+            }
+        }
     }
 }
