@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -27,6 +28,28 @@ namespace MobileGame
             specialBlockList = new List<SpecialTile>();
 
             LoadLevel();
+        }
+
+        public void Update()
+        {
+            if (KeyMouseReader.LeftClick())
+            {
+                //List<int> tempList = FindConnectedTileTypes(new Vector2(ConvertPixelsToIndex(KeyMouseReader.mousePos).X, ConvertPixelsToIndex(KeyMouseReader.mousePos).Y));
+                //Console.WriteLine("ST[0] == " + tempList[0] + " && ST[1] == " + tempList[1] + " && ST[2] == " + tempList[2] + " && ST[3] == " + tempList[3] + " && ST[5] == " + tempList[5] + " && ST[6] == " + tempList[6] + " && ST[7] == " + tempList[7] + " && ST[8] == " + tempList[8]);
+
+                int x = ConvertPixelsToIndex(KeyMouseReader.mousePos).X;
+                int y = ConvertPixelsToIndex(KeyMouseReader.mousePos).Y;
+
+                SimpleTile tempTile = new SimpleTile(x, y, 1);
+                tileArray[0, x, y] = tempTile;
+                colliderList.Add(tempTile);
+                AssignTileType(tempTile);
+
+                List<Tile> tempTileList = FindConnectedTiles(tempTile.IndexPos);
+                foreach (Tile T in tempTileList)
+                    AssignTileType(T);
+            }
+                
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -64,18 +87,18 @@ namespace MobileGame
         {
             currentMap = new int[,,] {
                                         {
-                                            {13, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 12},
-                                            {6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4},
-                                            {6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4},
-                                            {6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 0, 0, 0, 0, 0, 4},
-                                            {6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 9, 0, 0, 0, 0, 0, 4},
-                                            {6, 0, 1, 2, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4},
-                                            {6, 0, 7, 8, 8, 9, 0, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4},
-                                            {6, 0, 0, 0, 0, 0, 0, 0, 4, 11, 2, 2, 3, 0, 0, 0, 0, 0, 0, 4},
-                                            {6, 0, 0, 0, 0, 0, 0, 0, 7, 8, 8, 8, 9, 0, 0, 1, 3, 0, 0, 4},
-                                            {6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 6, 0, 0, 4},
-                                            {6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 6, 0, 0, 4},
-                                            {11, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 10},
+                                            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1},
+                                            {1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1},
+                                            {1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1},
+                                            {1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                                            {1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1},
+                                            {1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1},
+                                            {1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1},
+                                            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                                         },
                                         {
                                             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -83,12 +106,12 @@ namespace MobileGame
                                             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
                                             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                         }
                                         
@@ -119,6 +142,7 @@ namespace MobileGame
 
                     if (tileType != 0)
                         colliderList.Add(tempTile);
+                        
                 }
             }
 
@@ -138,7 +162,20 @@ namespace MobileGame
                 }
             }
 
-            FindConnectedTiles(new Vector2(0, 11));
+            foreach (SimpleTile Tile in colliderList)
+                AssignTileType(Tile);
+
+            //PERFORMANCE CHECK!!
+            //for (int i = 0; i < 10000; i++)
+            //{
+            //    TimeSpan begin = Process.GetCurrentProcess().TotalProcessorTime;
+
+            //    foreach (SimpleTile Tile in colliderList)
+            //        AssignTileType(Tile);
+
+            //    TimeSpan end = Process.GetCurrentProcess().TotalProcessorTime;
+            //    Console.WriteLine("Measured time: " + (end - begin).TotalMilliseconds + " ms.");
+            //}
         }
 
         private Vector2 ConvertIndexToPixels(int X, int Y)
@@ -149,7 +186,7 @@ namespace MobileGame
             return new Vector2(x, y);
         }
 
-        private Point ConvertPixelsToIndex(Vector2 pos)
+        private Point ConvertPixelsToIndex(Point pos)
         {
             int x = (int)pos.X / tileSize;
             int y = (int)pos.Y / tileSize;
@@ -157,84 +194,681 @@ namespace MobileGame
             return new Point(x, y);
         }
 
-        //This function tries to determine what texture all of the platforms should use, so that they fit together and form proper platforms
-        private void AssignTileTypes()
+        private Tile FindTileAtIndex(int x, int y)
         {
-            for (int i = 0; i < colliderList.Count; i++)
-            {
-
-            }
+            return tileArray[0, x, y];
         }
 
-        private void FindConnectedTiles(Vector2 centerIndex)
+        //This function tries to determine what texture all of the platforms should use, so that they fit together and form proper platforms
+        private void AssignTileType(Tile Tile)
+        {
+            //ST = SurroundingTiles, made the name shorted to make the fking if-statements shorter aswell
+            List<int> ST = FindConnectedTileTypes(Tile.IndexPos);
+
+            if (IsBottomClosedLeftCornerTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.BottomClosedLeftCornerTile);
+            else if (IsBottomClosedRightCornerTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.BottomClosedRightCornerTile);
+            else if (IsBottomClosedTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.BottomClosedTile);
+            else if (IsBottomLeftCorner(ST))
+                Tile.SetTileType(TextureManager.TileTypes.BottomLeftCorner);
+            else if (IsBottomleftOpenTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.BottomLeftOpenTile);
+            else if (IsBottomLeftTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.BottomLeftTile);
+            else if (IsBottomMiddleTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.BottomMiddleTile);
+            else if (IsBottomOpenTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.BottomOpenTile);
+            else if (IsBottomRightCornerTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.BottomRightCorner);
+            else if (IsBottomRightOpenTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.BottomRightOpenTile);
+            else if (IsBottomRightTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.BottomRightTile);
+            else if (IsBottomTopOpenTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.BottomTopOpenTile);
+            else if (IsFourCornersTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.FourCornersTile);
+            else if (IsLeftClosedBottomCornerTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.LeftClosedBottomCornerTile);
+            else if (IsLeftClosedTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.LeftClosedTile);
+            else if (IsLeftClosedTopCornerTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.LeftClosedTopCornerTile);
+            else if (IsLeftOpenTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.LeftOpenTile);
+            else if (IsLeftRightOpenTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.LeftRightOpenTile);
+            else if (IsMiddleLeftTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.MiddleLeftTile);
+            else if (IsMiddleRightTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.MiddleRightTile);
+            else if (IsMiddleTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.MiddleTile);
+            else if (IsRightClosedBottomCornerTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.RightClosedBottomCenterTile);
+            else if (IsRightClosedTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.RightClosedTile);
+            else if (IsRightClosedTopCornerTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.RightClosedTopCenterTile);
+            else if (IsRightOpenTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.RightOpenTile);
+            else if (IsSingleTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.SingleTile);
+            else if (IsThreeCornersBottomLeftTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.ThreeCornersBottomLeftTile);
+            else if (IsThreeCornersBottomRightTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.ThreeCornersBottomRightTile);
+            else if (IsThreeCornersTopLeftTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.ThreeCornersTopLeftTile);
+            else if (IsThreeCornersTopRightTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.ThreeCornersTopRightTile);
+            else if (IsTopClosedLeftCornerTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.TopClosedLeftCornerTile);
+            else if (IsTopClosedRightCornerTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.TopClosedrightCornerTile);
+            else if (IsTopClosedTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.TopClosedTile);
+            else if (IsTopLeftCornerTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.TopLeftCorner);
+            else if (IsTopLeftOpenTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.TopLeftOpenTile);
+            else if (IsTopLeftTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.TopLeftTile);
+            else if (IsTopMiddleTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.TopMiddleTile);
+            else if (IsTopOpenTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.TopOpenTile);
+            else if (IsTopRightCornerTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.TopRightCorner);
+            else if (IsTopRightOpenTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.TopRightOpenTile);
+            else if (IsTopRightTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.TopRightTile);
+            else if (IsTwoCornersBottomTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.TwoCornersBottomTile);
+            else if (IsTwoCornersLeftTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.TwoCornersLeftTile);
+            else if (IsTwoCornersRightTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.TwoCornersRightTile);
+            else if (IsTwoCornersTopTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.TwoCornersTopTile);
+        }
+
+        private List<int> FindConnectedTileTypes(Vector2 centerIndex)
         {
             List<int> tempList = new List<int>();
 
             //These variables will be used to check if we are trying to look at tiles that are outside the array-index
             //If that is the case we will treat that "tile" as air, since air dosnt affect which kind of texture we should use
+            #region Variables and if-statements
             int xMax = 1;
             int xMin = -1;
             int yMax = 1;
             int yMin = -1;
 
-            
             if (centerIndex.X == 0)
             {
                 xMin = 0;
                 xMax = 1;
+                //Console.WriteLine("Tile is at the LEFT edge of the screen");
             }
             else if (centerIndex.X == tileArray.GetUpperBound(1))
             {
                 xMin = -1;
                 xMax = 0;
+                //Console.WriteLine("Tile is at the RIGHT edge of the screen");
             }
 
             if (centerIndex.Y == 0)
             {
                 yMin = 0;
                 yMax = 1;
+                //Console.WriteLine("Tile is at the TOP edge of the screen");
             }
             else if (centerIndex.Y == tileArray.GetUpperBound(2))
             {
                 yMin = -1;
                 yMax = 0;
+                //Console.WriteLine("Tile is at the BOTTOM edge of the screen");
             }
+            #endregion
 
+            int currentY = 0;
+            int currentX = 0;
             //Loops through the 9 tiles that form a 3x3 square around the centerIndex (included the centerTile in the loop)
             //If we find a tile that is air or a tile that is outside the arrayIndex we add a "0" to the list
             //If we find a platformtile we add a "1" to the list
+            #region Loop
             for (int x = -1; x <= 1; x++)
             {
+                currentX = (int)centerIndex.X + x;
+
                 for (int y = -1; y <= 1; y++)
                 {
-                    if (x == 0 && y == 0)
+                    currentY = (int)centerIndex.Y + y;
+
+                    //Is the tile we are looking at inside the map-array?
+                    if (IsXInsideArray(currentX, tileArray) && IsYInsideArray(currentY, tileArray))
                     {
-                        Console.WriteLine("Found centertile");
+                        //Console.WriteLine("Current Index is inside array");
+                        if (colliderList.Contains(tileArray[0, currentX, currentY]))
+                            tempList.Add(1);
+                        else
+                            tempList.Add(0);
                     }
-                    else if (x > xMax || x < xMin)
+                    else //The tile we are currently looking at is NOT inside the map-array, i.e the tile does not exsit!
                     {
-                        Console.WriteLine("Outside x-bounds");
-                        tempList.Add(0);
-                    }
-                    else if (y > yMax || y < yMin)
-                    {
-                        Console.WriteLine("Outside y-bounds");
-                        tempList.Add(0);
-                    }
-                    else if (colliderList.Contains(tileArray[0, (int)centerIndex.X + x, (int)centerIndex.Y + y]))
-                    {
-                        Console.WriteLine("Found platform-tile");
+                        //Then we should treat it as a tile (platform)!
                         tempList.Add(1);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Found empty tile");
-                        tempList.Add(0);
                     }
                 }
             }
+            #endregion
 
-            Console.WriteLine(tempList.Count);
+            //Console.WriteLine("ST[0] == " + tempList[0] + " && ST[1] == " + tempList[1] + " && ST[2] == " + tempList[2] + " && ST[3] == " + tempList[3] + " && ST[5] == " + tempList[5] + " && ST[6] == " + tempList[6] + " && ST[7] == " + tempList[7] + " && ST[8] == " + tempList[8]);
+
+            return tempList;
         }
+
+        private List<Tile> FindConnectedTiles(Vector2 centerIndex)
+        {
+            List<Tile> tempList = new List<Tile>();
+
+            //These variables will be used to check if we are trying to look at tiles that are outside the array-index
+            //If that is the case we will treat that "tile" as air, since air dosnt affect which kind of texture we should use
+            #region Variables and if-statements
+            int xMax = 1;
+            int xMin = -1;
+            int yMax = 1;
+            int yMin = -1;
+
+            if (centerIndex.X == 0)
+            {
+                xMin = 0;
+                xMax = 1;
+                //Console.WriteLine("Tile is at the LEFT edge of the screen");
+            }
+            else if (centerIndex.X == tileArray.GetUpperBound(1))
+            {
+                xMin = -1;
+                xMax = 0;
+                //Console.WriteLine("Tile is at the RIGHT edge of the screen");
+            }
+
+            if (centerIndex.Y == 0)
+            {
+                yMin = 0;
+                yMax = 1;
+                //Console.WriteLine("Tile is at the TOP edge of the screen");
+            }
+            else if (centerIndex.Y == tileArray.GetUpperBound(2))
+            {
+                yMin = -1;
+                yMax = 0;
+                //Console.WriteLine("Tile is at the BOTTOM edge of the screen");
+            }
+            #endregion
+
+            int currentY = 0;
+            int currentX = 0;
+            //Loops through the 9 tiles that form a 3x3 square around the centerIndex (included the centerTile in the loop)
+            //If we find a tile that is air or a tile that is outside the arrayIndex we add a "0" to the list
+            //If we find a platformtile we add a "1" to the list
+            #region Loop
+            for (int x = -1; x <= 1; x++)
+            {
+                currentX = (int)centerIndex.X + x;
+
+                for (int y = -1; y <= 1; y++)
+                {
+                    currentY = (int)centerIndex.Y + y;
+
+                    //Is the tile we are looking at inside the map-array?
+                    if (IsXInsideArray(currentX, tileArray) && IsYInsideArray(currentY, tileArray))
+                    {
+                        //Console.WriteLine("Current Index is inside array");
+                        if (colliderList.Contains(tileArray[0, currentX, currentY]))
+                            tempList.Add(tileArray[0, currentX, currentY]);
+                    }
+                    else //The tile we are currently looking at is NOT inside the map-array, i.e the tile does not exsit!
+                    {
+                    }
+                }
+            }
+            #endregion
+
+            //Console.WriteLine("ST[0] == " + tempList[0] + " && ST[1] == " + tempList[1] + " && ST[2] == " + tempList[2] + " && ST[3] == " + tempList[3] + " && ST[5] == " + tempList[5] + " && ST[6] == " + tempList[6] + " && ST[7] == " + tempList[7] + " && ST[8] == " + tempList[8]);
+
+            return tempList;
+        }
+
+        private bool IsYInsideArray(int y, Tile[, ,] array)
+        {
+            if (y < 0 || y > array.GetUpperBound(2))
+                return false;
+            return true;
+        }
+
+        private bool IsXInsideArray(int x, Tile[, ,] array)
+        {
+            if (x < 0 || x > array.GetUpperBound(1))
+                return false;
+            return true;
+        }
+
+        #region All the bool-functions regarding Tile-Types
+        private bool IsBottomClosedLeftCornerTile(List<int> ST)
+        {
+            if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+
+            return false;
+        }
+
+        private bool IsBottomClosedRightCornerTile(List<int> ST)
+        {
+            return false;
+        }
+
+        private bool IsBottomClosedTile(List<int> ST)
+        {
+            if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+
+            return false;
+        }
+
+        private bool IsBottomLeftCorner(List<int> ST)
+        {
+            return (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1);
+        }
+
+        private bool IsBottomleftOpenTile(List<int> ST)
+        {
+            if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+
+            return false;
+        }
+
+        private bool IsBottomLeftTile(List<int> ST)
+        {
+            if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            
+            return false;
+        }
+
+        private bool IsBottomMiddleTile(List<int> ST)
+        {
+            if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+
+            return false;
+        }
+
+        private bool IsBottomOpenTile(List<int> ST)
+        {
+            if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+
+            return false;
+        }
+
+        private bool IsBottomRightCornerTile(List<int> ST)
+        {
+            return (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0);
+        }
+
+        private bool IsBottomRightOpenTile(List<int> ST)
+        {
+            if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+
+            return false;
+        }
+
+        private bool IsBottomRightTile(List<int> ST)
+        {
+            if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
+                return true;
+
+            return false;
+        }
+
+        private bool IsBottomTopOpenTile(List<int> ST)
+        {
+            if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+
+            return false;
+        }
+
+        private bool IsFourCornersTile(List<int> ST)
+        {
+            return (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0);
+        }
+
+        private bool IsLeftClosedBottomCornerTile(List<int> ST)
+        {
+            return false;
+        }
+
+        private bool IsLeftClosedTile(List<int> ST)
+        {
+            return (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0);
+        }
+
+        private bool IsLeftClosedTopCornerTile(List<int> ST)
+        {
+            return false;
+        }
+
+        private bool IsLeftOpenTile(List<int> ST)
+        {
+            if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+
+            return false;
+        }
+
+        private bool IsLeftRightOpenTile(List<int> ST)
+        {
+            if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+
+            return false;
+        }
+
+        private bool IsMiddleLeftTile(List<int> ST)
+        {
+            if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+
+            return false;
+        }
+
+        private bool IsMiddleRightTile(List<int> ST)
+        {
+            if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
+                return true;
+
+            return false;
+        }
+
+        private bool IsMiddleTile(List<int> ST)
+        {
+            return (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1);
+        }
+
+        private bool IsRightClosedBottomCornerTile(List<int> ST)
+        {
+            return (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0);
+        }
+
+        private bool IsRightClosedTile(List<int> ST)
+        {
+            if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+
+            return false;
+        }
+
+        private bool IsRightClosedTopCornerTile(List<int> ST)
+        {
+            return false;
+        }
+
+        private bool IsRightOpenTile(List<int> ST)
+        {
+            if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+
+            return false;
+        }
+
+        private bool IsSingleTile(List<int> ST)
+        {
+            if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+
+            return false;
+        }
+
+        private bool IsThreeCornersBottomLeftTile(List<int> ST)
+        {
+            return false;
+        }
+
+        private bool IsThreeCornersBottomRightTile(List<int> ST)
+        {
+            return (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1);
+        }
+
+        private bool IsThreeCornersTopLeftTile(List<int> ST)
+        {
+            return false;
+        }
+
+        private bool IsThreeCornersTopRightTile(List<int> ST)
+        {
+            return (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0);
+        }
+
+        private bool IsTopClosedLeftCornerTile(List<int> ST)
+        {
+            return (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1);
+        }
+
+        private bool IsTopClosedRightCornerTile(List<int> ST)
+        {
+            return (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0);
+        }
+
+        private bool IsTopClosedTile(List<int> ST)
+        {
+            if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+
+            return false;
+        }
+
+        private bool IsTopLeftCornerTile(List<int> ST)
+        {
+            return (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1);
+        }
+
+        private bool IsTopLeftOpenTile(List<int> ST)
+        {
+            return (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0);
+        }
+
+        private bool IsTopLeftTile(List<int> ST)
+        {
+            if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+
+            return false;
+        }
+
+        private bool IsTopMiddleTile(List<int> ST)
+        {
+            if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+
+            return false;
+        }
+
+        private bool IsTopOpenTile(List<int> ST)
+        {
+            if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+
+            return false;
+        }
+
+        private bool IsTopRightCornerTile(List<int> ST)
+        {
+            return (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1);
+        }
+
+        private bool IsTopRightOpenTile(List<int> ST)
+        {
+            if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
+
+            return false;
+        }
+
+        private bool IsTopRightTile(List<int> ST)
+        {
+            if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+
+            return false;
+        }
+
+        private bool IsTwoCornersBottomTile(List<int> ST)
+        {
+            if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+
+            return false;
+        }
+
+        private bool IsTwoCornersLeftTile(List<int> ST)
+        {
+            if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+
+            return false;
+        }
+
+        private bool IsTwoCornersRightTile(List<int> ST)
+        {
+            return (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0);
+        }
+
+        private bool IsTwoCornersTopTile(List<int> ST)
+        {
+            return (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1);
+        }
+        #endregion
     }
 }

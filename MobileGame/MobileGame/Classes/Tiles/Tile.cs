@@ -31,6 +31,11 @@ namespace MobileGame
                 spriteBatch.Draw(tileTexture, pixelPos, Color.White);
         }
 
+        public void SetTileType(TextureManager.TileTypes tileType)
+        {
+            tileTexture = TextureManager.TileTextures[(int)tileType];
+        }
+
         public Rectangle HitBox()
         {
             return new Rectangle((int)pixelPos.X, (int)pixelPos.Y, tileSize, tileSize);

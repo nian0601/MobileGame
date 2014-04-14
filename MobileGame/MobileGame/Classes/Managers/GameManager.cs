@@ -20,6 +20,8 @@ namespace MobileGame
 
         public void Update(float elapsedTime)
         {
+            mapManager.Update();
+
             //Collision against specialblocks is handled outside the player class
             for (int i = 0; i < mapManager.SpecialBlocksList.Count; i++)
             {
