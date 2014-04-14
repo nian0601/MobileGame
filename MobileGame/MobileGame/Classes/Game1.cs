@@ -32,7 +32,9 @@ namespace MobileGame
         {
             // TODO: Add your initialization logic here
 
-            
+            graphics.PreferredBackBufferWidth = 1200;
+            graphics.PreferredBackBufferHeight = 800;
+            graphics.ApplyChanges();
 
             base.Initialize();
         }
@@ -58,6 +60,8 @@ namespace MobileGame
                 Exit();
             KeyMouseReader.Update();
             gameManager.Update(gameTime.ElapsedGameTime.Milliseconds);
+
+            //Console.WriteLine("FPS: " + (1000 / gameTime.ElapsedGameTime.Milliseconds));
 
             // TODO: Add your update logic here
 

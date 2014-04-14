@@ -20,6 +20,8 @@ namespace MobileGame
         public static Texture2D TestBigTile { get; private set; }
 
         public static Texture2D EnemyTex { get; private set; }
+        public static Texture2D SmallerEnemyTex { get; private set; }
+        public static Texture2D SmallerPlayerTex { get; private set; }
 
         public static List<Texture2D> TileTextures { get; private set; }
 
@@ -58,11 +60,13 @@ namespace MobileGame
             TopClosedLeftCornerTile,
             TopClosedrightCornerTile,
             TopClosedTile,
+            TopLeftBottomRightCornerTile,
             TopLeftCorner,
             TopLeftOpenTile,
             TopLeftTile,
             TopMiddleTile,
             TopOpenTile,
+            TopRightBottomLeftCornerTile,
             TopRightCorner,
             TopRightOpenTile,
             TopRightTile,
@@ -85,6 +89,8 @@ namespace MobileGame
             TestBigTile = Content.Load<Texture2D>("Tiles/TestBigTile");
 
             EnemyTex = Content.Load<Texture2D>("Units/Enemy");
+            SmallerEnemyTex = Content.Load<Texture2D>("Units/SmallerEnemy");
+            SmallerPlayerTex = Content.Load<Texture2D>("Units/SmallerPlayer");
 
             TileTextures = new List<Texture2D>();
 
@@ -121,11 +127,13 @@ namespace MobileGame
             TileTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/TopClosedLeftCornerTile"));
             TileTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/TopClosedRightCornerTile"));
             TileTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/TopClosedTile"));
+            TileTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/TopLeftBottomRightCornerTile"));
             TileTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/TopLeftCorner"));
             TileTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/TopLeftOpenTile"));
             TileTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/TopLeftTile"));
             TileTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/TopMiddleTile"));
             TileTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/TopOpenTile"));
+            TileTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/TopRightBottomLeftCornerTile"));
             TileTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/TopRightCorner"));
             TileTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/TopRightOpenTile"));
             TileTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/TopRightTile"));

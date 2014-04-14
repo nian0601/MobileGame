@@ -32,24 +32,26 @@ namespace MobileGame
 
         public void Update()
         {
-            if (KeyMouseReader.LeftClick())
+            int mouseX = ConvertPixelsToIndex(KeyMouseReader.mousePos).X;
+            int mouseY = ConvertPixelsToIndex(KeyMouseReader.mousePos).Y;
+
+            if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.LeftClick())
+                EnemyManager.AddEnemy(new SimpleEnemy(mouseX, mouseY));
+
+            else if (KeyMouseReader.isKeyDown(Keys.LeftAlt) && KeyMouseReader.LeftClick())
+                specialBlockList.Add(new JumpTile(mouseX, mouseY));
+
+            else if (KeyMouseReader.MouseWheelDown())
+                CreateSimpleTile(mouseX, mouseY);
+
+            else if (KeyMouseReader.RightClick())
+                RemoveSimpleTIle(mouseX, mouseY);
+
+            else if (KeyMouseReader.RightClick())
             {
-                //List<int> tempList = FindConnectedTileTypes(new Vector2(ConvertPixelsToIndex(KeyMouseReader.mousePos).X, ConvertPixelsToIndex(KeyMouseReader.mousePos).Y));
-                //Console.WriteLine("ST[0] == " + tempList[0] + " && ST[1] == " + tempList[1] + " && ST[2] == " + tempList[2] + " && ST[3] == " + tempList[3] + " && ST[5] == " + tempList[5] + " && ST[6] == " + tempList[6] + " && ST[7] == " + tempList[7] + " && ST[8] == " + tempList[8]);
-
-                int x = ConvertPixelsToIndex(KeyMouseReader.mousePos).X;
-                int y = ConvertPixelsToIndex(KeyMouseReader.mousePos).Y;
-
-                SimpleTile tempTile = new SimpleTile(x, y, 1);
-                tileArray[0, x, y] = tempTile;
-                colliderList.Add(tempTile);
-                AssignTileType(tempTile);
-
-                List<Tile> tempTileList = FindConnectedTiles(tempTile.IndexPos);
-                foreach (Tile T in tempTileList)
-                    AssignTileType(T);
-            }
-                
+                List<int> tempList = FindConnectedTileTypes(new Vector2(mouseX, mouseY));
+                Console.WriteLine("ST[0] == " + tempList[0] + " && ST[1] == " + tempList[1] + " && ST[2] == " + tempList[2] + " && ST[3] == " + tempList[3] + " && ST[5] == " + tempList[5] + " && ST[6] == " + tempList[6] + " && ST[7] == " + tempList[7] + " && ST[8] == " + tempList[8]);
+            }      
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -87,32 +89,49 @@ namespace MobileGame
         {
             currentMap = new int[,,] {
                                         {
-                                            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                                            {1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1},
-                                            {1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1},
-                                            {1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1},
-                                            {1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1},
-                                            {1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                                            {1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1},
-                                            {1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1},
-                                            {1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1},
-                                            {1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1},
-                                            {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1},
-                                            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                                            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+
                                         },
                                         {
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
                                         }
                                         
                                     };
@@ -166,14 +185,19 @@ namespace MobileGame
                 AssignTileType(Tile);
 
             //PERFORMANCE CHECK!!
-            //for (int i = 0; i < 10000; i++)
+            //for (int i = 0; i < 1000; i++)
             //{
             //    TimeSpan begin = Process.GetCurrentProcess().TotalProcessorTime;
+            //    Stopwatch watch = new Stopwatch();
+            //    watch.Start();
 
             //    foreach (SimpleTile Tile in colliderList)
             //        AssignTileType(Tile);
 
+            //    watch.Stop();
             //    TimeSpan end = Process.GetCurrentProcess().TotalProcessorTime;
+
+            //    //Console.WriteLine("Measured time: " + watch.ElapsedMilliseconds + " ms.");
             //    Console.WriteLine("Measured time: " + (end - begin).TotalMilliseconds + " ms.");
             //}
         }
@@ -271,6 +295,8 @@ namespace MobileGame
                 Tile.SetTileType(TextureManager.TileTypes.TopClosedrightCornerTile);
             else if (IsTopClosedTile(ST))
                 Tile.SetTileType(TextureManager.TileTypes.TopClosedTile);
+            else if (IsTopLeftBottomRightCornerTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.TopLeftBottomRightCornerTile);
             else if (IsTopLeftCornerTile(ST))
                 Tile.SetTileType(TextureManager.TileTypes.TopLeftCorner);
             else if (IsTopLeftOpenTile(ST))
@@ -281,6 +307,8 @@ namespace MobileGame
                 Tile.SetTileType(TextureManager.TileTypes.TopMiddleTile);
             else if (IsTopOpenTile(ST))
                 Tile.SetTileType(TextureManager.TileTypes.TopOpenTile);
+            else if (IsTopRightBottomLeftCornerTile(ST))
+                Tile.SetTileType(TextureManager.TileTypes.TopRightBottomLeftCornerTile);
             else if (IsTopRightCornerTile(ST))
                 Tile.SetTileType(TextureManager.TileTypes.TopRightCorner);
             else if (IsTopRightOpenTile(ST))
@@ -295,6 +323,30 @@ namespace MobileGame
                 Tile.SetTileType(TextureManager.TileTypes.TwoCornersRightTile);
             else if (IsTwoCornersTopTile(ST))
                 Tile.SetTileType(TextureManager.TileTypes.TwoCornersTopTile);
+        }
+
+        private void CreateSimpleTile(int x, int y)
+        {
+            SimpleTile tempTile = new SimpleTile(x, y, 1);
+            tileArray[0, x, y] = tempTile;
+            colliderList.Add(tempTile);
+            AssignTileType(tempTile);
+
+            List<Tile> tempTileList = FindConnectedTiles(tempTile.IndexPos);
+            foreach (Tile T in tempTileList)
+                AssignTileType(T);
+        }
+
+        private void RemoveSimpleTIle(int x, int y)
+        {
+            SimpleTile tempTile = new SimpleTile(x, y, 1);
+            tileArray[0, x, y] = new SimpleTile(x, y, 0);
+            colliderList.Remove(tempTile);
+            //AssignTileType(tempTile);
+
+            List<Tile> tempTileList = FindConnectedTiles(tempTile.IndexPos);
+            foreach (Tile T in tempTileList)
+                AssignTileType(T);
         }
 
         private List<int> FindConnectedTileTypes(Vector2 centerIndex)
@@ -439,9 +491,7 @@ namespace MobileGame
                 }
             }
             #endregion
-
-            //Console.WriteLine("ST[0] == " + tempList[0] + " && ST[1] == " + tempList[1] + " && ST[2] == " + tempList[2] + " && ST[3] == " + tempList[3] + " && ST[5] == " + tempList[5] + " && ST[6] == " + tempList[6] + " && ST[7] == " + tempList[7] + " && ST[8] == " + tempList[8]);
-
+            
             return tempList;
         }
 
@@ -464,12 +514,23 @@ namespace MobileGame
         {
             if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
                 return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
 
             return false;
         }
 
         private bool IsBottomClosedRightCornerTile(List<int> ST)
         {
+            if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
+
             return false;
         }
 
@@ -480,6 +541,8 @@ namespace MobileGame
             else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
                 return true;
             else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
                 return true;
 
             return false;
@@ -498,6 +561,10 @@ namespace MobileGame
                 return true;
             else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
                 return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
 
             return false;
         }
@@ -512,8 +579,11 @@ namespace MobileGame
                 return true;
             else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
                 return true;
-
             else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
                 return true;
             
             return false;
@@ -527,6 +597,8 @@ namespace MobileGame
                 return true;
             else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
                 return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
 
             return false;
         }
@@ -538,6 +610,28 @@ namespace MobileGame
             else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
                 return true;
             else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
                 return true;
 
             return false;
@@ -554,6 +648,14 @@ namespace MobileGame
                 return true;
             else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
                 return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
 
             return false;
         }
@@ -565,6 +667,14 @@ namespace MobileGame
             else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
                 return true;
             else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
                 return true;
 
             return false;
@@ -590,27 +700,63 @@ namespace MobileGame
                 return true;
             else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
                 return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
 
             return false;
         }
 
         private bool IsFourCornersTile(List<int> ST)
         {
-            return (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0);
+            if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+
+            return false;
         }
 
         private bool IsLeftClosedBottomCornerTile(List<int> ST)
         {
+            if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+
             return false;
         }
 
         private bool IsLeftClosedTile(List<int> ST)
         {
-            return (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0);
+            if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+
+            return false;
         }
 
         private bool IsLeftClosedTopCornerTile(List<int> ST)
         {
+            if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
+
             return false;
         }
 
@@ -621,6 +767,22 @@ namespace MobileGame
             else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
                 return true;
             else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
                 return true;
 
             return false;
@@ -640,6 +802,22 @@ namespace MobileGame
                 return true;
             else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
                 return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
 
             return false;
         }
@@ -653,6 +831,8 @@ namespace MobileGame
             else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
                 return true;
             else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
                 return true;
 
             return false;
@@ -679,7 +859,16 @@ namespace MobileGame
 
         private bool IsRightClosedBottomCornerTile(List<int> ST)
         {
-            return (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0);
+            if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+
+            return false;
         }
 
         private bool IsRightClosedTile(List<int> ST)
@@ -688,12 +877,25 @@ namespace MobileGame
                 return true;
             else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
                 return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
+                return true;
 
             return false;
         }
 
         private bool IsRightClosedTopCornerTile(List<int> ST)
         {
+            if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
+                return true;
+
             return false;
         }
 
@@ -705,6 +907,26 @@ namespace MobileGame
                 return true;
             else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
                 return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
 
             return false;
         }
@@ -713,12 +935,33 @@ namespace MobileGame
         {
             if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
                 return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
 
             return false;
         }
 
         private bool IsThreeCornersBottomLeftTile(List<int> ST)
         {
+            if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+
             return false;
         }
 
@@ -729,6 +972,9 @@ namespace MobileGame
 
         private bool IsThreeCornersTopLeftTile(List<int> ST)
         {
+            if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+
             return false;
         }
 
@@ -739,12 +985,30 @@ namespace MobileGame
 
         private bool IsTopClosedLeftCornerTile(List<int> ST)
         {
-            return (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1);
+            if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+
+            return false;
         }
 
         private bool IsTopClosedRightCornerTile(List<int> ST)
         {
-            return (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0);
+            if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+
+            return false;
         }
 
         private bool IsTopClosedTile(List<int> ST)
@@ -759,6 +1023,14 @@ namespace MobileGame
             return false;
         }
 
+        private bool IsTopLeftBottomRightCornerTile(List<int> ST)
+        {
+            if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
+                return true;
+
+            return false;
+        }
+
         private bool IsTopLeftCornerTile(List<int> ST)
         {
             return (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1);
@@ -766,7 +1038,18 @@ namespace MobileGame
 
         private bool IsTopLeftOpenTile(List<int> ST)
         {
-            return (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0);
+            if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+
+            return false;
         }
 
         private bool IsTopLeftTile(List<int> ST)
@@ -779,7 +1062,12 @@ namespace MobileGame
                 return true;
             else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
                 return true;
-
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
             return false;
         }
 
@@ -805,6 +1093,32 @@ namespace MobileGame
                 return true;
             else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
                 return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
+                return true;
+
+            return false;
+        }
+
+        private bool IsTopRightBottomLeftCornerTile(List<int> ST)
+        {
+            if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
 
             return false;
         }
@@ -826,6 +1140,12 @@ namespace MobileGame
                 return true;
             else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
                 return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
 
             return false;
         }
@@ -839,6 +1159,16 @@ namespace MobileGame
             else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
                 return true;
             else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
                 return true;
 
             return false;

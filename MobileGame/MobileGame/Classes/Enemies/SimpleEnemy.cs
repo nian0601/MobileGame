@@ -12,6 +12,9 @@ namespace MobileGame
         protected Texture2D enemyTex;
         protected Vector2 position;
         protected Vector2 velocity;
+        protected float gravity;
+
+        protected bool isOnGround;
 
         protected Color[] colorArray;
 
@@ -19,8 +22,11 @@ namespace MobileGame
 
         public SimpleEnemy(int x, int y)
         {
-            enemyTex = TextureManager.EnemyTex;
-            position = new Vector2(x * enemyTex.Width, y * enemyTex.Height);
+            enemyTex = TextureManager.SmallerEnemyTex;
+            position = new Vector2(x * TextureManager.AirTile.Width, y * TextureManager.AirTile.Height);
+            gravity = 0.4f;
+
+            isOnGround = false;
 
             colorArray = new Color[enemyTex.Width * enemyTex.Height];
             enemyTex.GetData(colorArray);
@@ -36,12 +42,20 @@ namespace MobileGame
 
         public virtual void Update(float elapsedTime)
         {
-            position += velocity;
+            position.X += velocity.X;
         }
 
-        public virtual void Update(float elapsedTime, Player player)
+        public virtual void Update(float elapsedTime, Player player, List<SimpleTile> collisionList)
         {
-            position += velocity;
+            CheckIfOnGround(collisionList);
+
+            position.X += velocity.X;
+            HorizontalCollision(collisionList);
+
+            velocity.Y += gravity;
+
+            position.Y += velocity.Y;
+            VerticalCollision(collisionList);
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)
@@ -53,29 +67,6 @@ namespace MobileGame
         {
             if (PixelCol(HitBox(), colorArray, player.HitBox(), player.ColorArray))
                 player.ResetPosition();
-        }
-
-        public virtual void CollideWithTile(List<SimpleTile> collisionList)
-        {
-            for (int i = 0; i < collisionList.Count; i++)
-            {
-                if (collisionList[i].HitBox().Intersects(HitBox()))
-                {
-                    if (velocity.X >= 0)
-                        position.X = collisionList[i].HitBox().Left - HitBox().Width;
-                    else if (velocity.X < 0)
-                        position.X = collisionList[i].HitBox().Left + collisionList[i].HitBox().Width;
-
-                    velocity.X *= -1;
-                    break;
-
-                }
-            }
-        }
-
-        public virtual void CollideWithEnemyCollider()
-        {
-            velocity *= -1;
         }
 
         public virtual void SpecialAbility(Player player)
@@ -95,6 +86,71 @@ namespace MobileGame
             get
             {
                 return position;
+            }
+        }
+
+        private void CheckIfOnGround(List<SimpleTile> collisionList)
+        {
+            Point collisionPointLeft = new Point(HitBox().Left + 1, HitBox().Top + HitBox().Height);
+            Point collisionPointRight = new Point(HitBox().Right - 1, HitBox().Top + HitBox().Height);
+
+            isOnGround = false;
+
+            for (int i = 0; i < collisionList.Count; i++)
+            {
+                if (collisionList[i].HitBox().Contains(collisionPointLeft) || collisionList[i].HitBox().Contains(collisionPointRight))
+                {
+                    isOnGround = true;
+                    break;
+                }
+            }
+        }
+
+        //Collision in the X-Axis
+        private void HorizontalCollision(List<SimpleTile> collisionList)
+        {
+            Point collisionPointLeft = new Point(HitBox().Left - 2, HitBox().Top + HitBox().Height / 2);
+            Point collisionPointRight = new Point(HitBox().Right + 2, HitBox().Top + HitBox().Height / 2);
+
+            for (int i = 0; i < collisionList.Count; i++)
+            {
+                if (collisionList[i].HitBox().Intersects(HitBox()))
+                {
+                    if (PixelCol(HitBox(), colorArray, collisionList[i].HitBox(), collisionList[i].ColorArray))
+                    {
+                        if (velocity.X >= 0)
+                            position.X = collisionList[i].HitBox().Left - HitBox().Width;
+                        else if (velocity.X < 0)
+                            position.X = collisionList[i].HitBox().Left + collisionList[i].HitBox().Width;
+
+                        velocity.X *= -1;
+                        break;
+                    }                    
+                }
+            }
+        }
+
+        //Collision in the Y-Axis
+        private void VerticalCollision(List<SimpleTile> collisionList)
+        {
+            Point collisionPointTop = new Point(HitBox().Left + HitBox().Width / 2, HitBox().Top);
+            Point collisionPointBot = new Point(HitBox().Left + HitBox().Width / 2, HitBox().Bottom);
+
+            for (int i = 0; i < collisionList.Count; i++)
+            {
+                if (collisionList[i].HitBox().Intersects(HitBox()))
+                {
+                    if (PixelCol(HitBox(), colorArray, collisionList[i].HitBox(), collisionList[i].ColorArray))
+                    {
+                        if (velocity.Y >= 0)
+                            position.Y = collisionList[i].HitBox().Top - HitBox().Height;
+                        else if (velocity.Y < 0)
+                            position.Y = collisionList[i].HitBox().Top + collisionList[i].HitBox().Height;
+
+                        velocity.Y = 0;
+                        break;
+                    } 
+                }
             }
         }
 

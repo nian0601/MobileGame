@@ -28,7 +28,7 @@ namespace MobileGame
         public Player()
         {
             position = new Vector2(150, 120);
-            playerTex = TextureManager.PlayerTile;
+            playerTex = TextureManager.SmallerPlayerTex;
 
             velocity = new Vector2(2, 1);
             maxSpeed = 3f;
@@ -62,12 +62,18 @@ namespace MobileGame
             spriteBatch.Draw(playerTex, position, Color.White);
         }
 
-        public Color[] ColorArray
+        public void Jump(float jumpMultiplier)
         {
-            get
+            if (isOnGround)
             {
-                return colorArray;
+                velocity.Y -= jumpPower * jumpMultiplier;
+                isOnGround = false;
             }
+        }
+
+        public void ResetPosition()
+        {
+            position = new Vector2(50, 100);
         }
 
         private void ListenToInput()
@@ -79,7 +85,7 @@ namespace MobileGame
                 velocity.X = 0;
 
             if (KeyMouseReader.isKeyDown(Keys.W))
-                Jump();
+                Jump(1);
 
             if (KeyMouseReader.isKeyDown(Keys.A))
             {
@@ -113,19 +119,6 @@ namespace MobileGame
             }
         }
 
-        public void Jump()
-        {
-            if (isOnGround)
-            {
-                velocity.Y -= jumpPower;
-            }
-        }
-
-        public void ResetPosition()
-        {
-            position = new Vector2(50, 100);
-        }
-
         //Collision in the X-Axis
         private void HorizontalCollision(List<SimpleTile> collisionList)
         {
@@ -133,14 +126,16 @@ namespace MobileGame
             {
                 if(collisionList[i].HitBox().Intersects(HitBox()))
                 {
-                    if (velocity.X >= 0)
-                        position.X = collisionList[i].HitBox().Left - HitBox().Width;
-                    else if (velocity.X < 0)
-                        position.X = collisionList[i].HitBox().Left + collisionList[i].HitBox().Width;
+                    if (PixelCol(HitBox(), colorArray, collisionList[i].HitBox(), collisionList[i].ColorArray))
+                    {
+                        if (velocity.X >= 0)
+                            position.X = collisionList[i].HitBox().Left - HitBox().Width;
+                        else if (velocity.X < 0)
+                            position.X = collisionList[i].HitBox().Left + collisionList[i].HitBox().Width;
 
-                    velocity.X = 0;
-                    break;
-                    
+                        velocity.X = 0;
+                        break;
+                    }  
                 }
             }
         }
@@ -152,18 +147,44 @@ namespace MobileGame
             {
                 if (collisionList[i].HitBox().Intersects(HitBox()))
                 {
-                    if (velocity.Y >= 0)
-                        position.Y = collisionList[i].HitBox().Top - HitBox().Height;
-                    else if (velocity.Y < 0)
-                        position.Y = collisionList[i].HitBox().Top + collisionList[i].HitBox().Height;
+                    if (PixelCol(HitBox(), colorArray, collisionList[i].HitBox(), collisionList[i].ColorArray))
+                    {
+                        if (velocity.Y >= 0)
+                            position.Y = collisionList[i].HitBox().Top - HitBox().Height;
+                        else if (velocity.Y < 0)
+                            position.Y = collisionList[i].HitBox().Top + collisionList[i].HitBox().Height;
 
-                    velocity.Y = 0;
-                    break;
+                        velocity.Y = 0;
+                        break;
+                    }  
                 }
             }
         }
 
-        //Returns a rectangle representing the player hitbox
+        private Boolean PixelCol(Rectangle rectA, Color[] arrayA, Rectangle rectB, Color[] arrayB)
+        {
+            int top = Math.Max(rectA.Top, rectB.Top);
+            int bottom = Math.Min(rectA.Bottom, rectB.Bottom);
+            int left = Math.Max(rectA.Left, rectB.Left);
+            int right = Math.Min(rectA.Right, rectB.Right);
+
+            for (int y = top; y < bottom; y++)
+            {
+                for (int x = left; x < right; x++)
+                {
+                    Color colorA = arrayA[(x - rectA.Left) + (y - rectA.Top) * rectA.Width];
+                    Color colorB = arrayB[(x - rectB.Left) + (y - rectB.Top) * rectB.Width];
+
+                    if (colorA.A != 0 && colorB.A != 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
         public Rectangle HitBox()
         {
             Rectangle temp = new Rectangle((int)position.X, (int)position.Y, playerTex.Width, playerTex.Height);
@@ -176,6 +197,14 @@ namespace MobileGame
             get
             {
                 return position;
+            }
+        }
+
+        public Color[] ColorArray
+        {
+            get
+            {
+                return colorArray;
             }
         }
     }

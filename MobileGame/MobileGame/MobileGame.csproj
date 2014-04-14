@@ -192,6 +192,9 @@
     <None Include="Content\Tiles\NewTiles\TopClosedTile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Content\Tiles\NewTiles\TopLeftBottomRightCornerTile.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Content\Tiles\NewTiles\TopLeftCorner.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -205,6 +208,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Tiles\NewTiles\TopOpenTile.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Tiles\NewTiles\TopRightBottomLeftCornerTile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Tiles\NewTiles\TopRightCorner.xnb">
@@ -241,6 +247,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Units\Enemy.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Units\SmallerEnemy.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Units\SmallerPlayer.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

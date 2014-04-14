@@ -18,6 +18,7 @@ namespace MobileGame
         protected Vector2 pixelPos;
         protected int tileSize;
         protected bool shouldDraw;
+        protected Color[] colorArray;
 
         public Tile(int x, int y)
         {   
@@ -34,6 +35,16 @@ namespace MobileGame
         public void SetTileType(TextureManager.TileTypes tileType)
         {
             tileTexture = TextureManager.TileTextures[(int)tileType];
+            colorArray = new Color[tileTexture.Width * tileTexture.Height];
+            tileTexture.GetData(colorArray);
+        }
+
+        public Color[] ColorArray
+        {
+            get
+            {
+                return colorArray;
+            }
         }
 
         public Rectangle HitBox()

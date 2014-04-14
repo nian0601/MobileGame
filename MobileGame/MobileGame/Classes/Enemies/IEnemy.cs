@@ -12,7 +12,6 @@ namespace MobileGame
         void Update(float elapsedTime);
         void Draw(SpriteBatch spriteBatch);
         void CollideWithPlayer(Player player);
-        void CollideWithEnemyCollider();
         Rectangle HitBox();
     }
 }

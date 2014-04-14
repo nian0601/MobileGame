@@ -27,7 +27,7 @@ namespace MobileGame
             canShoot = true;
         }
 
-        public override void Update(float elapsedTime, Player player)
+        public override void Update(float elapsedTime, Player player, List<SimpleTile> collisionList)
         {
             lastShot += elapsedTime;
 
@@ -39,7 +39,7 @@ namespace MobileGame
 
             projectileManager.Update(player, elapsedTime);
 
-            base.Update(elapsedTime);
+            base.Update(elapsedTime, player, collisionList);
         }
 
         public override void Draw(SpriteBatch spriteBatch)

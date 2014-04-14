@@ -23,7 +23,7 @@ namespace MobileGame
             Point unitCollisionPointRight = new Point(Unit.HitBox().Right - 15, Unit.HitBox().Top + Unit.HitBox().Height - 2);
 
             if(HitBox().Contains(unitCollisionPointLeft) || HitBox().Contains(unitCollisionPointRight))
-                Unit.Jump();
+                Unit.Jump(1.5f);
 
             base.CollideWithUnit(Unit);
         }

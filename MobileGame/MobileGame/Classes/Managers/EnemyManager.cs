@@ -17,12 +17,10 @@ namespace MobileGame
         {
             for (int i = 0; i < enemyList.Count; i++)
             {
-                enemyList[i].Update(elapsedTime, player);
+                enemyList[i].Update(elapsedTime, player, simpleCollideList);
 
                 if (enemyList[i].HitBox().Intersects(player.HitBox()))
                     enemyList[i].CollideWithPlayer(player);
-
-                enemyList[i].CollideWithTile(simpleCollideList);
 
                 enemyList[i].SpecialAbility(player);
             }
