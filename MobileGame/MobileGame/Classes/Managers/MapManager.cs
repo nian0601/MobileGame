@@ -45,7 +45,7 @@ namespace MobileGame
                 CreateSimpleTile(mouseX, mouseY);
 
             else if (KeyMouseReader.RightClick())
-                RemoveSimpleTIle(mouseX, mouseY);
+                RemoveSimpleTile(mouseX, mouseY);
 
             else if (KeyMouseReader.RightClick())
             {
@@ -328,25 +328,52 @@ namespace MobileGame
         private void CreateSimpleTile(int x, int y)
         {
             SimpleTile tempTile = new SimpleTile(x, y, 1);
-            tileArray[0, x, y] = tempTile;
-            colliderList.Add(tempTile);
-            AssignTileType(tempTile);
 
-            List<Tile> tempTileList = FindConnectedTiles(tempTile.IndexPos);
-            foreach (Tile T in tempTileList)
-                AssignTileType(T);
+            bool newTile = true;
+            Vector2 tempVector = new Vector2(x, y);
+
+            //This is to make sure that we only add ONE tile to the colliderList
+            //Is needed if we want it to be possible to "draw" the map, i.e not having to click each tile
+            for (int i = 0; i < colliderList.Count; i++)
+                if (colliderList[i].IndexPos == tempVector)
+                    newTile = false;
+
+            if (newTile)
+            {
+                tileArray[0, x, y] = tempTile;
+                colliderList.Add(tempTile);
+
+                AssignTileType(tempTile);
+
+                List<Tile> tempTileList = FindConnectedTiles(tempTile.IndexPos);
+                foreach (Tile T in tempTileList)
+                    AssignTileType(T);
+            }
+            
         }
 
-        private void RemoveSimpleTIle(int x, int y)
+        private void RemoveSimpleTile(int x, int y)
         {
-            SimpleTile tempTile = new SimpleTile(x, y, 1);
             tileArray[0, x, y] = new SimpleTile(x, y, 0);
-            colliderList.Remove(tempTile);
-            //AssignTileType(tempTile);
 
-            List<Tile> tempTileList = FindConnectedTiles(tempTile.IndexPos);
-            foreach (Tile T in tempTileList)
-                AssignTileType(T);
+            Vector2 tempVector = new Vector2(x, y);
+
+            for (int i = 0; i < colliderList.Count; i++)
+            {
+                if (colliderList[i].IndexPos == tempVector)
+                {
+                    List<Tile> tempTileList = FindConnectedTiles(colliderList[i].IndexPos);
+                    foreach (Tile T in tempTileList)
+                        AssignTileType(T);
+
+
+                    colliderList.RemoveAt(i);
+                    Console.WriteLine(colliderList.Count);
+                    break;
+                }
+            }
+
+            
         }
 
         private List<int> FindConnectedTileTypes(Vector2 centerIndex)
@@ -493,6 +520,20 @@ namespace MobileGame
             #endregion
             
             return tempList;
+        }
+
+        private void RemoveSimpleTileInListByIndex(int x, int y, List<SimpleTile> tileList)
+        {
+            Vector2 tempVector = new Vector2(x, y);
+
+            for (int i = 0; i < tileList.Count; i++)
+            {
+                if (tileList[i].IndexPos == tempVector)
+                {
+                    tileList.RemoveAt(i);
+                    break;
+                }  
+            }
         }
 
         private bool IsYInsideArray(int y, Tile[, ,] array)
