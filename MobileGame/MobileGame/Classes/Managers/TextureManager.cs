@@ -10,6 +10,8 @@ namespace MobileGame
 {
     static class TextureManager
     {
+        public static int TileSize { get; private set; }
+
         public static Texture2D AirTile { get; private set; }
         public static Texture2D PlatformTile { get; private set; }
         public static Texture2D PlayerTile { get; private set; }
@@ -88,10 +90,13 @@ namespace MobileGame
             TeleportTile = Content.Load<Texture2D>("Tiles/TeleportTile");
             TestBigTile = Content.Load<Texture2D>("Tiles/TestBigTile");
 
+            TileSize = AirTile.Width;
+
             EnemyTex = Content.Load<Texture2D>("Units/Enemy");
             SmallerEnemyTex = Content.Load<Texture2D>("Units/SmallerEnemy");
             SmallerPlayerTex = Content.Load<Texture2D>("Units/SmallerPlayer");
 
+            #region TileTextures.Add
             TileTextures = new List<Texture2D>();
 
             TileTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/BottomClosedLeftCornerTile"));
@@ -141,6 +146,7 @@ namespace MobileGame
             TileTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/TwoCornersLeftTile"));
             TileTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/TwoCornersRightTile"));
             TileTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/TwoCornersTopTile"));
+            #endregion
         }
     }
 }

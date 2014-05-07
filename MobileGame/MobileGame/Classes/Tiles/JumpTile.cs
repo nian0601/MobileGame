@@ -13,7 +13,6 @@ namespace MobileGame
         {
             tileTexture = TextureManager.JumpTile;
 
-            tileSize = tileTexture.Height;
             pixelPos = new Vector2(index.X * tileSize, index.Y * tileSize);
         }
 

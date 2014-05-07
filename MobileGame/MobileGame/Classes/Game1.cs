@@ -21,7 +21,6 @@ namespace MobileGame
 
 
         GameManager gameManager;
-        Texture2D testTexture;
 
         public Game1(): base()
         {
@@ -32,8 +31,8 @@ namespace MobileGame
         {
             // TODO: Add your initialization logic here
 
-            graphics.PreferredBackBufferWidth = 1200;
-            graphics.PreferredBackBufferHeight = 800;
+            graphics.PreferredBackBufferWidth = 800;
+            graphics.PreferredBackBufferHeight = 600;
             
             graphics.ApplyChanges();
 
@@ -46,7 +45,6 @@ namespace MobileGame
 
             TextureManager.LoadContents(Content);
             gameManager = new GameManager();
-            testTexture = this.Content.Load<Texture2D>("Tiles/PlayerTile");
             // TODO: use this.Content to load your game content here
         }
 
@@ -76,7 +74,6 @@ namespace MobileGame
             // TODO: Add your drawing code here
             spriteBatch.Begin();
             gameManager.Draw(spriteBatch);
-            //spriteBatch.Draw(testTexture, new Vector2(200, 200), Color.White);
             spriteBatch.End();
             base.Draw(gameTime);
         }

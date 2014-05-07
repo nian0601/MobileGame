@@ -12,6 +12,7 @@ namespace MobileGame
     {
         private Texture2D playerTex;
 
+        private Vector2 startPos;
         private Vector2 position;
         private Vector2 velocity;
 
@@ -30,7 +31,7 @@ namespace MobileGame
             position = new Vector2(150, 120);
             playerTex = TextureManager.SmallerPlayerTex;
 
-            velocity = new Vector2(2, 1);
+            velocity = new Vector2(0, 0);
             maxSpeed = 3f;
             acceleration = 0.1f;
             friction = 0.95f;
@@ -54,7 +55,7 @@ namespace MobileGame
             velocity.Y += gravity;
 
             position.Y += velocity.Y;
-            VerticalCollision(collisionList); 
+            VerticalCollision(collisionList);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -71,9 +72,15 @@ namespace MobileGame
             }
         }
 
+        public void SetStartPos(Vector2 Pos)
+        {
+            startPos = Pos;
+            ResetPosition();
+        }
+
         public void ResetPosition()
         {
-            position = new Vector2(50, 100);
+            position = startPos;
         }
 
         private void ListenToInput()

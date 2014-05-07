@@ -7,17 +7,18 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MobileGame
 {
-    class SimpleTile : Tile
+    class GoalTile : SpecialTile
     {
-        public SimpleTile(int x, int y, int tileType) : base(x, y)
+        public GoalTile(int x, int y) : base(x, y)
         {
-            tileTexture = TextureManager.AirTile;
+            tileTexture = TextureManager.GoalTile;
 
-            if (tileType == 0)
-                shouldDraw = false;
-
-            tileSize = tileTexture.Height;
             pixelPos = new Vector2(index.X * tileSize, index.Y * tileSize);
-        }   
+        }
+
+        public override void CollideWithUnit(Player Unit)
+        {
+            base.CollideWithUnit(Unit);
+        }
     }
 }

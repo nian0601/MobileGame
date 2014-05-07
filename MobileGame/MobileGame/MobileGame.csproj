@@ -40,6 +40,7 @@
     <Compile Include="Classes\Managers\MapManager.cs" />
     <Compile Include="Classes\Player.cs" />
     <Compile Include="Classes\Managers\GameManager.cs" />
+    <Compile Include="Classes\Tiles\GoalTile.cs" />
     <Compile Include="Classes\Tiles\JumpTile.cs" />
     <Compile Include="Classes\Tiles\TeleportTile.cs" />
     <Compile Include="Classes\Managers\EnemyManager.cs" />

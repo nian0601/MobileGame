@@ -23,6 +23,7 @@ namespace MobileGame
         public Tile(int x, int y)
         {   
             index = new Vector2(x, y);
+            tileSize = TextureManager.TileSize;
             shouldDraw = true;
         }
 

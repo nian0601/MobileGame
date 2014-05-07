@@ -16,6 +16,7 @@ namespace MobileGame
         {
             mapManager = new MapManager();
             player = new Player();
+            player.SetStartPos(mapManager.PlayerStartPos);
         }
 
         public void Update(float elapsedTime)

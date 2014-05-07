@@ -19,14 +19,41 @@ namespace MobileGame
         private List<SimpleTile> colliderList;
         private List<SpecialTile> specialBlockList;
         private int tileSize;
+        private Vector2 playerStartPos;
 
+        #region Properties
+
+
+        public List<SimpleTile> ColliderList
+        {
+            get
+            {
+                return colliderList;
+            }
+        }
+
+        public List<SpecialTile> SpecialBlocksList
+        {
+            get
+            {
+                return specialBlockList;
+            }
+        }
+
+        public Vector2 PlayerStartPos
+        {
+            get { return playerStartPos; }
+        }
+
+
+        #endregion
 
         public MapManager()
         {
             tileSize = TextureManager.PlatformTile.Height;
             colliderList = new List<SimpleTile>();
             specialBlockList = new List<SpecialTile>();
-
+            playerStartPos = new Vector2(200, 200);
             LoadLevel();
         }
 
@@ -37,15 +64,17 @@ namespace MobileGame
 
             if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.LeftClick())
                 EnemyManager.AddEnemy(new SimpleEnemy(mouseX, mouseY));
+            else if (KeyMouseReader.isKeyDown(Keys.LeftControl) && KeyMouseReader.LeftClick())
+                EnemyManager.AddEnemy(new ShootingEnemy(mouseX, mouseY));
 
             else if (KeyMouseReader.isKeyDown(Keys.LeftAlt) && KeyMouseReader.LeftClick())
                 specialBlockList.Add(new JumpTile(mouseX, mouseY));
 
+            else if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.MouseWheelDown())
+                RemoveSimpleTile(mouseX, mouseY);
+
             else if (KeyMouseReader.MouseWheelDown())
                 CreateSimpleTile(mouseX, mouseY);
-
-            else if (KeyMouseReader.RightClick())
-                RemoveSimpleTile(mouseX, mouseY);
 
             else if (KeyMouseReader.RightClick())
             {
@@ -68,70 +97,46 @@ namespace MobileGame
                 T.Draw(spriteBatch);
         }
 
-        public List<SimpleTile> ColliderList
-        {
-            get
-            {
-                return colliderList;
-            }
-        }
-
-        public List<SpecialTile> SpecialBlocksList
-        {
-            get
-            {
-                return specialBlockList;
-            }
-        }
+        
 
         //Should expand this function in the future to include reading a level from file and such
         private void LoadLevel()
         {
             currentMap = new int[,,] {
                                         {
-                                            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                                            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+                                            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1},
+                                            {1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 9, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                                            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 
                                         },
                                         {
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
                                         }
                                         
                                     };
@@ -155,10 +160,19 @@ namespace MobileGame
                 {
                     int tileType = levelToBuild[0, y, x];
 
+                    if (tileType == 9)
+                    {
+                        playerStartPos = ConvertIndexToPixels(x, y);
+                        tileArray[0, x, y] = new SimpleTile(x, y, 0);
+                        continue;
+                    }
+                        
+
                     SimpleTile tempTile = new SimpleTile(x, y, tileType);
 
                     tileArray[0, x, y] = tempTile;
 
+                    
                     if (tileType != 0)
                         colliderList.Add(tempTile);
                         
@@ -177,7 +191,9 @@ namespace MobileGame
                     else if (tileType == 2)
                         specialBlockList.Add(new TeleportTile(x, y));
                     else if (tileType == 3)
-                        EnemyManager.AddEnemy(new ShootingEnemy(x, y));   
+                        specialBlockList.Add(new GoalTile(x, y));
+                    else if (tileType == 4)
+                        EnemyManager.AddEnemy(new SimpleEnemy(x, y));   
                 }
             }
 
@@ -371,49 +387,12 @@ namespace MobileGame
                     Console.WriteLine(colliderList.Count);
                     break;
                 }
-            }
-
-            
+            }    
         }
 
         private List<int> FindConnectedTileTypes(Vector2 centerIndex)
         {
             List<int> tempList = new List<int>();
-
-            //These variables will be used to check if we are trying to look at tiles that are outside the array-index
-            //If that is the case we will treat that "tile" as air, since air dosnt affect which kind of texture we should use
-            #region Variables and if-statements
-            int xMax = 1;
-            int xMin = -1;
-            int yMax = 1;
-            int yMin = -1;
-
-            if (centerIndex.X == 0)
-            {
-                xMin = 0;
-                xMax = 1;
-                //Console.WriteLine("Tile is at the LEFT edge of the screen");
-            }
-            else if (centerIndex.X == tileArray.GetUpperBound(1))
-            {
-                xMin = -1;
-                xMax = 0;
-                //Console.WriteLine("Tile is at the RIGHT edge of the screen");
-            }
-
-            if (centerIndex.Y == 0)
-            {
-                yMin = 0;
-                yMax = 1;
-                //Console.WriteLine("Tile is at the TOP edge of the screen");
-            }
-            else if (centerIndex.Y == tileArray.GetUpperBound(2))
-            {
-                yMin = -1;
-                yMax = 0;
-                //Console.WriteLine("Tile is at the BOTTOM edge of the screen");
-            }
-            #endregion
 
             int currentY = 0;
             int currentX = 0;
@@ -455,41 +434,6 @@ namespace MobileGame
         private List<Tile> FindConnectedTiles(Vector2 centerIndex)
         {
             List<Tile> tempList = new List<Tile>();
-
-            //These variables will be used to check if we are trying to look at tiles that are outside the array-index
-            //If that is the case we will treat that "tile" as air, since air dosnt affect which kind of texture we should use
-            #region Variables and if-statements
-            int xMax = 1;
-            int xMin = -1;
-            int yMax = 1;
-            int yMin = -1;
-
-            if (centerIndex.X == 0)
-            {
-                xMin = 0;
-                xMax = 1;
-                //Console.WriteLine("Tile is at the LEFT edge of the screen");
-            }
-            else if (centerIndex.X == tileArray.GetUpperBound(1))
-            {
-                xMin = -1;
-                xMax = 0;
-                //Console.WriteLine("Tile is at the RIGHT edge of the screen");
-            }
-
-            if (centerIndex.Y == 0)
-            {
-                yMin = 0;
-                yMax = 1;
-                //Console.WriteLine("Tile is at the TOP edge of the screen");
-            }
-            else if (centerIndex.Y == tileArray.GetUpperBound(2))
-            {
-                yMin = -1;
-                yMax = 0;
-                //Console.WriteLine("Tile is at the BOTTOM edge of the screen");
-            }
-            #endregion
 
             int currentY = 0;
             int currentX = 0;
@@ -556,6 +500,8 @@ namespace MobileGame
             if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
                 return true;
             else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
                 return true;
 
             return false;
@@ -674,6 +620,8 @@ namespace MobileGame
                 return true;
             else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
                 return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
 
             return false;
         }
@@ -696,6 +644,8 @@ namespace MobileGame
             else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
                 return true;
             else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
                 return true;
 
             return false;
@@ -749,9 +699,9 @@ namespace MobileGame
                 return true;
             else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
                 return true;
-            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
-                return true;
             else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
                 return true;
 
             return false;
@@ -825,6 +775,10 @@ namespace MobileGame
                 return true;
             else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
                 return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
 
             return false;
         }
@@ -858,6 +812,10 @@ namespace MobileGame
             else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 0)
                 return true;
             else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 1 && ST[1] == 1 && ST[2] == 0 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
                 return true;
 
             return false;
@@ -922,6 +880,8 @@ namespace MobileGame
                 return true;
             else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 0 && ST[3] == 1 && ST[5] == 1 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
                 return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
+                return true;
 
             return false;
         }
@@ -967,6 +927,8 @@ namespace MobileGame
             else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 0)
                 return true;
             else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 0 && ST[5] == 0 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1)
                 return true;
 
             return false;
@@ -1089,6 +1051,8 @@ namespace MobileGame
                 return true;
             else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
                 return true;
+            else if (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
+                return true;
 
             return false;
         }
@@ -1151,6 +1115,8 @@ namespace MobileGame
             else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 0)
                 return true;
             else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 0 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 0 && ST[8] == 1)
+                return true;
+            else if (ST[0] == 0 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 0 && ST[7] == 0 && ST[8] == 1)
                 return true;
 
             return false;
