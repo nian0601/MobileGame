@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileGame", "MobileGame\MobileGame.csproj", "{94303CE2-9878-4144-8A1C-A6D765250FDE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI System", "GUI System\GUI System.csproj", "{53693CE3-569E-4FF2-B88B-5627F03F89A8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -13,6 +15,10 @@ Global
 		{94303CE2-9878-4144-8A1C-A6D765250FDE}.Debug|x86.Build.0 = Debug|x86
 		{94303CE2-9878-4144-8A1C-A6D765250FDE}.Release|x86.ActiveCfg = Release|x86
 		{94303CE2-9878-4144-8A1C-A6D765250FDE}.Release|x86.Build.0 = Release|x86
+		{53693CE3-569E-4FF2-B88B-5627F03F89A8}.Debug|x86.ActiveCfg = Debug|x86
+		{53693CE3-569E-4FF2-B88B-5627F03F89A8}.Debug|x86.Build.0 = Debug|x86
+		{53693CE3-569E-4FF2-B88B-5627F03F89A8}.Release|x86.ActiveCfg = Release|x86
+		{53693CE3-569E-4FF2-B88B-5627F03F89A8}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

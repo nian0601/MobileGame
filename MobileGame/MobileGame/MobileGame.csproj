@@ -40,6 +40,9 @@
     <Compile Include="Classes\Managers\MapManager.cs" />
     <Compile Include="Classes\Player.cs" />
     <Compile Include="Classes\Managers\GameManager.cs" />
+    <Compile Include="Classes\Screens\BackgroundScreen.cs" />
+    <Compile Include="Classes\Screens\LevelSelectScreen.cs" />
+    <Compile Include="Classes\Screens\MainMenuScreen.cs" />
     <Compile Include="Classes\Tiles\GoalTile.cs" />
     <Compile Include="Classes\Tiles\JumpTile.cs" />
     <Compile Include="Classes\Tiles\TeleportTile.cs" />
@@ -80,8 +83,43 @@
     </Content>
     <Content Include="Icon.ico" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\GUI System\GUI System.csproj">
+      <Project>{53693ce3-569e-4ff2-b88b-5627f03f89a8}</Project>
+      <Name>GUI System</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Content\GUI Textures\Background.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\GUI Textures\Fonts\DejaVuSans_20.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\GUI Textures\LevelSelection\LevelSelectionTitle.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\GUI Textures\LevelSelection\ReturnButton.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\GUI Textures\LevelSelection\ReturnButtonHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\GUI Textures\MainMenu\LevelSelectionButton.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\GUI Textures\MainMenu\LevelSelectionButtonHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\GUI Textures\MainMenu\MainMenuTitle.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\GUI Textures\MainMenu\PlayButton.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\GUI Textures\MainMenu\PlayButtonHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Content\Tiles\AirTile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
