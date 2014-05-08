@@ -76,4 +76,26 @@ namespace GUI_System.GUIObjects
             hooverTexture = content.Load<Texture2D>("GUI Textures/LevelSelection/ReturnButtonHoover");
         }
     }
+
+    public class RestartButtonStyle : Style
+    {
+        public RestartButtonStyle(ContentManager content) : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("GUI Textures/PausScreen/RestartButton");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("GUI Textures/PausScreen/RestartButtonHoover");
+        }
+    }
+
+    public class CrossButtonStyle : Style
+    {
+        public CrossButtonStyle(ContentManager content) : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("GUI Textures/PausScreen/ExitButton");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("GUI Textures/PausScreen/ExitButtonHoover");
+        }
+    }
 }

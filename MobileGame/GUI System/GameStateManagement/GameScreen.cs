@@ -22,6 +22,15 @@ namespace GUI_System.GameStateManagement
 
         }
 
+        //This property is used to determine if the underlying screen should transition off or not
+        //If the new screen is just a simple popup, then there is no need to transition off the underlying screen
+        public bool IsPopup
+        {
+            get { return isPopup; }
+            protected set { isPopup = value; }
+        }
+        bool isPopup = false;
+
         //The time it takes for the screen to transition when its activated
         public TimeSpan TransitionOnTime
         {

@@ -55,7 +55,8 @@ namespace MobileGame
             screenManager = new ScreenManager(this);
             screenManager.SpriteBatch = spriteBatch;
             screenManager.Font = Content.Load<SpriteFont>("GUI Textures/Fonts/DejaVuSans_20");
-            screenManager.BlankTexture = Content.Load<Texture2D>("Units/SmallerEnemy");
+            screenManager.BlankTexture = Content.Load<Texture2D>("GUI Textures/BlankTexture");
+            //screenManager.TraceEnabled = true;
 
             screenManager.AddScreen(new BackgroundScreen());
             screenManager.AddScreen(new MainMenuScreen());
@@ -72,13 +73,11 @@ namespace MobileGame
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
             KeyMouseReader.Update();
             screenManager.Update(gameTime);
-            //gameManager.Update(gameTime.ElapsedGameTime.Milliseconds);
 
             //Console.WriteLine("FPS: " + (1000 / gameTime.ElapsedGameTime.Milliseconds));
-
-            // TODO: Add your update logic here
 
             base.Update(gameTime);
         }

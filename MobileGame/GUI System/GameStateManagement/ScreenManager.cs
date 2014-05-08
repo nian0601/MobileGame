@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -18,6 +19,8 @@ namespace GUI_System.GameStateManagement
         SpriteFont font;
         Texture2D blankTexture;
 
+        bool traceEnabled;
+
         public SpriteBatch SpriteBatch
         {
             get { return spriteBatch; }
@@ -28,6 +31,12 @@ namespace GUI_System.GameStateManagement
         {
             get { return font; }
             set { font = value; }
+        }
+
+        public bool TraceEnabled
+        {
+            get { return traceEnabled; }
+            set { traceEnabled = value; }
         }
 
         public Texture2D BlankTexture
@@ -75,9 +84,27 @@ namespace GUI_System.GameStateManagement
                         otherScreenHasFocus = true;
                     }
 
-                    coveredByOtherScreen = true;
+                    if(!screen.IsPopup)
+                        coveredByOtherScreen = true;
                 }
             }
+
+            // Print debug trace?
+            if (traceEnabled)
+                TraceScreens();
+        }
+
+        /// <summary>
+        /// Prints a list of all the screens, for debugging.
+        /// </summary>
+        void TraceScreens()
+        {
+            List<string> screenNames = new List<string>();
+
+            foreach (GameScreen screen in screens)
+                screenNames.Add(screen.GetType().Name);
+
+            Debug.WriteLine(string.Join(", ", screenNames.ToArray()));
         }
 
         public void Draw(GameTime gameTime)
@@ -111,6 +138,17 @@ namespace GUI_System.GameStateManagement
         public GameScreen[] GetScreens()
         {
             return screens.ToArray();
+        }
+
+        /// <summary>
+        /// Helper draws a translucent black fullscreen sprite, used for fading
+        /// screens in and out, and for darkening the background behind popups.
+        /// </summary>
+        public void FadeBackBufferToBlack(float alpha)
+        {
+            spriteBatch.Begin();
+            spriteBatch.Draw(blankTexture, Game.GraphicsDevice.Viewport.Bounds, Color.Black * alpha);
+            spriteBatch.End();
         }
     }
 }

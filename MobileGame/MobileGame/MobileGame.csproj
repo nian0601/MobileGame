@@ -41,8 +41,11 @@
     <Compile Include="Classes\Player.cs" />
     <Compile Include="Classes\Managers\GameManager.cs" />
     <Compile Include="Classes\Screens\BackgroundScreen.cs" />
+    <Compile Include="Classes\Screens\GamePlayScreen.cs" />
     <Compile Include="Classes\Screens\LevelSelectScreen.cs" />
+    <Compile Include="Classes\Screens\LoadingScreen.cs" />
     <Compile Include="Classes\Screens\MainMenuScreen.cs" />
+    <Compile Include="Classes\Screens\PausScreen.cs" />
     <Compile Include="Classes\Tiles\GoalTile.cs" />
     <Compile Include="Classes\Tiles\JumpTile.cs" />
     <Compile Include="Classes\Tiles\TeleportTile.cs" />
@@ -93,6 +96,9 @@
     <None Include="Content\GUI Textures\Background.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Content\GUI Textures\BlankTexture.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Content\GUI Textures\Fonts\DejaVuSans_20.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -118,6 +124,21 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\GUI Textures\MainMenu\PlayButtonHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\GUI Textures\PausScreen\ExitButton.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\GUI Textures\PausScreen\ExitButtonHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\GUI Textures\PausScreen\PausScreenTitle.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\GUI Textures\PausScreen\RestartButton.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\GUI Textures\PausScreen\RestartButtonHoover.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Tiles\AirTile.xnb">

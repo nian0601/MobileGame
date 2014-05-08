@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 using GUI_System.GameStateManagement;
@@ -10,32 +12,36 @@ using GUI_System.GUIObjects;
 
 namespace MobileGame.Screens
 {
-    public class MainMenuScreen : MenuScreen
+    class PausScreen : MenuScreen
     {
-        private MenuButton playButton, levelSelectButton;
-        Texture2D TitleTexture;
+        private MenuButton returnToMenuButton, restartLevelButton, exitPausButton;
+        private Texture2D TitleTexture;
 
-        public MainMenuScreen() : base("Main menu")
+        public PausScreen() : base("")
         {
-            TransitionOnTime = TimeSpan.FromSeconds(0.5);
-            TransitionOffTime = TimeSpan.FromSeconds(0.5);
+            returnToMenuButton = new MenuButton(new ReturnButtonSTyle(ScreenManager.Game.Content));
+            restartLevelButton = new MenuButton(new RestartButtonStyle(ScreenManager.Game.Content));
+            exitPausButton = new MenuButton(new CrossButtonStyle(ScreenManager.Game.Content));
 
-            playButton = new MenuButton(new PlayButtonStyle(ScreenManager.Game.Content));
-            levelSelectButton = new MenuButton(new LevelSelectStyle(ScreenManager.Game.Content));
+            MenuEntries.Add(returnToMenuButton);
+            MenuEntries.Add(restartLevelButton);
+            MenuEntries.Add(exitPausButton);
 
-            MenuEntries.Add(playButton);
-            MenuEntries.Add(levelSelectButton);
+            TitleTexture = ScreenManager.Game.Content.Load<Texture2D>("GUI Textures/PausScreen/PausScreenTitle");
 
-            TitleTexture = ScreenManager.Game.Content.Load<Texture2D>("GUI Textures/MainMenu/MainMenuTitle");
+            IsPopup = true;
         }
 
         public override void HandleInput(GameTime gameTime)
         {
-            if (playButton.LeftClick())
-                LoadingScreen.Load(ScreenManager, true, new GamePlayScreen());
+            if (returnToMenuButton.LeftClick())
+                LoadingScreen.Load(ScreenManager, true, new BackgroundScreen(), new MainMenuScreen());
 
-            if (levelSelectButton.LeftClick())
-                ScreenManager.AddScreen(new LevelSelectScreen());
+            else if (exitPausButton.LeftClick())
+                ExitScreen();
+
+            else if (restartLevelButton.LeftClick())
+                //RESTART THE LEVEL HERE
 
             base.HandleInput(gameTime);
         }
@@ -45,16 +51,20 @@ namespace MobileGame.Screens
             //This makes the menu slide into place. Should experiment with this function to see what other cool effects you could achive
             float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
 
-            //We start at Y = 250, which then increments after each menuEntry
-            //The X-value is generated per entry
-            Vector2 position = new Vector2(0, 250);
+            Viewport viewPort = ScreenManager.Game.GraphicsDevice.Viewport;
+
+            Vector2 firstButtonPos = new Vector2(viewPort.Width / 2 - (returnToMenuButton.GetWidth(this) / 2) - 10, 250);
+            returnToMenuButton.Position = firstButtonPos;
+            Vector2 restartButtonPos = new Vector2(returnToMenuButton.Position.X + restartLevelButton.GetWidth(this) + 10, returnToMenuButton.Position.Y);
+            restartLevelButton.Position = restartButtonPos;
+
+            Vector2 exitButtonPos = new Vector2(viewPort.Width - exitPausButton.GetWidth(this)/2 - 10, exitPausButton.GetHeight(this)/2 + 10);
+            exitPausButton.Position = exitButtonPos;
 
             for (int i = 0; i < MenuEntries.Count; i++)
             {
                 MenuEntry menuEntry = MenuEntries[i];
-
-                //each entry gets centered horizontally
-                position.X = ScreenManager.Game.GraphicsDevice.Viewport.Width / 2 - (menuEntry.GetWidth(this) / 2) + ((menuEntry.GetWidth(this) * i));
+                Vector2 position = menuEntry.Position;
 
                 if (CurrentScreenState == ScreenState.TransitionOn)
                     position.X -= transitionOffset * 256;
@@ -68,6 +78,8 @@ namespace MobileGame.Screens
 
         public override void Draw(GameTime gameTime)
         {
+            ScreenManager.FadeBackBufferToBlack(TransitionAlpha * 2 / 4);
+
             UpdateMenyEntryLocations();
 
             GraphicsDevice graphics = ScreenManager.Game.GraphicsDevice;
@@ -98,12 +110,6 @@ namespace MobileGame.Screens
             spriteBatch.Draw(TitleTexture, titlePosition, null, titleColor, 0, titleOrigin, 1f, SpriteEffects.None, 0);
 
             spriteBatch.End();
-        }
-
-        protected override void OnCancel()
-        {
-            ScreenManager.Game.Exit();
-            base.OnCancel();
         }
     }
 }
