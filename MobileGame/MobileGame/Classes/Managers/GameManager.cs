@@ -10,7 +10,8 @@ namespace MobileGame
     class GameManager
     {
         private MapManager mapManager;
-        private Player player;
+        private static Player player;
+        private static bool gameWon, gameLost;
 
         public GameManager()
         {
@@ -29,10 +30,19 @@ namespace MobileGame
                 if (mapManager.SpecialBlocksList[i].HitBox().Intersects(player.HitBox()))
                 {
                     mapManager.SpecialBlocksList[i].CollideWithUnit(player);
+
+                    if (player.FoundGoal)
+                        gameWon = true;
+
+                    
                 }
             }
 
             EnemyManager.Update(player, elapsedTime, mapManager.ColliderList);
+
+            if (player.GotKilled)
+                gameLost = true;
+            
 
             //The player handles collision against the generic platforms itself inside the update.
             player.Update(mapManager.ColliderList); 
@@ -45,6 +55,23 @@ namespace MobileGame
             EnemyManager.Draw(spriteBatch);
 
             player.Draw(spriteBatch);
+        }
+
+        public static void RestarLevel()
+        {
+            gameWon = false;
+            gameLost = false;
+            player.ResetPosition();
+        }
+
+        public bool GameWon
+        {
+            get { return gameWon; }
+        }
+
+        public bool GameLost
+        {
+            get { return gameLost; }
         }
     }
 }

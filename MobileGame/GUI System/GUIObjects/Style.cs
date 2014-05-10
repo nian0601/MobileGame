@@ -66,9 +66,9 @@ namespace GUI_System.GUIObjects
         }
     }
 
-    public class ReturnButtonSTyle : Style
+    public class MenuButtonStyle : Style
     {
-        public ReturnButtonSTyle(ContentManager content) : base(content)
+        public MenuButtonStyle(ContentManager content) : base(content)
         {
             normalTexture = content.Load<Texture2D>("GUI Textures/LevelSelection/ReturnButton");
             TextureToDraw = normalTexture;

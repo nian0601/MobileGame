@@ -12,36 +12,34 @@ using GUI_System.GUIObjects;
 
 namespace MobileGame.Screens
 {
-    class PausScreen : MenuScreen
+    class DefeatedScreen : MenuScreen
     {
-        private MenuButton returnToMenuButton, restartLevelButton, exitPausButton;
+        private MenuButton MenuButton, LevelSelectButton, RestartButton;
         private Texture2D TitleTexture;
 
-        public PausScreen() : base("")
+        public DefeatedScreen(): base("")
         {
-            returnToMenuButton = new MenuButton(new MenuButtonStyle(ScreenManager.Game.Content));
-            restartLevelButton = new MenuButton(new RestartButtonStyle(ScreenManager.Game.Content));
-            exitPausButton = new MenuButton(new CrossButtonStyle(ScreenManager.Game.Content));
+            MenuButton = new MenuButton(new MenuButtonStyle(ScreenManager.Game.Content));
+            LevelSelectButton = new MenuButton(new LevelSelectStyle(ScreenManager.Game.Content));
+            RestartButton = new MenuButton(new RestartButtonStyle(ScreenManager.Game.Content));
 
-            MenuEntries.Add(returnToMenuButton);
-            MenuEntries.Add(restartLevelButton);
-            MenuEntries.Add(exitPausButton);
+            MenuEntries.Add(MenuButton);
+            MenuEntries.Add(LevelSelectButton);
+            MenuEntries.Add(RestartButton);
 
-            TitleTexture = ScreenManager.Game.Content.Load<Texture2D>("GUI Textures/PausScreen/PausScreenTitle");
+            TitleTexture = ScreenManager.Game.Content.Load<Texture2D>("GUI Textures/DefeatedScreen/DefeatedTitle");
 
             IsPopup = true;
         }
 
         public override void HandleInput(GameTime gameTime)
         {
-            if (returnToMenuButton.LeftClick())
+            if (MenuButton.LeftClick())
                 LoadingScreen.Load(ScreenManager, true, new BackgroundScreen(), new MainMenuScreen());
-
-            else if (exitPausButton.LeftClick())
+            else if (LevelSelectButton.LeftClick())
+                LoadingScreen.Load(ScreenManager, true, new BackgroundScreen(), new MainMenuScreen(), new LevelSelectScreen());
+            else if (RestartButton.LeftClick())
                 ExitScreen();
-
-            else if (restartLevelButton.LeftClick())
-                //RESTART THE LEVEL HERE
 
             base.HandleInput(gameTime);
         }
@@ -51,20 +49,16 @@ namespace MobileGame.Screens
             //This makes the menu slide into place. Should experiment with this function to see what other cool effects you could achive
             float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
 
-            Viewport viewPort = ScreenManager.Game.GraphicsDevice.Viewport;
-
-            Vector2 firstButtonPos = new Vector2(viewPort.Width / 2 - (returnToMenuButton.GetWidth(this) / 2) - 10, 250);
-            returnToMenuButton.Position = firstButtonPos;
-            Vector2 restartButtonPos = new Vector2(returnToMenuButton.Position.X + restartLevelButton.GetWidth(this) + 10, returnToMenuButton.Position.Y);
-            restartLevelButton.Position = restartButtonPos;
-
-            Vector2 exitButtonPos = new Vector2(viewPort.Width - exitPausButton.GetWidth(this)/2 - 10, exitPausButton.GetHeight(this)/2 + 10);
-            exitPausButton.Position = exitButtonPos;
+            //We start at Y = 250, which then increments after each menuEntry
+            //The X-value is generated per entry
+            Vector2 position = new Vector2(0, 250);
 
             for (int i = 0; i < MenuEntries.Count; i++)
             {
                 MenuEntry menuEntry = MenuEntries[i];
-                Vector2 position = menuEntry.Position;
+
+                //each entry gets centered horizontally
+                position.X = ScreenManager.Game.GraphicsDevice.Viewport.Width / 2 - ((menuEntry.GetWidth(this) / 2) * 2) + ((menuEntry.GetWidth(this) * i));
 
                 if (CurrentScreenState == ScreenState.TransitionOn)
                     position.X -= transitionOffset * 256;
@@ -105,7 +99,11 @@ namespace MobileGame.Screens
             Vector2 titleOrigin = new Vector2(TitleTexture.Width / 2, TitleTexture.Height / 2);
             Color titleColor = Color.White;
 
+            Vector2 scorePosition = new Vector2(graphics.Viewport.Width / 2, 225);
+            Color scoreColor = Color.White;
+
             titlePosition.Y -= transitionOffset * 200;
+            scorePosition.Y -= transitionOffset * 200;
 
             spriteBatch.Draw(TitleTexture, titlePosition, null, titleColor, 0, titleOrigin, 1f, SpriteEffects.None, 0);
 

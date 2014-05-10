@@ -30,7 +30,9 @@ namespace MobileGame.Screens
                 content = new ContentManager(ScreenManager.Game.Services, "Content");
 
             TextureManager.LoadContents(content);
-            gameManager = new GameManager();
+
+            if(gameManager == null)
+                gameManager = new GameManager();
         }
 
         public override void Unload()
@@ -54,6 +56,15 @@ namespace MobileGame.Screens
 
             if (KeyMouseReader.KeyClick(Microsoft.Xna.Framework.Input.Keys.P))
                 ScreenManager.AddScreen(new PausScreen());
+
+            if (gameManager.GameWon)
+                ScreenManager.AddScreen(new WinScreen());
+            
+            if (gameManager.GameLost)
+            {
+                ScreenManager.AddScreen(new DefeatedScreen());
+                GameManager.RestarLevel();
+            }
         }
 
         public override void Draw(GameTime gameTime)

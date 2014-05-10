@@ -18,7 +18,7 @@ namespace MobileGame.Screens
 
         public LevelSelectScreen() : base("")
         {
-            returnButton = new MenuButton(new ReturnButtonSTyle(ScreenManager.Game.Content));
+            returnButton = new MenuButton(new MenuButtonStyle(ScreenManager.Game.Content));
 
             MenuEntries.Add(returnButton);
 
@@ -54,16 +54,9 @@ namespace MobileGame.Screens
                 drawPos.Y = startPos.Y + (levelTexture.Height + 10) * yCounter;
 
                 if (CurrentScreenState == ScreenState.TransitionOn)
-                {
                     drawPos.X += transitionOffset * 256;
-                    drawPos.Y += transitionOffset * 256;
-                }
-
                 else
-                {
                     drawPos.X -= transitionOffset * 512;
-                    drawPos.Y -= transitionOffset * 512;
-                }
 
                 spriteBatch.Draw(levelTexture, drawPos, Color.White * TransitionAlpha);
 

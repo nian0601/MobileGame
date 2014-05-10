@@ -66,7 +66,7 @@ namespace MobileGame
         public virtual void CollideWithPlayer(Player player)
         {
             if (PixelCol(HitBox(), colorArray, player.HitBox(), player.ColorArray))
-                player.ResetPosition();
+                player.gotKilled = true;     
         }
 
         public virtual void SpecialAbility(Player player)

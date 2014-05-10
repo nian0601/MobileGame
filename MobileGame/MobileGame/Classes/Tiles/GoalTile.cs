@@ -18,7 +18,7 @@ namespace MobileGame
 
         public override void CollideWithUnit(Player Unit)
         {
-            base.CollideWithUnit(Unit);
+            Unit.foundGoal = true;
         }
     }
 }

@@ -23,6 +23,8 @@ namespace MobileGame
         private float jumpPower;
 
         private bool isOnGround;
+        internal bool foundGoal;
+        internal bool gotKilled;
 
         private Color[] colorArray;
 
@@ -81,6 +83,7 @@ namespace MobileGame
         public void ResetPosition()
         {
             position = startPos;
+            gotKilled = false;
         }
 
         private void ListenToInput()
@@ -213,6 +216,16 @@ namespace MobileGame
             {
                 return colorArray;
             }
+        }
+
+        public bool FoundGoal
+        {
+            get { return foundGoal; }
+        }
+
+        public bool GotKilled
+        {
+            get { return gotKilled; }
         }
     }
 }
