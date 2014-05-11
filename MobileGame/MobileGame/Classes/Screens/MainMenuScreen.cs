@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework.Graphics;
 using GUI_System.GameStateManagement;
 using GUI_System.GUIObjects;
 
+using MobileGame.FileManagement;
+
 namespace MobileGame.Screens
 {
     public class MainMenuScreen : MenuScreen
@@ -27,6 +29,8 @@ namespace MobileGame.Screens
             MenuEntries.Add(levelSelectButton);
 
             TitleTexture = ScreenManager.Game.Content.Load<Texture2D>("GUI Textures/MainMenu/MainMenuTitle");
+
+            FileLoader.Initialize();
         }
 
         public override void HandleInput(GameTime gameTime)

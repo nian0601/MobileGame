@@ -9,6 +9,8 @@ using Microsoft.Xna.Framework.Content;
 
 using GUI_System.GameStateManagement;
 
+using MobileGame.FileManagement;
+
 namespace MobileGame.Screens
 {
     class GamePlayScreen : GameScreen
@@ -26,6 +28,8 @@ namespace MobileGame.Screens
 
         public override void Activate()
         {
+            //Only create a new content if we dont have one allready
+            //Good to have this check as we will Activate and Deactivate GamePlayScreen's a fair bit
             if (content == null)
                 content = new ContentManager(ScreenManager.Game.Services, "Content");
 
@@ -33,6 +37,8 @@ namespace MobileGame.Screens
 
             if(gameManager == null)
                 gameManager = new GameManager();
+
+            gameManager.Initialize();
         }
 
         public override void Unload()

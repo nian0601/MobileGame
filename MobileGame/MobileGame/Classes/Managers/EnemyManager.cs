@@ -44,6 +44,11 @@ namespace MobileGame
             enemyList.Remove(remEnemy);
         }
 
+        public static void Reset()
+        {
+            enemyList.Clear();
+        }
+
         public static List<SimpleEnemy> EnemyList
         {
             get

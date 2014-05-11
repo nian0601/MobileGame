@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-using MobileGame.LevelManagement;
+using MobileGame.FileManagement;
 
 namespace MobileGame
 {
@@ -15,10 +15,20 @@ namespace MobileGame
         private Player player;
         private bool gameWon, gameLost;
 
-        public GameManager()
+        public GameManager(){}
+
+        public void Initialize()
         {
-            mapManager = new MapManager();
-            player = new Player();
+            EnemyManager.Reset();
+
+            if (mapManager == null)
+                mapManager = new MapManager();
+
+            mapManager.Initialize();
+
+            if (player == null)
+                player = new Player();
+
             player.SetStartPos(mapManager.PlayerStartPos);
         }
 
@@ -48,7 +58,7 @@ namespace MobileGame
             player.Update(mapManager.ColliderList);
 
             if (KeyMouseReader.KeyClick(Microsoft.Xna.Framework.Input.Keys.T))
-                LevelLoader.Save(mapManager.CurrentMap);
+                FileLoader.SaveLevel(mapManager.CurrentMap);
         }
 
         public void Draw(SpriteBatch spriteBatch)

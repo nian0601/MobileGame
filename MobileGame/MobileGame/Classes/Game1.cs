@@ -72,7 +72,7 @@ namespace MobileGame
             KeyMouseReader.Update();
             screenManager.Update(gameTime);
 
-            //Console.WriteLine("FPS: " + (1000 / gameTime.ElapsedGameTime.Milliseconds));
+            Console.WriteLine("FPS: " + (1000 / gameTime.ElapsedGameTime.Milliseconds));
 
             base.Update(gameTime);
         }

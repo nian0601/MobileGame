@@ -10,6 +10,8 @@ using Microsoft.Xna.Framework.Graphics;
 using GUI_System.GameStateManagement;
 using GUI_System.GUIObjects;
 
+using MobileGame.FileManagement;
+
 namespace MobileGame.Screens
 {
     class WinScreen : MenuScreen
@@ -38,18 +40,40 @@ namespace MobileGame.Screens
             IsPopup = true;
         }
 
+        public override void Activate()
+        {
+            FileLoader.UpdateGameData();
+            base.Activate();
+        }
+
         public override void HandleInput(GameTime gameTime)
         {
             if (MenuButton.LeftClick())
                 LoadingScreen.Load(ScreenManager, true, new BackgroundScreen(), new MainMenuScreen());
 
-            if (LevelSelectButton.LeftClick())
+            else if (LevelSelectButton.LeftClick())
                 LoadingScreen.Load(ScreenManager, true, new BackgroundScreen(), new MainMenuScreen(), new LevelSelectScreen());
 
-            if (RestartButton.LeftClick())
+            else if (RestartButton.LeftClick())
             {
                 ExitScreen();
                 GameManager.RestarLevel();
+            }
+            else if (ContinueButton.LeftClick())
+            {
+                //If we have comepleted all the maps we should come to a "No more maps available atm"-screen
+                if (FileLoader.LoadedGameData.AllMapsDone)
+                    LoadingScreen.Load(ScreenManager, true, new BackgroundScreen(), new MainMenuScreen());
+                //If we havnt completed all maps we should instead load the next one
+                //Please note that the LoadedGameData variable gets updated in the Activate method
+                //So when we call LoadLevel on LoadedGameData.CurrentMap we are actually loading the next map,
+                //because the variable is updated to count the next map as the current map allready
+                //And when we have loaded the new map we call LoadingScreen to make a fancy transition into the new map
+                else
+                {
+                    FileLoader.LoadLevel(FileLoader.LoadedGameData.CurrentMap);
+                    LoadingScreen.Load(ScreenManager, true, new GamePlayScreen());
+                }
             }
 
             base.HandleInput(gameTime);
