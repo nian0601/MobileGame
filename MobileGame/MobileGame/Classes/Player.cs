@@ -84,6 +84,7 @@ namespace MobileGame
         {
             position = startPos;
             gotKilled = false;
+            foundGoal = false;
         }
 
         private void ListenToInput()

@@ -10,6 +10,8 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
 
+using MobileGame.LevelManagement;
+
 namespace MobileGame
 {
     class MapManager
@@ -23,6 +25,10 @@ namespace MobileGame
 
         #region Properties
 
+        public int[, ,] CurrentMap
+        {
+            get { return currentMap; }
+        }
 
         public List<SimpleTile> ColliderList
         {
@@ -45,16 +51,21 @@ namespace MobileGame
             get { return playerStartPos; }
         }
 
-
         #endregion
 
         public MapManager()
         {
-            tileSize = TextureManager.PlatformTile.Height;
+            //tileSize = TextureManager.PlatformTile.Height;
             colliderList = new List<SimpleTile>();
             specialBlockList = new List<SpecialTile>();
             playerStartPos = new Vector2(200, 200);
-            LoadLevel();
+            //LoadLevel();
+
+            LevelLoader.Load();
+            tileSize = LevelLoader.LoadedLevelTileSize;
+            currentMap = LevelLoader.LoadedLevelArray;
+
+            BuildLevel(currentMap);
         }
 
         public void Update()
@@ -96,8 +107,6 @@ namespace MobileGame
             foreach (Tile T in specialBlockList)
                 T.Draw(spriteBatch);
         }
-
-        
 
         //Should expand this function in the future to include reading a level from file and such
         private void LoadLevel()

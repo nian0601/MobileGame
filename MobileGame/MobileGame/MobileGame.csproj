@@ -37,6 +37,8 @@
   <ItemGroup>
     <Compile Include="Classes\Game1.cs" />
     <Compile Include="Classes\KeyMouseReader.cs" />
+    <Compile Include="Classes\LevelManagement\LevelData.cs" />
+    <Compile Include="Classes\LevelManagement\LevelLoader.cs" />
     <Compile Include="Classes\Managers\MapManager.cs" />
     <Compile Include="Classes\Player.cs" />
     <Compile Include="Classes\Managers\GameManager.cs" />

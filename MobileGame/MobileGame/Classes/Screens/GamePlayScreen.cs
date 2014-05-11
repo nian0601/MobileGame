@@ -58,13 +58,10 @@ namespace MobileGame.Screens
                 ScreenManager.AddScreen(new PausScreen());
 
             if (gameManager.GameWon)
-                ScreenManager.AddScreen(new WinScreen());
+                ScreenManager.AddScreen(new WinScreen(gameManager));
             
             if (gameManager.GameLost)
-            {
-                ScreenManager.AddScreen(new DefeatedScreen());
-                GameManager.RestarLevel();
-            }
+                ScreenManager.AddScreen(new DefeatedScreen(gameManager));
         }
 
         public override void Draw(GameTime gameTime)

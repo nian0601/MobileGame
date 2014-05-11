@@ -24,8 +24,6 @@ namespace MobileGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-
-        GameManager gameManager;
         ScreenManager screenManager;
 
         public Game1(): base()
@@ -48,9 +46,6 @@ namespace MobileGame
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            TextureManager.LoadContents(Content);
-            gameManager = new GameManager();
 
             screenManager = new ScreenManager(this);
             screenManager.SpriteBatch = spriteBatch;
@@ -86,13 +81,8 @@ namespace MobileGame
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
-
             screenManager.Draw(gameTime);
 
-            spriteBatch.Begin();
-            //gameManager.Draw(spriteBatch);
-            spriteBatch.End();
             base.Draw(gameTime);
         }
     }

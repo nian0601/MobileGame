@@ -5,13 +5,15 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using MobileGame.LevelManagement;
+
 namespace MobileGame
 {
     class GameManager
     {
         private MapManager mapManager;
-        private static Player player;
-        private static bool gameWon, gameLost;
+        private Player player;
+        private bool gameWon, gameLost;
 
         public GameManager()
         {
@@ -32,9 +34,7 @@ namespace MobileGame
                     mapManager.SpecialBlocksList[i].CollideWithUnit(player);
 
                     if (player.FoundGoal)
-                        gameWon = true;
-
-                    
+                        gameWon = true; 
                 }
             }
 
@@ -45,7 +45,10 @@ namespace MobileGame
             
 
             //The player handles collision against the generic platforms itself inside the update.
-            player.Update(mapManager.ColliderList); 
+            player.Update(mapManager.ColliderList);
+
+            if (KeyMouseReader.KeyClick(Microsoft.Xna.Framework.Input.Keys.T))
+                LevelLoader.Save(mapManager.CurrentMap);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -57,7 +60,7 @@ namespace MobileGame
             player.Draw(spriteBatch);
         }
 
-        public static void RestarLevel()
+        public void RestarLevel()
         {
             gameWon = false;
             gameLost = false;
