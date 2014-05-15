@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MobileGame.FileManagement
+namespace LevelEditor.FileManagement
 {
     public class GameData
     {

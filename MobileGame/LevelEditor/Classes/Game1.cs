@@ -8,13 +8,11 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
 
-using GUI_System.GUIObjects;
-using GUI_System.GameStateManagement;
+using LevelEditor.Managers;
 
-using MobileGame.Screens;
 #endregion
 
-namespace MobileGame
+namespace LevelEditor
 {
     /// <summary>
     /// This is the main type for your game
@@ -24,37 +22,34 @@ namespace MobileGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        ScreenManager screenManager;
+        MapManager mapManager;
 
-        public Game1(): base()
+        public Game1() : base()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
+
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
 
-            graphics.PreferredBackBufferWidth = 800;
-            graphics.PreferredBackBufferHeight = 600;
-            
+            graphics.PreferredBackBufferWidth = 1040;
+            graphics.PreferredBackBufferHeight = 640;
+
             graphics.ApplyChanges();
 
             base.Initialize();
         }
+
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            screenManager = new ScreenManager(this);
-            screenManager.SpriteBatch = spriteBatch;
-            screenManager.Font = Content.Load<SpriteFont>("GUI Textures/Fonts/DejaVuSans_20");
-            screenManager.BlankTexture = Content.Load<Texture2D>("GUI Textures/BlankTexture");
-            //screenManager.TraceEnabled = true;
-
-            screenManager.AddScreen(new BackgroundScreen());
-            screenManager.AddScreen(new MainMenuScreen());
+            mapManager = new MapManager(Content, spriteBatch);
+            mapManager.Initialize();
+            mapManager.Offset = new Vector2(218, 22);
 
             // TODO: use this.Content to load your game content here
         }
@@ -70,9 +65,7 @@ namespace MobileGame
                 Exit();
 
             KeyMouseReader.Update();
-            screenManager.Update(gameTime);
-
-            //Console.WriteLine("FPS: " + (1000 / gameTime.ElapsedGameTime.Milliseconds));
+            mapManager.Update();
 
             base.Update(gameTime);
         }
@@ -81,7 +74,7 @@ namespace MobileGame
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            screenManager.Draw(gameTime);
+            mapManager.Draw();
 
             base.Draw(gameTime);
         }

@@ -2,364 +2,432 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Diagnostics;
+
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Storage;
-using Microsoft.Xna.Framework.GamerServices;
 
-using MobileGame.FileManagement;
-
-namespace MobileGame
+namespace LevelEditor.Managers
 {
     class MapManager
     {
-        private int[,,] currentMap;
-        private Tile[,,] tileArray;
-        private List<SimpleTile> colliderList;
-        private List<SpecialTile> specialBlockList;
-        private int tileSize;
-        private Vector2 playerStartPos;
-
-        #region Properties
-
+        //This is used in the serializing process when we want to save the map
+        //To reduce filesize we save the map as int and then rebuild the map when we load it the next time
+        private int[, ,] currentMap;
         public int[, ,] CurrentMap
         {
             get { return currentMap; }
         }
 
-        public List<SimpleTile> ColliderList
+        private Vector2 offset;
+        public Vector2 Offset
         {
-            get
-            {
-                return colliderList;
-            }
+            get { return offset; }
+            set { offset = value; }
         }
 
-        public List<SpecialTile> SpecialBlocksList
+        //This is used just to make it easier to display the map and wont be used in the serializing process
+        private Tile[, ,] TileArray;
+
+        private int Layers, MapHeight, MapWidth, TileSize;
+
+        private ContentManager Content;
+        private SpriteBatch Spritebatch;
+
+        private Texture2D AirTexture;
+        private Texture2D PlatformTexture;
+        private Texture2D EnemyTexture;
+        private Texture2D JumpTileTexture;
+        private Texture2D TeleportTileTexture;
+        private Texture2D GoalTexture;
+        private Texture2D PlayerTexture;
+        private Texture2D GridTexture;
+        private Texture2D Background;
+
+        public static List<Texture2D> TileTextures;
+
+        public enum TileTypes
         {
-            get
-            {
-                return specialBlockList;
-            }
+            BottomClosedLeftCornerTile,
+            BottomClosedRightCornerTile,
+            BottomClosedTile,
+            BottomLeftCorner,
+            BottomLeftOpenTile,
+            BottomLeftTile,
+            BottomMiddleTile,
+            BottomOpenTile,
+            BottomRightCorner,
+            BottomRightOpenTile,
+            BottomRightTile,
+            BottomTopOpenTile,
+            FourCornersTile,
+            LeftClosedBottomCornerTile,
+            LeftClosedTile,
+            LeftClosedTopCornerTile,
+            LeftOpenTile,
+            LeftRightOpenTile,
+            MiddleLeftTile,
+            MiddleRightTile,
+            MiddleTile,
+            RightClosedBottomCenterTile,
+            RightClosedTile,
+            RightClosedTopCenterTile,
+            RightOpenTile,
+            SingleTile,
+            ThreeCornersBottomLeftTile,
+            ThreeCornersBottomRightTile,
+            ThreeCornersTopLeftTile,
+            ThreeCornersTopRightTile,
+            TopClosedLeftCornerTile,
+            TopClosedrightCornerTile,
+            TopClosedTile,
+            TopLeftBottomRightCornerTile,
+            TopLeftCorner,
+            TopLeftOpenTile,
+            TopLeftTile,
+            TopMiddleTile,
+            TopOpenTile,
+            TopRightBottomLeftCornerTile,
+            TopRightCorner,
+            TopRightOpenTile,
+            TopRightTile,
+            TwoCornersBottomTile,
+            TwoCornersLeftTile,
+            TwoCornersRightTile,
+            TwoCornersTopTile
         }
 
-        public Vector2 PlayerStartPos
+        private bool Initialized;
+        private bool PlayerPlaced;
+        private bool GoalPlaced;
+
+        public MapManager(ContentManager Content, SpriteBatch spriteBatch)
         {
-            get { return playerStartPos; }
-        }
+            this.Content = Content;
+            this.Spritebatch = spriteBatch;
 
-        #endregion
+            Initialized = false;
+            PlayerPlaced = false;
+            GoalPlaced = false;
 
-        
+            Layers = 2;
+            MapHeight = 15;
+            MapWidth = 20;
+            TileSize = 0;
 
-        public MapManager()
-        {
-            colliderList = new List<SimpleTile>();
-            specialBlockList = new List<SpecialTile>();
-            playerStartPos = new Vector2(200, 200);
+            currentMap = new int[Layers, MapWidth, MapHeight];
+            TileArray = new Tile[Layers, MapWidth, MapHeight];
         }
 
         public void Initialize()
         {
-            tileSize = FileLoader.LoadedLevelTileSize;
-            currentMap = FileLoader.LoadedLevelArray;
+            if (!Initialized)
+            {
+                AirTexture = Content.Load<Texture2D>("GameTextures/AirTile");
+                PlatformTexture = Content.Load<Texture2D>("GameTextures/PlatformTile");
+                EnemyTexture = Content.Load<Texture2D>("GameTextures/SmallerEnemy");
+                JumpTileTexture = Content.Load<Texture2D>("GameTextures/JumpTile");
+                TeleportTileTexture = Content.Load<Texture2D>("GameTextures/TeleportTile");
+                GoalTexture = Content.Load<Texture2D>("GameTextures/GoalTile");
+                PlayerTexture = Content.Load<Texture2D>("GameTextures/SmallerPlayer");
+                GridTexture = Content.Load<Texture2D>("Editor/GridTexture");
+                Background = Content.Load<Texture2D>("Editor/Background");
 
-            colliderList.Clear();
-            specialBlockList.Clear();
+                TileSize = AirTexture.Width;
 
-            BuildLevel(currentMap);
+                LoadTileTextures();
+
+                ResetMap();
+
+                Initialized = true;
+            }
         }
 
         public void Update()
         {
-            int mouseX = ConvertPixelsToIndex(KeyMouseReader.mousePos).X;
-            int mouseY = ConvertPixelsToIndex(KeyMouseReader.mousePos).Y;
-
-            if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.LeftClick())
-                EnemyManager.AddEnemy(new SimpleEnemy(mouseX, mouseY));
-            else if (KeyMouseReader.isKeyDown(Keys.LeftControl) && KeyMouseReader.LeftClick())
-                EnemyManager.AddEnemy(new ShootingEnemy(mouseX, mouseY));
-
-            else if (KeyMouseReader.isKeyDown(Keys.LeftAlt) && KeyMouseReader.LeftClick())
-                specialBlockList.Add(new JumpTile(mouseX, mouseY));
-
-            else if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.MouseWheelDown())
-                RemoveSimpleTile(mouseX, mouseY);
-
-            else if (KeyMouseReader.MouseWheelDown())
-                CreateSimpleTile(mouseX, mouseY);
-
-            else if (KeyMouseReader.RightClick())
+            if (MapBounds().Contains(KeyMouseReader.mousePos))
             {
-                List<int> tempList = FindConnectedTileTypes(new Vector2(mouseX, mouseY));
-                Console.WriteLine("ST[0] == " + tempList[0] + " && ST[1] == " + tempList[1] + " && ST[2] == " + tempList[2] + " && ST[3] == " + tempList[3] + " && ST[5] == " + tempList[5] + " && ST[6] == " + tempList[6] + " && ST[7] == " + tempList[7] + " && ST[8] == " + tempList[8]);
-            }      
-        }
+                int mouseX = ConvertPixelsToIndex(KeyMouseReader.mousePos).X;
+                int mouseY = ConvertPixelsToIndex(KeyMouseReader.mousePos).Y;
 
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            for (int x = 0; x < tileArray.GetLength(1); x++)
-            {
-                for (int y = 0; y < tileArray.GetLength(2); y++)
+                if (KeyMouseReader.LeftMouseDown())
+                    CreatePlatform(mouseX, mouseY);
+                else if (KeyMouseReader.RightMouseDown())
                 {
-                    tileArray[0, x, y].Draw(spriteBatch);
+                    if (TileArray[1, mouseX, mouseY] is GoalTile)
+                        GoalPlaced = false;
+
+                    if (TileArray[0, mouseX, mouseY] is PlayerTile)
+                        PlayerPlaced = false;
+
+                    CreateAir(mouseX, mouseY);
                 }
-            }
-
-            foreach (Tile T in specialBlockList)
-                T.Draw(spriteBatch);
-        }
-
-        private void BuildLevel(int[,,] level)
-        {
-            int[,,] levelToBuild = level;
-
-            int layers = levelToBuild.GetLength(0);
-            int mapHeight = levelToBuild.GetLength(1);
-            int mapWidth = levelToBuild.GetLength(2);
-            tileArray = new Tile[layers, mapWidth, mapHeight];
-
-            //LOOPS THROUGH THE PLATFORM LAYER
-            for (int y = 0; y < mapHeight; y++)
-            {
-                for (int x = 0; x < mapWidth; x++)
+                else if (KeyMouseReader.KeyClick(Keys.J))
+                    CreateJumpTile(mouseX, mouseY);
+                else if (KeyMouseReader.KeyClick(Keys.T))
+                    CreateTeleportTile(mouseX, mouseY);
+                else if (KeyMouseReader.KeyClick(Keys.E))
+                    CreateEnemy(mouseX, mouseY);
+                else if (KeyMouseReader.KeyClick(Keys.G))
                 {
-                    int tileType = levelToBuild[0, y, x];
-
-                    if (tileType == 9)
+                    if (!GoalPlaced)
                     {
-                        playerStartPos = ConvertIndexToPixels(x, y);
-                        tileArray[0, x, y] = new SimpleTile(x, y, 0);
-                        continue;
+                        CreateGoalTile(mouseX, mouseY);
+                        GoalPlaced = true;
                     }
-                        
-
-                    SimpleTile tempTile = new SimpleTile(x, y, tileType);
-
-                    tileArray[0, x, y] = tempTile;
-
-                    
-                    if (tileType != 0)
-                        colliderList.Add(tempTile);
-                        
                 }
-            }
-
-            //LOOPS THROUGH THE SPECIAL BLOCK'S LAYER
-            for (int y = 0; y < mapHeight; y++)
-            {
-                for (int x = 0; x < mapWidth; x++)
+                else if (KeyMouseReader.KeyClick(Keys.P))
                 {
-                    int tileType = levelToBuild[1, y, x];
+                    if (!PlayerPlaced)
+                    {
+                        CreatePlayerSpawn(mouseX, mouseY);
+                        PlayerPlaced = true;
+                    }
+                }
+                else if (KeyMouseReader.KeyClick(Keys.R))
+                    ResetMap();
+            }
+        }
 
-                    if (tileType == 1)
-                        specialBlockList.Add(new JumpTile(x, y));
-                    else if (tileType == 2)
-                        specialBlockList.Add(new TeleportTile(x, y));
-                    else if (tileType == 3)
-                        specialBlockList.Add(new GoalTile(x, y));
-                    else if (tileType == 4)
-                        EnemyManager.AddEnemy(new SimpleEnemy(x, y));   
+        public void Draw()
+        {
+            Spritebatch.Begin();
+
+            Spritebatch.Draw(Background, Vector2.Zero, Color.White);
+
+            for (int z = 0; z < Layers; z++)
+            {
+                for (int y = 0; y < MapHeight; y++)
+                {
+                    for (int x = 0; x < MapWidth; x++)
+                    {
+                        TileArray[z, x, y].Draw(Spritebatch, Offset);
+                    }
                 }
             }
 
-            foreach (SimpleTile Tile in colliderList)
-                AssignTileType(Tile);
+            Spritebatch.Draw(GridTexture, offset, Color.White);
 
-            //PERFORMANCE CHECK!!
-            //for (int i = 0; i < 1000; i++)
-            //{
-            //    TimeSpan begin = Process.GetCurrentProcess().TotalProcessorTime;
-            //    Stopwatch watch = new Stopwatch();
-            //    watch.Start();
+            Spritebatch.End();
+        }
 
-            //    foreach (SimpleTile Tile in colliderList)
-            //        AssignTileType(Tile);
+        private void ResetMap()
+        {
+            //Platform-layer
+            for (int y = 0; y < MapHeight; y++)
+            {
+                for (int x = 0; x < MapWidth; x++)
+                {
+                    currentMap[0, x, y] = 0;
+                    TileArray[0, x, y] = new Tile(x, y, AirTexture, TileSize, false);
+                }
+            }
 
-            //    watch.Stop();
-            //    TimeSpan end = Process.GetCurrentProcess().TotalProcessorTime;
+            //Special-layer
+            for (int y = 0; y < MapHeight; y++)
+            {
+                for (int x = 0; x < MapWidth; x++)
+                {
+                    currentMap[1, x, y] = 0;
+                    TileArray[1, x, y] = new Tile(x, y, AirTexture, TileSize, false);
+                }
+            }
 
-            //    //Console.WriteLine("Measured time: " + watch.ElapsedMilliseconds + " ms.");
-            //    Console.WriteLine("Measured time: " + (end - begin).TotalMilliseconds + " ms.");
-            //}
+            PlayerPlaced = false;
+            GoalPlaced = false;
+        }
+
+        private Rectangle MapBounds()
+        {
+            Rectangle tempRect = new Rectangle();
+
+            tempRect.X = (int)Offset.X;
+            tempRect.Y = (int)Offset.Y;
+            tempRect.Width = MapWidth * TileSize;
+            tempRect.Height = MapHeight* TileSize;
+
+            return tempRect;
         }
 
         private Vector2 ConvertIndexToPixels(int X, int Y)
         {
-            int x = X * tileSize;
-            int y = Y * tileSize;
+            int x = X * TileSize + (int)offset.X;
+            int y = Y * TileSize + (int)offset.Y;
 
             return new Vector2(x, y);
         }
 
         private Point ConvertPixelsToIndex(Point pos)
         {
-            int x = (int)pos.X / tileSize;
-            int y = (int)pos.Y / tileSize;
+            int x = (int)(pos.X - offset.X) / TileSize;
+            int y = (int)(pos.Y - offset.Y) / TileSize;
 
             return new Point(x, y);
         }
 
-        private Tile FindTileAtIndex(int x, int y)
+        #region Create-functions
+        private void CreateAir(int X, int Y)
         {
-            return tileArray[0, x, y];
+            TileArray[0, X, Y] = new Tile(X, Y, AirTexture, TileSize, false);
+            TileArray[1, X, Y] = new Tile(X, Y, AirTexture, TileSize, false);
+
+            CurrentMap[0, X, Y] = 0;
+            CurrentMap[1, X, Y] = 0;
+
+            List<Tile> tempTileList = FindConnectedTiles(TileArray[0, X, Y].IndexPos);
+            foreach (Tile T in tempTileList)
+                AssignTileType(T);
         }
 
-        //This function tries to determine what texture all of the platforms should use, so that they fit together and form proper platforms
+        private void CreatePlatform(int X, int Y)
+        {
+            TileArray[0, X, Y] = new Tile(X, Y, PlatformTexture, TileSize, true);
+            CurrentMap[0, X, Y] = 1;
+
+            AssignTileType(TileArray[0, X, Y]);
+
+            List<Tile> tempTileList = FindConnectedTiles(TileArray[0, X, Y].IndexPos);
+            foreach (Tile T in tempTileList)
+                AssignTileType(T);
+        }
+
+        private void CreateJumpTile(int X, int Y)
+        {
+            TileArray[1, X, Y] = new Tile(X, Y, JumpTileTexture, TileSize, true);
+
+            CurrentMap[1, X, Y] = 1;
+        }
+
+        private void CreateTeleportTile(int X, int Y)
+        {
+            TileArray[1, X, Y] = new Tile(X, Y, TeleportTileTexture, TileSize, true);
+
+            CurrentMap[1, X, Y] = 2;
+        }
+
+        private void CreateGoalTile(int X, int Y)
+        {
+            TileArray[1, X, Y] = new GoalTile(X, Y, GoalTexture, TileSize, true);
+
+            CurrentMap[1, X, Y] = 3;
+        }
+
+        private void CreatePlayerSpawn(int X, int Y)
+        {
+            TileArray[0, X, Y] = new PlayerTile(X, Y, PlayerTexture, TileSize, true);
+
+            CurrentMap[0, X, Y] = 9;
+        }
+
+        private void CreateEnemy(int X, int Y)
+        {
+            TileArray[1, X, Y] = new Tile(X, Y, EnemyTexture, TileSize, true);
+
+            CurrentMap[1, X, Y] = 4;
+        }
+        #endregion
+
+        #region Functions that assigns TileTypes
         private void AssignTileType(Tile Tile)
         {
             //ST = SurroundingTiles, made the name shorted to make the fking if-statements shorter aswell
             List<int> ST = FindConnectedTileTypes(Tile.IndexPos);
 
             if (IsBottomClosedLeftCornerTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.BottomClosedLeftCornerTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.BottomClosedLeftCornerTile]);
             else if (IsBottomClosedRightCornerTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.BottomClosedRightCornerTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.BottomClosedRightCornerTile]);
             else if (IsBottomClosedTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.BottomClosedTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.BottomClosedTile]);
             else if (IsBottomLeftCorner(ST))
-                Tile.SetTileType(TextureManager.TileTypes.BottomLeftCorner);
+                Tile.SetTexture(TileTextures[(int)TileTypes.BottomLeftCorner]);
             else if (IsBottomleftOpenTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.BottomLeftOpenTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.BottomLeftOpenTile]);
             else if (IsBottomLeftTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.BottomLeftTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.BottomLeftTile]);
             else if (IsBottomMiddleTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.BottomMiddleTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.BottomMiddleTile]);
             else if (IsBottomOpenTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.BottomOpenTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.BottomOpenTile]);
             else if (IsBottomRightCornerTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.BottomRightCorner);
+                Tile.SetTexture(TileTextures[(int)TileTypes.BottomRightCorner]);
             else if (IsBottomRightOpenTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.BottomRightOpenTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.BottomRightOpenTile]);
             else if (IsBottomRightTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.BottomRightTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.BottomRightTile]);
             else if (IsBottomTopOpenTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.BottomTopOpenTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.BottomTopOpenTile]);
             else if (IsFourCornersTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.FourCornersTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.FourCornersTile]);
             else if (IsLeftClosedBottomCornerTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.LeftClosedBottomCornerTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.LeftClosedBottomCornerTile]);
             else if (IsLeftClosedTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.LeftClosedTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.LeftClosedTile]);
             else if (IsLeftClosedTopCornerTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.LeftClosedTopCornerTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.LeftClosedTopCornerTile]);
             else if (IsLeftOpenTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.LeftOpenTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.LeftOpenTile]);
             else if (IsLeftRightOpenTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.LeftRightOpenTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.LeftRightOpenTile]);
             else if (IsMiddleLeftTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.MiddleLeftTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.MiddleLeftTile]);
             else if (IsMiddleRightTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.MiddleRightTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.MiddleRightTile]);
             else if (IsMiddleTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.MiddleTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.MiddleTile]);
             else if (IsRightClosedBottomCornerTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.RightClosedBottomCenterTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.RightClosedBottomCenterTile]);
             else if (IsRightClosedTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.RightClosedTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.RightClosedTile]);
             else if (IsRightClosedTopCornerTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.RightClosedTopCenterTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.RightClosedTopCenterTile]);
             else if (IsRightOpenTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.RightOpenTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.RightOpenTile]);
             else if (IsSingleTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.SingleTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.SingleTile]);
             else if (IsThreeCornersBottomLeftTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.ThreeCornersBottomLeftTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.ThreeCornersBottomLeftTile]);
             else if (IsThreeCornersBottomRightTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.ThreeCornersBottomRightTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.ThreeCornersBottomRightTile]);
             else if (IsThreeCornersTopLeftTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.ThreeCornersTopLeftTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.ThreeCornersTopLeftTile]);
             else if (IsThreeCornersTopRightTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.ThreeCornersTopRightTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.ThreeCornersTopRightTile]);
             else if (IsTopClosedLeftCornerTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.TopClosedLeftCornerTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.TopClosedLeftCornerTile]);
             else if (IsTopClosedRightCornerTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.TopClosedrightCornerTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.TopClosedrightCornerTile]);
             else if (IsTopClosedTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.TopClosedTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.TopClosedTile]);
             else if (IsTopLeftBottomRightCornerTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.TopLeftBottomRightCornerTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.TopLeftBottomRightCornerTile]);
             else if (IsTopLeftCornerTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.TopLeftCorner);
+                Tile.SetTexture(TileTextures[(int)TileTypes.TopLeftCorner]);
             else if (IsTopLeftOpenTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.TopLeftOpenTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.TopLeftOpenTile]);
             else if (IsTopLeftTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.TopLeftTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.TopLeftTile]);
             else if (IsTopMiddleTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.TopMiddleTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.TopMiddleTile]);
             else if (IsTopOpenTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.TopOpenTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.TopOpenTile]);
             else if (IsTopRightBottomLeftCornerTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.TopRightBottomLeftCornerTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.TopRightBottomLeftCornerTile]);
             else if (IsTopRightCornerTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.TopRightCorner);
+                Tile.SetTexture(TileTextures[(int)TileTypes.TopRightCorner]);
             else if (IsTopRightOpenTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.TopRightOpenTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.TopRightOpenTile]);
             else if (IsTopRightTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.TopRightTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.TopRightTile]);
             else if (IsTwoCornersBottomTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.TwoCornersBottomTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.TwoCornersBottomTile]);
             else if (IsTwoCornersLeftTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.TwoCornersLeftTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.TwoCornersLeftTile]);
             else if (IsTwoCornersRightTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.TwoCornersRightTile);
+                Tile.SetTexture(TileTextures[(int)TileTypes.TwoCornersRightTile]);
             else if (IsTwoCornersTopTile(ST))
-                Tile.SetTileType(TextureManager.TileTypes.TwoCornersTopTile);
-        }
-
-        private void CreateSimpleTile(int x, int y)
-        {
-            SimpleTile tempTile = new SimpleTile(x, y, 1);
-
-            bool newTile = true;
-            Vector2 tempVector = new Vector2(x, y);
-
-            //This is to make sure that we only add ONE tile to the colliderList
-            //Is needed if we want it to be possible to "draw" the map, i.e not having to click each tile
-            for (int i = 0; i < colliderList.Count; i++)
-                if (colliderList[i].IndexPos == tempVector)
-                    newTile = false;
-
-            if (newTile)
-            {
-                tileArray[0, x, y] = tempTile;
-                colliderList.Add(tempTile);
-
-                AssignTileType(tempTile);
-
-                List<Tile> tempTileList = FindConnectedTiles(tempTile.IndexPos);
-                foreach (Tile T in tempTileList)
-                    AssignTileType(T);
-
-                currentMap[0, y, x] = 1;
-            }
-            
-        }
-
-        private void RemoveSimpleTile(int x, int y)
-        {
-            tileArray[0, x, y] = new SimpleTile(x, y, 0);
-            currentMap[0, y, x] = 0;
-
-            Vector2 tempVector = new Vector2(x, y);
-
-            for (int i = 0; i < colliderList.Count; i++)
-            {
-                if (colliderList[i].IndexPos == tempVector)
-                {
-                    List<Tile> tempTileList = FindConnectedTiles(colliderList[i].IndexPos);
-                    foreach (Tile T in tempTileList)
-                        AssignTileType(T);
-
-
-                    colliderList.RemoveAt(i);
-                    Console.WriteLine(colliderList.Count);
-                    break;
-                }
-            }    
+                Tile.SetTexture(TileTextures[(int)TileTypes.TwoCornersTopTile]);
         }
 
         private List<int> FindConnectedTileTypes(Vector2 centerIndex)
@@ -381,10 +449,10 @@ namespace MobileGame
                     currentY = (int)centerIndex.Y + y;
 
                     //Is the tile we are looking at inside the map-array?
-                    if (IsXInsideArray(currentX, tileArray) && IsYInsideArray(currentY, tileArray))
+                    if (IsXInsideArray(currentX, CurrentMap) && IsYInsideArray(currentY, CurrentMap))
                     {
-                        //Console.WriteLine("Current Index is inside array");
-                        if (colliderList.Contains(tileArray[0, currentX, currentY]))
+                        //Is the tile a platform or not? (Add(1) = is a platform)
+                        if (CurrentMap[0, currentX, currentY] == 1)
                             tempList.Add(1);
                         else
                             tempList.Add(0);
@@ -422,11 +490,11 @@ namespace MobileGame
                     currentY = (int)centerIndex.Y + y;
 
                     //Is the tile we are looking at inside the map-array?
-                    if (IsXInsideArray(currentX, tileArray) && IsYInsideArray(currentY, tileArray))
+                    if (IsXInsideArray(currentX, CurrentMap) && IsYInsideArray(currentY, CurrentMap))
                     {
                         //Console.WriteLine("Current Index is inside array");
-                        if (colliderList.Contains(tileArray[0, currentX, currentY]))
-                            tempList.Add(tileArray[0, currentX, currentY]);
+                        if (CurrentMap[0, currentX, currentY] == 1)
+                            tempList.Add(TileArray[0, currentX, currentY]);
                     }
                     else //The tile we are currently looking at is NOT inside the map-array, i.e the tile does not exsit!
                     {
@@ -434,36 +502,77 @@ namespace MobileGame
                 }
             }
             #endregion
-            
+
             return tempList;
         }
 
-        private void RemoveSimpleTileInListByIndex(int x, int y, List<SimpleTile> tileList)
-        {
-            Vector2 tempVector = new Vector2(x, y);
-
-            for (int i = 0; i < tileList.Count; i++)
-            {
-                if (tileList[i].IndexPos == tempVector)
-                {
-                    tileList.RemoveAt(i);
-                    break;
-                }  
-            }
-        }
-
-        private bool IsYInsideArray(int y, Tile[, ,] array)
+        private bool IsYInsideArray(int y, int[, ,] array)
         {
             if (y < 0 || y > array.GetUpperBound(2))
                 return false;
             return true;
         }
 
-        private bool IsXInsideArray(int x, Tile[, ,] array)
+        private bool IsXInsideArray(int x, int[, ,] array)
         {
             if (x < 0 || x > array.GetUpperBound(1))
                 return false;
             return true;
+        }
+
+        private void LoadTileTextures()
+        {
+            #region TileTextures.Add
+            TileTextures = new List<Texture2D>();
+
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/BottomClosedLeftCornerTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/BottomClosedRightCornerTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/BottomClosedTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/BottomLeftCorner"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/BottomLeftOpenTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/BottomLeftTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/BottomMiddleTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/BottomOpenTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/BottomRightCorner"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/BottomRightOpenTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/BottomRightTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/BottomTopOpenTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/FourCornersTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/LeftClosedBottomCornerTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/LeftClosedTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/LeftClosedTopCornerTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/LeftOpenTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/LeftRightOpenTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/MiddleLeftTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/MiddleRightTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/MiddleTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/RightClosedBottomCornerTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/RightClosedTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/RightClosedTopCornerTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/RightOpenTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/SingleTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/ThreeCornersBottomLeftTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/ThreeCornersBottomRightTIle"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/ThreeCornersTopLeftTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/ThreeCornersTopRightTIle"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/TopClosedLeftCornerTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/TopClosedRightCornerTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/TopClosedTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/TopLeftBottomRightCornerTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/TopLeftCorner"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/TopLeftOpenTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/TopLeftTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/TopMiddleTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/TopOpenTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/TopRightBottomLeftCornerTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/TopRightCorner"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/TopRightOpenTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/TopRightTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/TwoCornersBottomTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/TwoCornersLeftTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/TwoCornersRightTile"));
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/TwoCornersTopTile"));
+            #endregion
         }
 
         #region All the bool-functions regarding Tile-Types
@@ -544,7 +653,7 @@ namespace MobileGame
                 return true;
             else if (ST[0] == 1 && ST[1] == 0 && ST[2] == 1 && ST[3] == 1 && ST[5] == 0 && ST[6] == 1 && ST[7] == 1 && ST[8] == 1)
                 return true;
-            
+
             return false;
         }
 
@@ -1178,6 +1287,8 @@ namespace MobileGame
         {
             return (ST[0] == 0 && ST[1] == 1 && ST[2] == 1 && ST[3] == 1 && ST[5] == 1 && ST[6] == 0 && ST[7] == 1 && ST[8] == 1);
         }
+        #endregion
+
         #endregion
     }
 }
