@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Content;
 
 using GUI_System.GUIObjects;
 
-namespace LevelEditor.Classes
+namespace LevelEditor
 {
     public class ExitButtonStyle : Style
     {
@@ -41,6 +41,29 @@ namespace LevelEditor.Classes
             TextureToDraw = normalTexture;
 
             hooverTexture = content.Load<Texture2D>("Editor/Buttons/SaveMapButtonHoover");
+        }
+    }
+
+    public class SaveButtonStyle : Style
+    {
+        public SaveButtonStyle(ContentManager content) : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/Buttons/Save");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/Buttons/SaveHoover");
+        }
+    }
+
+    public class CancelButtonStyle : Style
+    {
+        public CancelButtonStyle(ContentManager content)
+            : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/Buttons/Cancel");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/Buttons/CancelHoover");
         }
     }
 }

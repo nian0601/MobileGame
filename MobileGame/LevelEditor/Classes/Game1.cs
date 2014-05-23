@@ -9,6 +9,8 @@ using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
 
 using LevelEditor.Managers;
+using LevelEditor.Screens;
+using GUI_System.GameStateManagement;
 
 #endregion
 
@@ -23,6 +25,7 @@ namespace LevelEditor
         SpriteBatch spriteBatch;
 
         MapManager mapManager;
+        ScreenManager screenManager;
 
         public Game1() : base()
         {
@@ -39,6 +42,8 @@ namespace LevelEditor
 
             graphics.ApplyChanges();
 
+            IsMouseVisible = true;
+
             base.Initialize();
         }
 
@@ -47,9 +52,12 @@ namespace LevelEditor
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            mapManager = new MapManager(Content, spriteBatch);
-            mapManager.Initialize();
-            mapManager.Offset = new Vector2(218, 22);
+            screenManager = new ScreenManager(this);
+            screenManager.SpriteBatch = spriteBatch;
+            screenManager.Font = Content.Load<SpriteFont>("Fonts/DejaVuSans_20");
+            screenManager.BlankTexture = Content.Load<Texture2D>("BlankTexture");
+
+            screenManager.AddScreen(new EditorScreen());
 
             // TODO: use this.Content to load your game content here
         }
@@ -65,7 +73,7 @@ namespace LevelEditor
                 Exit();
 
             KeyMouseReader.Update();
-            mapManager.Update();
+            screenManager.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -74,7 +82,7 @@ namespace LevelEditor
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            mapManager.Draw();
+            screenManager.Draw(gameTime);
 
             base.Draw(gameTime);
         }

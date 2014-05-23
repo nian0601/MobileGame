@@ -38,6 +38,9 @@ namespace MobileGame.FileManagement
         //Gets called when the game boots up (in MainMenuScreen)
         public static void Initialize()
         {
+            gameData = new GameData();
+            UpdateGameData();
+
             string savePath = SaveFilesDirectoryPath + @"\GameData";
 
             FileStream stream = File.Open(savePath, FileMode.Open);
