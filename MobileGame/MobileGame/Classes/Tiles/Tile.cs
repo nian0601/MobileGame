@@ -9,9 +9,11 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
 
+using MobileGame.CameraManagement;
+
 namespace MobileGame
 {
-    class Tile
+    class Tile : IFocusable
     {
         protected Texture2D tileTexture;
         protected Vector2 index;
@@ -66,6 +68,14 @@ namespace MobileGame
             get
             {
                 return index;
+            }
+        }
+
+        public Vector2 Position
+        {
+            get
+            {
+                return pixelPos;
             }
         }
     }

@@ -6,10 +6,12 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Input;
 
 using GUI_System.GameStateManagement;
 
 using MobileGame.FileManagement;
+using MobileGame.CameraManagement;
 
 namespace MobileGame.Screens
 {
@@ -17,7 +19,6 @@ namespace MobileGame.Screens
     {
         ContentManager content;
         GameManager gameManager;
-
         float pausAlpha;
 
         public GamePlayScreen(): base()
@@ -60,7 +61,7 @@ namespace MobileGame.Screens
         {
             gameManager.Update(gameTime.ElapsedGameTime.Milliseconds);
 
-            if (KeyMouseReader.KeyClick(Microsoft.Xna.Framework.Input.Keys.P))
+            if (KeyMouseReader.KeyClick(Keys.P))
                 ScreenManager.AddScreen(new PausScreen());
 
             if (gameManager.GameWon)
@@ -68,14 +69,17 @@ namespace MobileGame.Screens
             
             if (gameManager.GameLost)
                 ScreenManager.AddScreen(new DefeatedScreen(gameManager));
+
+            
         }
 
         public override void Draw(GameTime gameTime)
         {
             SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, Camera.Get_Transformation());
             gameManager.Draw(spriteBatch);
+            Camera.Draw(spriteBatch);
             spriteBatch.End();
 
             if (TransitionPosition > 0 || pausAlpha > 0)

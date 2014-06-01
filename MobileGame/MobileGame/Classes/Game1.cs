@@ -12,6 +12,7 @@ using GUI_System.GUIObjects;
 using GUI_System.GameStateManagement;
 
 using MobileGame.Screens;
+using MobileGame.CameraManagement;
 #endregion
 
 namespace MobileGame
@@ -58,6 +59,9 @@ namespace MobileGame
             screenManager.AddScreen(new BackgroundScreen());
             screenManager.AddScreen(new MainMenuScreen());
 
+
+            Camera.GraphicsDevice = GraphicsDevice;
+            Camera.LoadStuff(Content);
             // TODO: use this.Content to load your game content here
         }
 
@@ -73,6 +77,7 @@ namespace MobileGame
 
             KeyMouseReader.Update();
             screenManager.Update(gameTime);
+            Camera.Update(gameTime);
 
             //Console.WriteLine("FPS: " + (1000 / gameTime.ElapsedGameTime.Milliseconds));
 
@@ -85,6 +90,7 @@ namespace MobileGame
 
             screenManager.Draw(gameTime);
 
+            
             base.Draw(gameTime);
         }
     }

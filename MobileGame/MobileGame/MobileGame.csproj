@@ -35,7 +35,9 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Classes\CameraManagement\Camera.cs" />
     <Compile Include="Classes\ButtonStyles.cs" />
+    <Compile Include="Classes\CameraManagement\IFocusable.cs" />
     <Compile Include="Classes\FileManagement\GameData.cs" />
     <Compile Include="Classes\Game1.cs" />
     <Compile Include="Classes\KeyMouseReader.cs" />

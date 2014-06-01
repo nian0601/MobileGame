@@ -6,9 +6,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using MobileGame.CameraManagement;
+
 namespace MobileGame
 {
-    class Player
+    class Player : IFocusable
     {
         private Texture2D playerTex;
 
@@ -102,7 +104,7 @@ namespace MobileGame
             {
                 if (velocity.X > -maxSpeed)
                     velocity.X -= acceleration;
-            }    
+            }
 
             if (KeyMouseReader.isKeyDown(Keys.D))
             {
@@ -110,7 +112,7 @@ namespace MobileGame
                 if (velocity.X > maxSpeed)
                     velocity.X = maxSpeed;
             }
-                
+
         }
 
         private void CheckIfOnGround(List<SimpleTile> collisionList)
@@ -135,7 +137,7 @@ namespace MobileGame
         {
             for (int i = 0; i < collisionList.Count; i++)
             {
-                if(collisionList[i].HitBox().Intersects(HitBox()))
+                if (collisionList[i].HitBox().Intersects(HitBox()))
                 {
                     if (PixelCol(HitBox(), colorArray, collisionList[i].HitBox(), collisionList[i].ColorArray))
                     {
@@ -146,7 +148,7 @@ namespace MobileGame
 
                         velocity.X = 0;
                         break;
-                    }  
+                    }
                 }
             }
         }
@@ -167,7 +169,7 @@ namespace MobileGame
 
                         velocity.Y = 0;
                         break;
-                    }  
+                    }
                 }
             }
         }

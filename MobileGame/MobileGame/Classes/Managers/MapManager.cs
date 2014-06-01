@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
 
 using MobileGame.FileManagement;
+using MobileGame.CameraManagement;
 
 namespace MobileGame
 {
@@ -77,8 +78,10 @@ namespace MobileGame
 
         public void Update()
         {
-            int mouseX = ConvertPixelsToIndex(KeyMouseReader.mousePos).X;
-            int mouseY = ConvertPixelsToIndex(KeyMouseReader.mousePos).Y;
+            Vector2 mousePos = Camera.ScreenToWorldCoordinates(new Vector2(KeyMouseReader.mousePos.X, KeyMouseReader.mousePos.Y));
+
+            int mouseX = (int)ConvertPixelsToIndex(mousePos).X;
+            int mouseY = (int)ConvertPixelsToIndex(mousePos).Y;
 
             if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.LeftClick())
                 EnemyManager.AddEnemy(new SimpleEnemy(mouseX, mouseY));
@@ -98,7 +101,12 @@ namespace MobileGame
             {
                 List<int> tempList = FindConnectedTileTypes(new Vector2(mouseX, mouseY));
                 Console.WriteLine("ST[0] == " + tempList[0] + " && ST[1] == " + tempList[1] + " && ST[2] == " + tempList[2] + " && ST[3] == " + tempList[3] + " && ST[5] == " + tempList[5] + " && ST[6] == " + tempList[6] + " && ST[7] == " + tempList[7] + " && ST[8] == " + tempList[8]);
-            }      
+            }
+
+            if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.KeyClick(Keys.F))
+                Camera.RemoveFocusObject(FindTileAtIndex(mouseX, mouseY));
+            else if (KeyMouseReader.KeyClick(Keys.F))
+                Camera.AddFocusObject(FindTileAtIndex(mouseX, mouseY));
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -189,12 +197,12 @@ namespace MobileGame
             return new Vector2(x, y);
         }
 
-        private Point ConvertPixelsToIndex(Point pos)
+        private Vector2 ConvertPixelsToIndex(Vector2 pos)
         {
             int x = (int)pos.X / tileSize;
             int y = (int)pos.Y / tileSize;
 
-            return new Point(x, y);
+            return new Vector2(x, y);
         }
 
         private Tile FindTileAtIndex(int x, int y)

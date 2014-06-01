@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using MobileGame.FileManagement;
+using MobileGame.CameraManagement;
+using Microsoft.Xna.Framework.Input;
 
 namespace MobileGame
 {
@@ -30,6 +32,11 @@ namespace MobileGame
                 player = new Player();
 
             player.SetStartPos(mapManager.PlayerStartPos);
+
+            Camera.Position = player.Position;
+
+            Camera.ClearFocusList();
+            Camera.AddFocusObject(player);
         }
 
         public void Update(float elapsedTime)
@@ -57,8 +64,14 @@ namespace MobileGame
             //The player handles collision against the generic platforms itself inside the update.
             player.Update(mapManager.ColliderList);
 
-            if (KeyMouseReader.KeyClick(Microsoft.Xna.Framework.Input.Keys.T))
-                FileLoader.SaveLevel(mapManager.CurrentMap);
+            if (KeyMouseReader.isKeyDown(Keys.Up))
+                Camera.Move(new Vector2(0, -5));
+            if (KeyMouseReader.isKeyDown(Keys.Down))
+                Camera.Move(new Vector2(0, 5));
+            if (KeyMouseReader.isKeyDown(Keys.Left))
+                Camera.Move(new Vector2(-5, 0));
+            if (KeyMouseReader.isKeyDown(Keys.Right))
+                Camera.Move(new Vector2(5, 0));
         }
 
         public void Draw(SpriteBatch spriteBatch)
