@@ -8,7 +8,9 @@ using System.Xml.Serialization;
 
 using Microsoft.Xna.Framework.Storage;
 
-namespace MobileGame.FileManagement
+using LevelEditor.Managers;
+
+namespace LevelEditor.FileManagement
 {
     static class FileLoader
     {
@@ -18,15 +20,20 @@ namespace MobileGame.FileManagement
         private static GameData gameData;
 
         #region Properties
-        public static int[, ,] LoadedLevelArray { get { return ConvertToMultiArray(LoadedLevel.LevelArray); } }
+        public static int[, ,] LoadedLevelArray
+        {
+            get { return ConvertToMultiArray(LoadedLevel.LevelArray); }
+        }
 
-        public static int LoadedLevelTileSize{ get { return LoadedLevel.TileSize; } }
+        public static int LoadedLevelTileSize
+        {
+            get { return LoadedLevel.TileSize; }
+        }
 
-        public static int LoadedLevelMapHeight { get { return LoadedLevel.MapHeight; } }
-
-        public static int LoadedLevelMapWidth { get { return LoadedLevel.MapWidth; } }
-
-        public static GameData LoadedGameData { get { return gameData; } }
+        public static GameData LoadedGameData
+        {
+            get { return gameData; }
+        }
         #endregion
 
         //This method loads the "newest" map, that is the map the player last played on/unlocked
@@ -48,13 +55,12 @@ namespace MobileGame.FileManagement
             {
                 stream.Close();
             }
-
-            LoadLevel(gameData.CurrentMap);
         }
 
         public static void LoadLevel(int LevelNumber)
         {
-            string LoadPath = LevelDirectoryPath + @"\" + gameData.MapList[LevelNumber-1];
+            //string LoadPath = LevelDirectoryPath + @"\Level" + LevelNumber.ToString();
+            string LoadPath = LevelDirectoryPath + @"\" + gameData.MapList[LevelNumber];
 
             FileStream stream = File.Open(LoadPath, FileMode.Open);
 
@@ -69,7 +75,7 @@ namespace MobileGame.FileManagement
             }
         }
 
-        public static void SaveLevel(int[,,] LevelArray)
+        public static void SaveLevel(int[,,] LevelArray, int MapHeight, int MapWidth, string LevelName)
         {
             //First we read the GameData file so that we get access to the MapList
             //We will use that to propperly name the new map
@@ -93,14 +99,16 @@ namespace MobileGame.FileManagement
             //Get all the necessary LevelData
             LevelData LevelData = new LevelData();
             LevelData.LevelArray = ConvertToJaggedArray(LevelArray);
-            LevelData.TileSize = TextureManager.TileSize;
+            LevelData.TileSize = MapManager.TileSize;
+            LevelData.MapHeight = MapHeight;
+            LevelData.MapWidth = MapWidth;
 
             //And now its time to build the SavePath
             //The new level we want to save should get number "MapList.Count + 1"
             //So if the MapList is empty, that is we have no maps, 
             //then the new map we save will get number "0 + 1 = 1"
             //If there are 8 maps in the list then the new map will get number "8 + 1 = 9"
-            string savePath = LevelDirectoryPath + @"\Level" + (TempGameData.MapList.Count + 1);
+            string savePath = LevelDirectoryPath + @"\" + LevelName;
             FileStream stream = File.Open(savePath, FileMode.Create);
 
             try
@@ -115,7 +123,7 @@ namespace MobileGame.FileManagement
 
             //After we have saved the new level we need to update the GameData file (update the MapList)
             TempGameData.MapList = gameData.MapList;
-            TempGameData.MapList.Add("Level" + (TempGameData.MapList.Count + 1));
+            TempGameData.MapList.Add(LevelName);
             GameDataStream = File.Open(GameDataPath, FileMode.Create);
 
             try
@@ -140,7 +148,7 @@ namespace MobileGame.FileManagement
             //Instansiate a new GameData object that we later will serialize
             GameData GameData = new GameData();
 
-            if (gameData.MapList.Count > gameData.CurrentMap)
+            if (gameData.MapList.Count < gameData.CurrentMap)
             {
                 //So we set AllMapsDone to FALSE
                 GameData.AllMapsDone = false;
@@ -148,12 +156,32 @@ namespace MobileGame.FileManagement
                 GameData.CurrentMap = gameData.CurrentMap + 1;
             }
             else
-            {   
+            {
                 //So we set AllMapsDone to true
                 GameData.AllMapsDone = true;
                 //And keep the last level as the lastMapPlayed
                 GameData.CurrentMap = gameData.CurrentMap;
             }
+
+            ////Instansiate a new GameData object that we later will serialize
+            //GameData GameData = new GameData();
+            
+            ////If the file for the next level does not exist that means we have ran out of levels
+            //if (!File.Exists(levelPath))
+            //{
+            //    //So we set AllMapsDone to true
+            //    GameData.AllMapsDone = true;
+            //    //And keep the last level as the lastMapPlayed
+            //    GameData.CurrentMap = gameData.CurrentMap;
+            //}
+            ////If the file for the next level DOES exist that means we have more levels to play
+            //else
+            //{
+            //    //So we set AllMapsDone to FALSE
+            //    GameData.AllMapsDone = false;
+            //    //And set LastMapPlayed to the next level (increment it with one)
+            //    GameData.CurrentMap = gameData.CurrentMap + 1;
+            //}
 
             GameData.MapList = gameData.MapList;
 

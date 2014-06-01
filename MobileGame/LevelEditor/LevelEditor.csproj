@@ -35,6 +35,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Classes\FileManagement\FileLoader.cs" />
     <Compile Include="Classes\FileManagement\GameData.cs" />
     <Compile Include="Classes\FileManagement\LevelData.cs" />
     <Compile Include="Classes\Game1.cs" />
@@ -112,6 +113,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Editor\Buttons\SaveMapButtonHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\SaveMap\InputBG.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\SaveMap\InputBGHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\SaveMap\InputLabel.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Fonts\DejaVuSans_20.xnb">

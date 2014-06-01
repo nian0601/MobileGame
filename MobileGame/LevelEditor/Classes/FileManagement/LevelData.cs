@@ -7,15 +7,16 @@ namespace LevelEditor.FileManagement
 {
     public class LevelData
     {
-        /// <summary>
-        /// This needs to be a JAGGED Array for the XMLSerializer to accept it
-        /// </summary>
-        public int[][][] LevelArray;
         public int TileSize;
+        public int MapWidth;
+        public int MapHeight;
+        public int[][][] LevelArray;
 
         public LevelData()
         {
             TileSize = 0;
+            MapWidth = 0;
+            MapHeight = 0;
         }
     }
 }

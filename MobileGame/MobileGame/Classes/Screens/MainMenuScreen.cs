@@ -55,7 +55,7 @@ namespace MobileGame.Screens
 
             for (int i = 0; i < MenuEntries.Count; i++)
             {
-                MenuEntry menuEntry = MenuEntries[i];
+                GUIObject menuEntry = MenuEntries[i];
 
                 //each entry gets centered horizontally
                 position.X = ScreenManager.Game.GraphicsDevice.Viewport.Width / 2 - (menuEntry.GetWidth(this) / 2) + ((menuEntry.GetWidth(this) * i));
@@ -82,11 +82,9 @@ namespace MobileGame.Screens
 
             for (int i = 0; i < MenuEntries.Count; i++)
             {
-                MenuEntry menuEntry = MenuEntries[i];
+                GUIObject menuEntry = MenuEntries[i];
 
-                bool isSelected = false;
-
-                menuEntry.Draw(this, isSelected, gameTime);
+                menuEntry.Draw(this, gameTime);
             }
 
             //This is used to make the menuTitle slide into place, just like the entries

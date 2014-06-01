@@ -40,6 +40,8 @@ namespace MobileGame
             
             graphics.ApplyChanges();
 
+            IsMouseVisible = true;
+
             base.Initialize();
         }
         protected override void LoadContent()

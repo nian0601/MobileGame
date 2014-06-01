@@ -24,7 +24,6 @@ namespace LevelEditor
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        MapManager mapManager;
         ScreenManager screenManager;
 
         public Game1() : base()

@@ -16,7 +16,7 @@ namespace MobileGame.FileManagement
             CurrentMap = 0;
             AllMapsDone = false;
             MapList = new List<string>();
-            MapList.Add("Test");
+            //MapList.Add("Test");
         }
     }
 }

@@ -12,11 +12,11 @@ namespace GUI_System.GameStateManagement
 {
     public abstract class MenuScreen : GameScreen
     {
-        List<MenuEntry> menuEntries = new List<MenuEntry>();
+        List<GUIObject> menuEntries = new List<GUIObject>();
         int selectedEntry = 0;
         string menuTitle;
 
-        protected IList<MenuEntry> MenuEntries
+        protected IList<GUIObject> MenuEntries
         {
             get { return menuEntries; }
         }
@@ -31,33 +31,8 @@ namespace GUI_System.GameStateManagement
 
         public override void HandleInput(GameTime gameTime)
         {
-            if (KeyMouseReader.KeyClick(Keys.Up))
-            {
-                selectedEntry--;
-
-                if (selectedEntry < 0)
-                    selectedEntry = menuEntries.Count - 1;
-            }
-
-            if (KeyMouseReader.KeyClick(Keys.Down))
-            {
-                selectedEntry++;
-
-                if (selectedEntry >= menuEntries.Count)
-                    selectedEntry = 0;
-            }
-
-            if (KeyMouseReader.KeyClick(Keys.Enter))
-                OnSelectedEntry(selectedEntry);
-
-            else if (KeyMouseReader.KeyClick(Keys.Escape))
+            if (KeyMouseReader.KeyClick(Keys.Escape))
                 OnCancel();
-
-        }
-
-        protected virtual void OnSelectedEntry(int entryIndex)
-        {
-            menuEntries[entryIndex].OnSelectedEntry();
         }
 
         protected virtual void OnCancel()
@@ -76,7 +51,7 @@ namespace GUI_System.GameStateManagement
 
             for (int i = 0; i < menuEntries.Count; i++)
             {
-                MenuEntry menuEntry = menuEntries[i];
+                GUIObject menuEntry = menuEntries[i];
 
                 //each entry gets centered horizontally
                 position.X = ScreenManager.Game.GraphicsDevice.Viewport.Width / 2 - menuEntry.GetWidth(this) / 2;
@@ -103,7 +78,7 @@ namespace GUI_System.GameStateManagement
             {
                 bool isSelected = IsActive && (i == selectedEntry);
 
-                menuEntries[i].Update(this, isSelected, gameTime);
+                menuEntries[i].Update(this, gameTime);
             }
         }
 
@@ -119,11 +94,11 @@ namespace GUI_System.GameStateManagement
 
             for (int i = 0; i < menuEntries.Count; i++)
             {
-                MenuEntry menuEntry = menuEntries[i];
+                GUIObject menuEntry = menuEntries[i];
 
                 bool isSelected = IsActive && (i == selectedEntry);
 
-                menuEntry.Draw(this, isSelected, gameTime);
+                menuEntry.Draw(this, gameTime);
             }
 
             //This is used to make the menuTitle slide into place, just like the entries

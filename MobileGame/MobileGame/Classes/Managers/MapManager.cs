@@ -21,6 +21,8 @@ namespace MobileGame
         private List<SimpleTile> colliderList;
         private List<SpecialTile> specialBlockList;
         private int tileSize;
+        private int mapHeight;
+        private int mapWidth;
         private Vector2 playerStartPos;
 
         #region Properties
@@ -53,8 +55,6 @@ namespace MobileGame
 
         #endregion
 
-        
-
         public MapManager()
         {
             colliderList = new List<SimpleTile>();
@@ -66,6 +66,8 @@ namespace MobileGame
         {
             tileSize = FileLoader.LoadedLevelTileSize;
             currentMap = FileLoader.LoadedLevelArray;
+            mapHeight = FileLoader.LoadedLevelMapHeight;
+            mapWidth = FileLoader.LoadedLevelMapWidth;
 
             colliderList.Clear();
             specialBlockList.Clear();
@@ -101,9 +103,9 @@ namespace MobileGame
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            for (int x = 0; x < tileArray.GetLength(1); x++)
+            for (int x = 0; x < mapWidth; x++)
             {
-                for (int y = 0; y < tileArray.GetLength(2); y++)
+                for (int y = 0; y < mapHeight; y++)
                 {
                     tileArray[0, x, y].Draw(spriteBatch);
                 }
@@ -115,45 +117,37 @@ namespace MobileGame
 
         private void BuildLevel(int[,,] level)
         {
-            int[,,] levelToBuild = level;
-
-            int layers = levelToBuild.GetLength(0);
-            int mapHeight = levelToBuild.GetLength(1);
-            int mapWidth = levelToBuild.GetLength(2);
-            tileArray = new Tile[layers, mapWidth, mapHeight];
+            tileArray = new Tile[2, mapWidth, mapHeight];
 
             //LOOPS THROUGH THE PLATFORM LAYER
-            for (int y = 0; y < mapHeight; y++)
+            for (int x = 0; x < mapWidth; x++)
             {
-                for (int x = 0; x < mapWidth; x++)
+                for (int y = 0; y < mapHeight; y++)
                 {
-                    int tileType = levelToBuild[0, y, x];
+                    int tileType = level[0, x, y];
 
                     if (tileType == 9)
                     {
                         playerStartPos = ConvertIndexToPixels(x, y);
                         tileArray[0, x, y] = new SimpleTile(x, y, 0);
                         continue;
-                    }
-                        
+                    }   
 
                     SimpleTile tempTile = new SimpleTile(x, y, tileType);
 
                     tileArray[0, x, y] = tempTile;
-
                     
                     if (tileType != 0)
-                        colliderList.Add(tempTile);
-                        
+                        colliderList.Add(tempTile); 
                 }
             }
 
             //LOOPS THROUGH THE SPECIAL BLOCK'S LAYER
-            for (int y = 0; y < mapHeight; y++)
+            for (int x = 0; x < mapWidth; x++)
             {
-                for (int x = 0; x < mapWidth; x++)
+                for (int y = 0; y < mapHeight; y++)
                 {
-                    int tileType = levelToBuild[1, y, x];
+                    int tileType = level[1, x, y];
 
                     if (tileType == 1)
                         specialBlockList.Add(new JumpTile(x, y));
@@ -334,7 +328,7 @@ namespace MobileGame
                 foreach (Tile T in tempTileList)
                     AssignTileType(T);
 
-                currentMap[0, y, x] = 1;
+                currentMap[0, x, y] = 1;
             }
             
         }
@@ -342,7 +336,7 @@ namespace MobileGame
         private void RemoveSimpleTile(int x, int y)
         {
             tileArray[0, x, y] = new SimpleTile(x, y, 0);
-            currentMap[0, y, x] = 0;
+            currentMap[0, x, y] = 0;
 
             Vector2 tempVector = new Vector2(x, y);
 
@@ -436,20 +430,6 @@ namespace MobileGame
             #endregion
             
             return tempList;
-        }
-
-        private void RemoveSimpleTileInListByIndex(int x, int y, List<SimpleTile> tileList)
-        {
-            Vector2 tempVector = new Vector2(x, y);
-
-            for (int i = 0; i < tileList.Count; i++)
-            {
-                if (tileList[i].IndexPos == tempVector)
-                {
-                    tileList.RemoveAt(i);
-                    break;
-                }  
-            }
         }
 
         private bool IsYInsideArray(int y, Tile[, ,] array)

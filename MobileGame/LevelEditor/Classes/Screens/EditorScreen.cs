@@ -34,6 +34,8 @@ namespace LevelEditor.Screens
 
         public override void Activate()
         {
+            FileManagement.FileLoader.Initialize();
+
             if(mapManager == null)
                 mapManager = new MapManager(ScreenManager.Game.Content, ScreenManager.SpriteBatch);
 
@@ -46,7 +48,7 @@ namespace LevelEditor.Screens
             mapManager.Update();
 
             if (SaveButton.LeftClick())
-                ScreenManager.AddScreen(new SaveMapScreen());
+                ScreenManager.AddScreen(new SaveMapScreen(mapManager));
 
             base.HandleInput(gameTime);
         }
@@ -61,7 +63,7 @@ namespace LevelEditor.Screens
 
             for (int i = 0; i < MenuEntries.Count; i++)
             {
-                MenuEntry menuEntry = MenuEntries[i];
+                GUIObject menuEntry = MenuEntries[i];
 
                 position.Y = yStartPos + (menuEntry.GetHeight(this) + spaceBetweenEntries) * i;
 
@@ -90,11 +92,8 @@ namespace LevelEditor.Screens
 
             for (int i = 0; i < MenuEntries.Count; i++)
             {
-                MenuEntry menuEntry = MenuEntries[i];
-
-                bool isSelected = false;
-
-                menuEntry.Draw(this, isSelected, gameTime);
+                GUIObject menuEntry = MenuEntries[i];
+                menuEntry.Draw(this, gameTime);
             }
 
             spriteBatch.End();

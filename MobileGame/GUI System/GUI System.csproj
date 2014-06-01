@@ -40,8 +40,13 @@
     <Compile Include="GameStateManagement\KeyMouseReader.cs" />
     <Compile Include="GameStateManagement\MenuScreen.cs" />
     <Compile Include="GameStateManagement\ScreenManager.cs" />
+    <Compile Include="GUIObjects\GUIObject.cs" />
+    <Compile Include="GUIObjects\InputFieldStyle.cs" />
+    <Compile Include="GUIObjects\IStyle.cs" />
     <Compile Include="GUIObjects\MenuButton.cs" />
-    <Compile Include="GUIObjects\Style.cs" />
+    <Compile Include="GUIObjects\ButtonStyle.cs" />
+    <Compile Include="GUIObjects\TextInputField.cs" />
+    <Compile Include="GUIObjects\TextInputObject.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GUIObjects\MenuEntry.cs" />

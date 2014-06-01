@@ -75,7 +75,7 @@ namespace MobileGame.Screens
                 tempPos.X -= transitionOffset * 512;
 
             returnButton.Position = tempPos;
-            returnButton.Draw(this, false, gameTime);
+            returnButton.Draw(this, gameTime);
 
             // Draw the menu title centered on the screen
             Vector2 titlePosition = new Vector2(graphics.Viewport.Width / 2, 100);

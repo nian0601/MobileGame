@@ -10,20 +10,20 @@ using GUI_System.GameStateManagement;
 
 namespace GUI_System.GUIObjects
 {
-    public class MenuButton : MenuEntry
+    public class MenuButton : GUIObject
     {
         private MouseState oldState, currState;
         private Point mousePos;
 
-        private Style buttonStyle;
+        private ButtonStyle buttonStyle;
 
-        public override Vector2 Position
+        public Vector2 Position
         {
             get { return buttonStyle.Position; }
             set { buttonStyle.Position = value; }
         }
 
-        public MenuButton(Style style): base("")
+        public MenuButton(ButtonStyle style)
         {
             oldState = currState;
             currState = Mouse.GetState();
@@ -31,7 +31,7 @@ namespace GUI_System.GUIObjects
             buttonStyle = style;
         }
 
-        public override void Update(MenuScreen screen, bool isSelected, GameTime gameTime)
+        public void Update(MenuScreen screen, GameTime gameTime)
         {
             oldState = currState;
             currState = Mouse.GetState();
@@ -45,10 +45,9 @@ namespace GUI_System.GUIObjects
                 buttonStyle.HooverTexture();
         }
 
-        public override void Draw(MenuScreen screen, bool isSelected, GameTime gameTime)
+        public void Draw(MenuScreen screen, GameTime gameTime)
         {
-            Vector2 origin = new Vector2(HitBox().Width / 2, HitBox().Height / 2);
-            buttonStyle.Draw(screen.ScreenManager.SpriteBatch, origin);
+            buttonStyle.Draw(screen.ScreenManager.SpriteBatch);
         }
 
         public bool LeftClick()
@@ -67,19 +66,19 @@ namespace GUI_System.GUIObjects
             return false;
         }
 
-        public override int GetHeight(MenuScreen screen)
+        public int GetHeight(MenuScreen screen)
         {
             return HitBox().Height;
         }
 
-        public override int GetWidth(MenuScreen screen)
+        public int GetWidth(MenuScreen screen)
         {
             return HitBox().Width;
         }
 
         protected Rectangle HitBox()
         {
-            return buttonStyle.HitBox();
+            return buttonStyle.ClickableArea();
         }
     }
 }

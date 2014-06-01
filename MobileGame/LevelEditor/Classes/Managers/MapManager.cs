@@ -30,8 +30,11 @@ namespace LevelEditor.Managers
         //This is used just to make it easier to display the map and wont be used in the serializing process
         private Tile[, ,] TileArray;
 
-        private int Layers, MapHeight, MapWidth, TileSize;
-
+        private int Layers, MapHeight, MapWidth;
+        public int layers { get { return Layers; } }
+        public int mapHeight { get { return MapHeight; } }
+        public int mapWidth { get { return MapWidth; } }
+        public static int TileSize;
         private ContentManager Content;
         private SpriteBatch Spritebatch;
 
@@ -198,9 +201,9 @@ namespace LevelEditor.Managers
 
             for (int z = 0; z < Layers; z++)
             {
-                for (int y = 0; y < MapHeight; y++)
+                for (int x = 0; x < MapWidth; x++)
                 {
-                    for (int x = 0; x < MapWidth; x++)
+                    for (int y = 0; y < MapHeight; y++)
                     {
                         TileArray[z, x, y].Draw(Spritebatch, Offset);
                     }
@@ -215,9 +218,9 @@ namespace LevelEditor.Managers
         private void ResetMap()
         {
             //Platform-layer
-            for (int y = 0; y < MapHeight; y++)
+            for (int x = 0; x < MapWidth; x++)
             {
-                for (int x = 0; x < MapWidth; x++)
+                for (int y = 0; y < MapHeight; y++)
                 {
                     currentMap[0, x, y] = 0;
                     TileArray[0, x, y] = new Tile(x, y, AirTexture, TileSize, false);
@@ -225,9 +228,9 @@ namespace LevelEditor.Managers
             }
 
             //Special-layer
-            for (int y = 0; y < MapHeight; y++)
+            for (int x = 0; x < MapWidth; x++)
             {
-                for (int x = 0; x < MapWidth; x++)
+                for (int y = 0; y < MapHeight; y++)
                 {
                     currentMap[1, x, y] = 0;
                     TileArray[1, x, y] = new Tile(x, y, AirTexture, TileSize, false);

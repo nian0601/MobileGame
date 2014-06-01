@@ -10,7 +10,7 @@ using GUI_System.GUIObjects;
 
 namespace MobileGame.Screens
 {
-    public class PlayButtonStyle : Style
+    public class PlayButtonStyle : ButtonStyle
     {
         public PlayButtonStyle(ContentManager content)
             : base(content)
@@ -22,7 +22,7 @@ namespace MobileGame.Screens
         }
     }
 
-    public class LevelSelectStyle : Style
+    public class LevelSelectStyle : ButtonStyle
     {
         public LevelSelectStyle(ContentManager content)
             : base(content)
@@ -34,7 +34,7 @@ namespace MobileGame.Screens
         }
     }
 
-    public class MenuButtonStyle : Style
+    public class MenuButtonStyle : ButtonStyle
     {
         public MenuButtonStyle(ContentManager content)
             : base(content)
@@ -46,7 +46,7 @@ namespace MobileGame.Screens
         }
     }
 
-    public class RestartButtonStyle : Style
+    public class RestartButtonStyle : ButtonStyle
     {
         public RestartButtonStyle(ContentManager content)
             : base(content)
@@ -58,7 +58,7 @@ namespace MobileGame.Screens
         }
     }
 
-    public class CrossButtonStyle : Style
+    public class CrossButtonStyle : ButtonStyle
     {
         public CrossButtonStyle(ContentManager content)
             : base(content)

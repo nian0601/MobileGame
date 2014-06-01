@@ -10,27 +10,47 @@ using Microsoft.Xna.Framework.Graphics;
 using GUI_System.GameStateManagement;
 using GUI_System.GUIObjects;
 
+using LevelEditor.Managers;
+
 namespace LevelEditor.Screens
 {
     class SaveMapScreen : MenuScreen
     {
         private MenuButton SaveButton, CancelButton;
+        private TextInputField NameInput;
+        private MapManager mapManager;
 
-        public SaveMapScreen() : base("")
+        public SaveMapScreen(MapManager MapManager) : base("")
         {
             SaveButton = new MenuButton(new SaveButtonStyle(ScreenManager.Game.Content));
             CancelButton = new MenuButton(new CancelButtonStyle(ScreenManager.Game.Content));
-
+            NameInput = new TextInputField(new MapNameInputStyle(ScreenManager.Game.Content));
+            
             MenuEntries.Add(SaveButton);
             MenuEntries.Add(CancelButton);
+            MenuEntries.Add(NameInput);
 
             IsPopup = true;
+
+            mapManager = MapManager;
         }
 
         public override void HandleInput(GameTime gameTime)
         {
             if (CancelButton.LeftClick())
-                ExitScreen();   
+            {
+                NameInput.Clear();
+                ExitScreen();
+            } 
+
+            if (SaveButton.LeftClick() && NameInput.Text.Length > 0)
+            {
+                FileManagement.FileLoader.SaveLevel(mapManager.CurrentMap, mapManager.mapHeight, mapManager.mapWidth, NameInput.Text);
+                
+            }
+                
+
+            NameInput.Update(this, gameTime);
 
             base.HandleInput(gameTime);
         }
@@ -45,24 +65,31 @@ namespace LevelEditor.Screens
             Vector2 position = new Vector2(0, 250);
 
             int SaveXPos = ScreenManager.Game.GraphicsDevice.Viewport.Width / 2 - SaveButton.GetWidth(this) / 2;
-            Vector2 SavePosition = new Vector2(SaveXPos, 250);
+            Vector2 SavePosition = new Vector2(SaveXPos, 300);
 
             int CancelXPos = SaveXPos + CancelButton.GetWidth(this) + 10;
-            Vector2 CancelPos = new Vector2(CancelXPos, 250);
+            Vector2 CancelPos = new Vector2(CancelXPos, 300);
+
+            int InputXPos = ScreenManager.Game.GraphicsDevice.Viewport.Width / 2 - NameInput.GetWidth(this) / 2;
+            Vector2 InputPos = new Vector2(InputXPos, 200);
+            
 
             if (CurrentScreenState == ScreenState.TransitionOn)
             {
                 SavePosition.Y -= transitionOffset * 256;
                 CancelPos.Y -= transitionOffset * 256;
+                InputPos.Y -= transitionOffset * 256;
             }
             else
             {
                 SavePosition.Y += transitionOffset * 512;
                 CancelPos.Y += transitionOffset * 512;
+                InputPos.Y += transitionOffset * 512;
             }
 
             SaveButton.Position = SavePosition;
             CancelButton.Position = CancelPos;
+            NameInput.Position = InputPos;
         }
 
         public override void Draw(GameTime gameTime)
@@ -79,12 +106,12 @@ namespace LevelEditor.Screens
 
             for (int i = 0; i < MenuEntries.Count; i++)
             {
-                MenuEntry menuEntry = MenuEntries[i];
-
-                bool isSelected = false;
-
-                menuEntry.Draw(this, isSelected, gameTime);
+                GUIObject menuEntry = MenuEntries[i];
+                menuEntry.Draw(this, gameTime);
             }
+
+
+            
 
             spriteBatch.End();
         }
