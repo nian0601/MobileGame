@@ -118,7 +118,7 @@ namespace MobileGame.CameraManagement
             cameraHeight = Height;
             cameraWidth = Width;
 
-            DrawDebug = true;
+            DrawDebug = false;
         }
 
         public static void LoadStuff(ContentManager content)

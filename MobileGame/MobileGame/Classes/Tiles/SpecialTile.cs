@@ -7,7 +7,7 @@ namespace MobileGame
 {
     class SpecialTile : Tile
     {
-        public SpecialTile(int x, int y) : base(x, y) { }
+        public SpecialTile(int x, int y, bool collidable) : base(x, y, collidable) { }
 
         public virtual void CollideWithUnit(Player Unit) { }
 

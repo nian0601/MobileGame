@@ -9,7 +9,8 @@ namespace MobileGame
 {
     class SimpleTile : Tile
     {
-        public SimpleTile(int x, int y, int tileType) : base(x, y)
+        public SimpleTile(int x, int y, int tileType, bool collidable)
+            : base(x, y, collidable)
         {
             tileTexture = TextureManager.AirTile;
 

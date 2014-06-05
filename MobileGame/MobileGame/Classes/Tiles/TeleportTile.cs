@@ -9,7 +9,7 @@ namespace MobileGame
 {
     class TeleportTile : SpecialTile
     {
-        public TeleportTile(int x, int y) : base(x, y)
+        public TeleportTile(int x, int y) : base(x, y, false)
         {
             tileTexture = TextureManager.TeleportTile;
 

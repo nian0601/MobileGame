@@ -79,7 +79,7 @@ namespace MobileGame.Screens
         {
             SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
 
-            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, Camera.Get_Transformation());
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, Camera.Get_Transformation());
             gameManager.Draw(spriteBatch);
             Camera.Draw(spriteBatch);
             spriteBatch.End();

@@ -25,7 +25,9 @@ namespace MobileGame
         protected int interestRadius;
         protected int controlRadius;
 
-        public Tile(int x, int y)
+        protected bool Collidable;
+
+        public Tile(int x, int y, bool collidable)
         {   
             index = new Vector2(x, y);
             tileSize = TextureManager.TileSize;
@@ -33,6 +35,8 @@ namespace MobileGame
 
             interestRadius = 400;
             controlRadius = 200;
+
+            Collidable = collidable;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -41,9 +45,9 @@ namespace MobileGame
                 spriteBatch.Draw(tileTexture, pixelPos, Color.White);
         }
 
-        public void SetTileType(TextureManager.TileTypes tileType)
+        public void SetTileBitType(int tileValue)
         {
-            tileTexture = TextureManager.TileTextures[(int)tileType];
+            tileTexture = TextureManager.TileTextures[tileValue];
             colorArray = new Color[tileTexture.Width * tileTexture.Height];
             tileTexture.GetData(colorArray);
         }

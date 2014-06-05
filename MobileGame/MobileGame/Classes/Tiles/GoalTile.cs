@@ -9,7 +9,7 @@ namespace MobileGame
 {
     class GoalTile : SpecialTile
     {
-        public GoalTile(int x, int y) : base(x, y)
+        public GoalTile(int x, int y) : base(x, y, false)
         {
             tileTexture = TextureManager.GoalTile;
 

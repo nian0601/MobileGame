@@ -39,6 +39,9 @@ namespace MobileGame
             Camera.Position = Player.Position;
             Camera.DefaultFocus = Player;
 
+            Console.WriteLine("Player.X: " + Player.Position.X + ", Player.Y: " + Player.Position.Y);
+            Console.WriteLine("Camera.X: " + Camera.Position.X + ", Camera.: " + Camera.Position.Y);
+
             Game1.graphics.PreferredBackBufferHeight = Camera.CameraHeight;
             Game1.graphics.PreferredBackBufferWidth = Camera.CameraWidth;
             Game1.graphics.ApplyChanges();
@@ -64,10 +67,13 @@ namespace MobileGame
 
             if (Player.GotKilled)
                 gameLost = true;
-            
+
+            List<Tile> CollisionList = mapManager.FindConnectedTiles(mapManager.ConvertPixelsToIndex(Player.Position));
+            Console.WriteLine(CollisionList.Count);
 
             //The player handles collision against the generic platforms itself inside the update.
-            Player.Update(mapManager.ColliderList);
+            //Player.Update(mapManager.ColliderList);
+            Player.Update(CollisionList);
         }
 
         public void Draw(SpriteBatch spriteBatch)

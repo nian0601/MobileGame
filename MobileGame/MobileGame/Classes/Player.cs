@@ -48,20 +48,24 @@ namespace MobileGame
             playerTex.GetData(colorArray);
         }
 
-        public void Update(List<SimpleTile> collisionList)
+        public void Update(List<Tile> collisionList)
         {
             ListenToInput();
             CheckIfOnGround(collisionList);
 
+            //Apply horizontal velocity
             position.X += velocity.X;
+            //Make sure position isnt outside the map
             position.X = MathHelper.Clamp(position.X, 0, MapManager.MapWidth - playerTex.Width);
             if (position.X == 0 || position.X == MapManager.MapWidth - playerTex.Width)
                 velocity.X = 0;
+            //Run CollisionCheck
             HorizontalCollision(collisionList);
 
+            //Apply gravity and vertical velocity
             velocity.Y += gravity;
-
             position.Y += velocity.Y;
+            //Make sure position isnt outside the map
             position.Y = MathHelper.Clamp(position.Y, 0, MapManager.MapHeight - playerTex.Height);
             if (position.Y == 0)
                 velocity.Y = 0;
@@ -69,12 +73,14 @@ namespace MobileGame
             {
                 gotKilled = true;
             }
+            //Run CollisionCheck
             VerticalCollision(collisionList);  
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(playerTex, position, Color.White);
+            //spriteBatch.Draw(playerTex, position, Color.White);
+            spriteBatch.Draw(playerTex, position, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
         }
 
         public void Jump(float jumpMultiplier)
@@ -125,7 +131,7 @@ namespace MobileGame
 
         }
 
-        private void CheckIfOnGround(List<SimpleTile> collisionList)
+        private void CheckIfOnGround(List<Tile> collisionList)
         {
             Point collisionPointLeft = new Point(HitBox().Left + 1, HitBox().Top + HitBox().Height);
             Point collisionPointRight = new Point(HitBox().Right - 1, HitBox().Top + HitBox().Height);
@@ -143,7 +149,7 @@ namespace MobileGame
         }
 
         //Collision in the X-Axis
-        private void HorizontalCollision(List<SimpleTile> collisionList)
+        private void HorizontalCollision(List<Tile> collisionList)
         {
             for (int i = 0; i < collisionList.Count; i++)
             {
@@ -164,7 +170,7 @@ namespace MobileGame
         }
 
         //Collision in the Y-Axis
-        private void VerticalCollision(List<SimpleTile> collisionList)
+        private void VerticalCollision(List<Tile> collisionList)
         {
             for (int i = 0; i < collisionList.Count; i++)
             {
