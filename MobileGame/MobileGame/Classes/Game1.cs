@@ -22,7 +22,7 @@ namespace MobileGame
     /// </summary>
     public class Game1 : Game
     {
-        GraphicsDeviceManager graphics;
+        public static GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
         ScreenManager screenManager;
@@ -45,6 +45,7 @@ namespace MobileGame
 
             base.Initialize();
         }
+
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
@@ -59,8 +60,7 @@ namespace MobileGame
             screenManager.AddScreen(new BackgroundScreen());
             screenManager.AddScreen(new MainMenuScreen());
 
-
-            Camera.GraphicsDevice = GraphicsDevice;
+            Camera.Initialize(GraphicsDevice.Viewport.Height, GraphicsDevice.Viewport.Width);
             Camera.LoadStuff(Content);
             // TODO: use this.Content to load your game content here
         }
@@ -77,7 +77,7 @@ namespace MobileGame
 
             KeyMouseReader.Update();
             screenManager.Update(gameTime);
-            Camera.Update(gameTime);
+            
 
             //Console.WriteLine("FPS: " + (1000 / gameTime.ElapsedGameTime.Milliseconds));
 

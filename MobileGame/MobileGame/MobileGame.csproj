@@ -101,6 +101,18 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Content\DebugTextures\EmptyCircle.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\DebugTextures\EmptySquare.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\DebugTextures\FilledCircle.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\DebugTextures\FilledSquare.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Content\GUI Textures\Background.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -40,6 +40,7 @@ namespace MobileGame.Screens
                 gameManager = new GameManager();
 
             gameManager.Initialize();
+
         }
 
         public override void Unload()
@@ -60,6 +61,7 @@ namespace MobileGame.Screens
         public override void HandleInput(GameTime gameTime)
         {
             gameManager.Update(gameTime.ElapsedGameTime.Milliseconds);
+            Camera.Update(gameTime);
 
             if (KeyMouseReader.KeyClick(Keys.P))
                 ScreenManager.AddScreen(new PausScreen());

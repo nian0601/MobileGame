@@ -54,12 +54,22 @@ namespace MobileGame
             CheckIfOnGround(collisionList);
 
             position.X += velocity.X;
+            position.X = MathHelper.Clamp(position.X, 0, MapManager.MapWidth - playerTex.Width);
+            if (position.X == 0 || position.X == MapManager.MapWidth - playerTex.Width)
+                velocity.X = 0;
             HorizontalCollision(collisionList);
 
             velocity.Y += gravity;
 
             position.Y += velocity.Y;
-            VerticalCollision(collisionList);
+            position.Y = MathHelper.Clamp(position.Y, 0, MapManager.MapHeight - playerTex.Height);
+            if (position.Y == 0)
+                velocity.Y = 0;
+            else if (position.Y == MapManager.MapHeight - playerTex.Height)
+            {
+                gotKilled = true;
+            }
+            VerticalCollision(collisionList);  
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -229,6 +239,16 @@ namespace MobileGame
         public bool GotKilled
         {
             get { return gotKilled; }
+        }
+
+        public int InterestRadius
+        {
+            get { return 200; }
+        }
+
+        public int ControlRadius
+        {
+            get { return 100; }
         }
     }
 }

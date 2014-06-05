@@ -14,7 +14,7 @@ namespace MobileGame
     class GameManager
     {
         private MapManager mapManager;
-        private Player player;
+        public static Player Player;
         private bool gameWon, gameLost;
 
         public GameManager(){}
@@ -22,21 +22,26 @@ namespace MobileGame
         public void Initialize()
         {
             EnemyManager.Reset();
+            Camera.ClearFocusList();
 
             if (mapManager == null)
                 mapManager = new MapManager();
 
             mapManager.Initialize();
 
-            if (player == null)
-                player = new Player();
+            if (Player == null)
+                Player = new Player();
 
-            player.SetStartPos(mapManager.PlayerStartPos);
+            Player.SetStartPos(mapManager.PlayerStartPos);
 
-            Camera.Position = player.Position;
+            Camera.XBoundary = MapManager.MapWidth;
+            Camera.YBoundary = MapManager.MapHeight;
+            Camera.Position = Player.Position;
+            Camera.DefaultFocus = Player;
 
-            Camera.ClearFocusList();
-            Camera.AddFocusObject(player);
+            Game1.graphics.PreferredBackBufferHeight = Camera.CameraHeight;
+            Game1.graphics.PreferredBackBufferWidth = Camera.CameraWidth;
+            Game1.graphics.ApplyChanges();
         }
 
         public void Update(float elapsedTime)
@@ -46,32 +51,23 @@ namespace MobileGame
             //Collision against specialblocks is handled outside the player class
             for (int i = 0; i < mapManager.SpecialBlocksList.Count; i++)
             {
-                if (mapManager.SpecialBlocksList[i].HitBox().Intersects(player.HitBox()))
+                if (mapManager.SpecialBlocksList[i].HitBox().Intersects(Player.HitBox()))
                 {
-                    mapManager.SpecialBlocksList[i].CollideWithUnit(player);
+                    mapManager.SpecialBlocksList[i].CollideWithUnit(Player);
 
-                    if (player.FoundGoal)
+                    if (Player.FoundGoal)
                         gameWon = true; 
                 }
             }
 
-            EnemyManager.Update(player, elapsedTime, mapManager.ColliderList);
+            EnemyManager.Update(Player, elapsedTime, mapManager.ColliderList);
 
-            if (player.GotKilled)
+            if (Player.GotKilled)
                 gameLost = true;
             
 
             //The player handles collision against the generic platforms itself inside the update.
-            player.Update(mapManager.ColliderList);
-
-            if (KeyMouseReader.isKeyDown(Keys.Up))
-                Camera.Move(new Vector2(0, -5));
-            if (KeyMouseReader.isKeyDown(Keys.Down))
-                Camera.Move(new Vector2(0, 5));
-            if (KeyMouseReader.isKeyDown(Keys.Left))
-                Camera.Move(new Vector2(-5, 0));
-            if (KeyMouseReader.isKeyDown(Keys.Right))
-                Camera.Move(new Vector2(5, 0));
+            Player.Update(mapManager.ColliderList);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -80,14 +76,14 @@ namespace MobileGame
 
             EnemyManager.Draw(spriteBatch);
 
-            player.Draw(spriteBatch);
+            Player.Draw(spriteBatch);
         }
 
         public void RestarLevel()
         {
             gameWon = false;
             gameLost = false;
-            player.ResetPosition();
+            Player.ResetPosition();
         }
 
         public bool GameWon

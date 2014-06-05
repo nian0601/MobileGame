@@ -32,9 +32,17 @@ namespace LevelEditor.Managers
 
         private int Layers, MapHeight, MapWidth;
         public int layers { get { return Layers; } }
-        public int mapHeight { get { return MapHeight; } }
-        public int mapWidth { get { return MapWidth; } }
+        public int mapHeight { get { return mapYTiles; } }
+        public int mapWidth { get { return mapXTiles; } }
         public static int TileSize;
+
+        private int editorXTiles, editorYTiles;
+        private int mapXTiles, mapYTiles;
+        private int xDisplayMin, xDisplayMax;
+        private int yDisplayMin, yDisplayMax;
+        private int xOffset, yOffset;
+
+        #region ContentManager, SpriteBatch and Textures
         private ContentManager Content;
         private SpriteBatch Spritebatch;
 
@@ -101,6 +109,8 @@ namespace LevelEditor.Managers
             TwoCornersTopTile
         }
 
+        #endregion
+
         private bool Initialized;
         private bool PlayerPlaced;
         private bool GoalPlaced;
@@ -119,8 +129,23 @@ namespace LevelEditor.Managers
             MapWidth = 20;
             TileSize = 0;
 
-            currentMap = new int[Layers, MapWidth, MapHeight];
-            TileArray = new Tile[Layers, MapWidth, MapHeight];
+            mapXTiles = 40;
+            mapYTiles = 30;
+
+            currentMap = new int[Layers, mapXTiles, mapYTiles];
+            TileArray = new Tile[Layers, mapXTiles, mapYTiles];
+
+            editorXTiles = 20;
+            editorYTiles = 15;
+
+            xDisplayMin = 0;
+            xDisplayMax = editorXTiles;
+
+            yDisplayMin = 0;
+            yDisplayMax = editorYTiles;
+
+            xOffset = 0;
+            yOffset = 0;
         }
 
         public void Initialize()
@@ -153,6 +178,9 @@ namespace LevelEditor.Managers
             {
                 int mouseX = ConvertPixelsToIndex(KeyMouseReader.mousePos).X;
                 int mouseY = ConvertPixelsToIndex(KeyMouseReader.mousePos).Y;
+
+                mouseX += xOffset;
+                mouseY += yOffset;
 
                 if (KeyMouseReader.LeftMouseDown())
                     CreatePlatform(mouseX, mouseY);
@@ -191,6 +219,15 @@ namespace LevelEditor.Managers
                 else if (KeyMouseReader.KeyClick(Keys.R))
                     ResetMap();
             }
+
+            if (KeyMouseReader.isKeyDown(Keys.Up))
+                MoveMapVerticaly(-1);
+            if (KeyMouseReader.isKeyDown(Keys.Down))
+                MoveMapVerticaly(1);
+            if (KeyMouseReader.isKeyDown(Keys.Left))
+                MoveMapHorizontaly(-1);
+            if (KeyMouseReader.isKeyDown(Keys.Right))
+                MoveMapHorizontaly(1);
         }
 
         public void Draw()
@@ -201,11 +238,19 @@ namespace LevelEditor.Managers
 
             for (int z = 0; z < Layers; z++)
             {
-                for (int x = 0; x < MapWidth; x++)
+                //for (int x = 0; x < MapWidth; x++)
+                //{
+                //    for (int y = 0; y < MapHeight; y++)
+                //    {
+                //        TileArray[z, x, y].Draw(Spritebatch, Offset);
+                //    }
+                //}
+
+                for (int x = xDisplayMin; x < xDisplayMax; x++)
                 {
-                    for (int y = 0; y < MapHeight; y++)
+                    for (int y = yDisplayMin; y < yDisplayMax; y++)
                     {
-                        TileArray[z, x, y].Draw(Spritebatch, Offset);
+                        TileArray[z, x, y].Draw(Spritebatch, x - xOffset, y - yOffset, Offset);
                     }
                 }
             }
@@ -218,9 +263,9 @@ namespace LevelEditor.Managers
         private void ResetMap()
         {
             //Platform-layer
-            for (int x = 0; x < MapWidth; x++)
+            for (int x = 0; x < mapXTiles; x++)
             {
-                for (int y = 0; y < MapHeight; y++)
+                for (int y = 0; y < mapYTiles; y++)
                 {
                     currentMap[0, x, y] = 0;
                     TileArray[0, x, y] = new Tile(x, y, AirTexture, TileSize, false);
@@ -228,9 +273,9 @@ namespace LevelEditor.Managers
             }
 
             //Special-layer
-            for (int x = 0; x < MapWidth; x++)
+            for (int x = 0; x < mapXTiles; x++)
             {
-                for (int y = 0; y < MapHeight; y++)
+                for (int y = 0; y < mapYTiles; y++)
                 {
                     currentMap[1, x, y] = 0;
                     TileArray[1, x, y] = new Tile(x, y, AirTexture, TileSize, false);
@@ -267,6 +312,64 @@ namespace LevelEditor.Managers
             int y = (int)(pos.Y - offset.Y) / TileSize;
 
             return new Point(x, y);
+        }
+
+        private void MoveMapHorizontaly(int MoveAmount)
+        {
+            xDisplayMin += MoveAmount;
+            xDisplayMax += MoveAmount;
+            xOffset += MoveAmount;
+            //All this offset shit is used to make sure we add tiles in the correct places when the map has been moved
+            int maxXOffset = mapXTiles - editorXTiles;
+            if (xOffset < 0)
+                xOffset = 0;
+            else if (xOffset > maxXOffset)
+                xOffset = maxXOffset;
+
+            //We also want to keep the number of displayed tiles the same
+            //So make sure we stop at the right times
+            if (xDisplayMin > mapXTiles - editorXTiles)
+                xDisplayMin = mapXTiles - editorXTiles;
+            //We never want to display tiles that dont exist
+            //So make sure the minDisplay never goes below 0
+            else if (xDisplayMin < 0)
+                xDisplayMin = 0;
+
+            if (xDisplayMax < editorXTiles)
+                xDisplayMax = editorXTiles;
+            //Also make sure that maxDisplay never is greater
+            //then the width of the map
+            else if (xDisplayMax > mapXTiles)
+                xDisplayMax = mapXTiles;
+
+            Console.WriteLine("xDisplayMin: " + xDisplayMin + ", xDisplayMax: " + xDisplayMax + ", xMaxOffset: " + maxXOffset + ", xOffset: " + xOffset);
+        }
+
+        private void MoveMapVerticaly(int MoveAmount)
+        {
+            yDisplayMin += MoveAmount;
+            yDisplayMax += MoveAmount;
+            yOffset += MoveAmount;
+            //All this offset shit is used to make sure we add tiles in the correct places when the map has been moved
+            int maxYOffset = mapYTiles - editorYTiles;
+            if (yOffset < 0)
+                yOffset = 0;
+            else if (yOffset > maxYOffset)
+                yOffset = maxYOffset;
+
+            if (yDisplayMin < 0)
+                yDisplayMin = 0;
+
+            if (yDisplayMax > mapYTiles)
+                yDisplayMax = mapYTiles;
+
+            if (yDisplayMin > mapYTiles - editorYTiles)
+                yDisplayMin = mapYTiles - editorYTiles;
+
+            if (yDisplayMax < editorYTiles)
+                yDisplayMax = editorYTiles;
+
+            Console.WriteLine("yDisplayMin: " + yDisplayMin + ", yDisplayMax: " + yDisplayMax + ", yMaxOffset: " + maxYOffset + ", yOffset: " + yOffset);
         }
 
         #region Create-functions

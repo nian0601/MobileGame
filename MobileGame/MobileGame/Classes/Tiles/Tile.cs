@@ -22,11 +22,17 @@ namespace MobileGame
         protected bool shouldDraw;
         protected Color[] colorArray;
 
+        protected int interestRadius;
+        protected int controlRadius;
+
         public Tile(int x, int y)
         {   
             index = new Vector2(x, y);
             tileSize = TextureManager.TileSize;
             shouldDraw = true;
+
+            interestRadius = 400;
+            controlRadius = 200;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -77,6 +83,18 @@ namespace MobileGame
             {
                 return pixelPos;
             }
+        }
+
+        public int InterestRadius
+        {
+            get { return interestRadius; }
+            set { interestRadius = value; }
+        }
+
+        public int ControlRadius
+        {
+            get { return controlRadius; }
+            set { controlRadius = value; }
         }
     }
 }

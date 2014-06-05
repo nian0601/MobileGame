@@ -22,8 +22,10 @@ namespace MobileGame
         private List<SimpleTile> colliderList;
         private List<SpecialTile> specialBlockList;
         private int tileSize;
-        private int mapHeight;
-        private int mapWidth;
+        private int mapYTiles;
+        private int mapXTiles;
+        private static int mapWidth;
+        private static int mapHeight;
         private Vector2 playerStartPos;
 
         #region Properties
@@ -54,6 +56,16 @@ namespace MobileGame
             get { return playerStartPos; }
         }
 
+        public static int MapWidth
+        {
+            get { return mapWidth; }
+        }
+
+        public static int MapHeight
+        {
+            get { return mapHeight; }
+        }
+
         #endregion
 
         public MapManager()
@@ -67,8 +79,11 @@ namespace MobileGame
         {
             tileSize = FileLoader.LoadedLevelTileSize;
             currentMap = FileLoader.LoadedLevelArray;
-            mapHeight = FileLoader.LoadedLevelMapHeight;
-            mapWidth = FileLoader.LoadedLevelMapWidth;
+            mapYTiles = FileLoader.LoadedLevelMapHeight;
+            mapXTiles = FileLoader.LoadedLevelMapWidth;
+
+            mapHeight = mapYTiles * tileSize;
+            mapWidth = mapXTiles * tileSize;
 
             colliderList.Clear();
             specialBlockList.Clear();
@@ -111,9 +126,9 @@ namespace MobileGame
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            for (int x = 0; x < mapWidth; x++)
+            for (int x = 0; x < mapXTiles; x++)
             {
-                for (int y = 0; y < mapHeight; y++)
+                for (int y = 0; y < mapYTiles; y++)
                 {
                     tileArray[0, x, y].Draw(spriteBatch);
                 }
@@ -125,12 +140,14 @@ namespace MobileGame
 
         private void BuildLevel(int[,,] level)
         {
-            tileArray = new Tile[2, mapWidth, mapHeight];
+            tileArray = new Tile[2, mapXTiles, mapYTiles];
+
+            Console.WriteLine("xTiles: " + mapXTiles + ", yTiles: " + mapYTiles);
 
             //LOOPS THROUGH THE PLATFORM LAYER
-            for (int x = 0; x < mapWidth; x++)
+            for (int x = 0; x < mapXTiles; x++)
             {
-                for (int y = 0; y < mapHeight; y++)
+                for (int y = 0; y < mapYTiles; y++)
                 {
                     int tileType = level[0, x, y];
 
@@ -151,9 +168,9 @@ namespace MobileGame
             }
 
             //LOOPS THROUGH THE SPECIAL BLOCK'S LAYER
-            for (int x = 0; x < mapWidth; x++)
+            for (int x = 0; x < mapXTiles; x++)
             {
-                for (int y = 0; y < mapHeight; y++)
+                for (int y = 0; y < mapYTiles; y++)
                 {
                     int tileType = level[1, x, y];
 
@@ -162,7 +179,12 @@ namespace MobileGame
                     else if (tileType == 2)
                         specialBlockList.Add(new TeleportTile(x, y));
                     else if (tileType == 3)
-                        specialBlockList.Add(new GoalTile(x, y));
+                    {
+                        GoalTile temp = new GoalTile(x, y);
+                        specialBlockList.Add(temp);
+                        Camera.AddFocusObject(temp);
+                    }
+                        
                     else if (tileType == 4)
                         EnemyManager.AddEnemy(new SimpleEnemy(x, y));   
                 }

@@ -6,6 +6,8 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using LevelEditor.Managers;
+
 namespace LevelEditor
 {
     class Tile
@@ -23,11 +25,11 @@ namespace LevelEditor
             Pos = new Vector2(X * TileSize, Y * TileSize);
         }
 
-        public void Draw(SpriteBatch spritebatch, Vector2 offset)
+        public void Draw(SpriteBatch spritebatch, int x, int y, Vector2 offset)
         {
             if (ShouldDraw)
             {
-                Vector2 DrawPos = Pos + offset;
+                Vector2 DrawPos = new Vector2(x * MapManager.TileSize, y * MapManager.TileSize) + offset;
                 spritebatch.Draw(Texture, DrawPos, Color.White);
             }
         }
