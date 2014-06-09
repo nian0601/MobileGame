@@ -69,7 +69,6 @@ namespace MobileGame
                 gameLost = true;
 
             List<Tile> CollisionList = mapManager.FindConnectedTiles(mapManager.ConvertPixelsToIndex(Player.Position));
-            Console.WriteLine(CollisionList.Count);
 
             //The player handles collision against the generic platforms itself inside the update.
             //Player.Update(mapManager.ColliderList);
