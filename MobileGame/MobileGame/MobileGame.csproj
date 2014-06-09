@@ -329,6 +329,9 @@
     <None Include="Content\Tiles\PlayerTile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Content\Tiles\SmallTileTest.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Content\Tiles\TeleportTile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

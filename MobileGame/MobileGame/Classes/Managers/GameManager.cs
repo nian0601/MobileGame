@@ -71,8 +71,8 @@ namespace MobileGame
             List<Tile> CollisionList = mapManager.FindConnectedTiles(mapManager.ConvertPixelsToIndex(Player.Position));
 
             //The player handles collision against the generic platforms itself inside the update.
-            //Player.Update(mapManager.ColliderList);
-            Player.Update(CollisionList);
+            Player.Update(mapManager.ColliderList);
+            //Player.Update(CollisionList);
         }
 
         public void Draw(SpriteBatch spriteBatch)

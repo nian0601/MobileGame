@@ -5,6 +5,8 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using MobileGame.FileManagement;
+
 namespace MobileGame
 {
     class SimpleTile : Tile
@@ -17,7 +19,8 @@ namespace MobileGame
             if (tileType == 0)
                 shouldDraw = false;
 
-            tileSize = tileTexture.Height;
+            //tileSize = tileTexture.Height;
+            tileSize = FileLoader.LoadedLevelTileSize;
             pixelPos = new Vector2(index.X * tileSize, index.Y * tileSize);
         }   
     }

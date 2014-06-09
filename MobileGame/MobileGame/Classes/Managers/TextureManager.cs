@@ -20,6 +20,7 @@ namespace MobileGame
         public static Texture2D JumpTile { get; private set; }
         public static Texture2D TeleportTile { get; private set; }
         public static Texture2D TestBigTile { get; private set; }
+        public static Texture2D TestSmallTile { get; private set; }
 
         public static Texture2D EnemyTex { get; private set; }
         public static Texture2D SmallerEnemyTex { get; private set; }
@@ -37,6 +38,7 @@ namespace MobileGame
             JumpTile = Content.Load<Texture2D>("Tiles/JumpTile");
             TeleportTile = Content.Load<Texture2D>("Tiles/TeleportTile");
             TestBigTile = Content.Load<Texture2D>("Tiles/TestBigTile");
+            TestSmallTile = Content.Load<Texture2D>("Tiles/SmallTileTest");
 
             TileSize = AirTile.Width;
 

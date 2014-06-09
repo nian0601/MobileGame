@@ -47,7 +47,8 @@ namespace MobileGame
 
         public void SetTileBitType(int tileValue)
         {
-            tileTexture = TextureManager.TileTextures[tileValue];
+            //tileTexture = TextureManager.TileTextures[tileValue];
+            tileTexture = TextureManager.TestSmallTile;
             colorArray = new Color[tileTexture.Width * tileTexture.Height];
             tileTexture.GetData(colorArray);
         }
