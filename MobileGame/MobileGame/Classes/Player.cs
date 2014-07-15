@@ -135,12 +135,13 @@ namespace MobileGame
         {
             Point collisionPointLeft = new Point(HitBox().Left + 1, HitBox().Top + HitBox().Height);
             Point collisionPointRight = new Point(HitBox().Right - 1, HitBox().Top + HitBox().Height);
+            Point collisionPointCenter = new Point(HitBox().Right - HitBox().Width / 2, HitBox().Top + HitBox().Height);
 
             isOnGround = false;
 
             for (int i = 0; i < collisionList.Count; i++)
             {
-                if (collisionList[i].HitBox().Contains(collisionPointLeft) || collisionList[i].HitBox().Contains(collisionPointRight))
+                if (collisionList[i].HitBox().Contains(collisionPointLeft) || collisionList[i].HitBox().Contains(collisionPointRight) || collisionList[i].HitBox().Contains(collisionPointCenter))
                 {
                     isOnGround = true;
                     break;
@@ -255,6 +256,20 @@ namespace MobileGame
         public int ControlRadius
         {
             get { return 100; }
+        }
+
+        private Texture2D interestCircle;
+        public Texture2D InterestCircle
+        {
+            get { return interestCircle; }
+            set { interestCircle = value; }
+        }
+
+        private Texture2D controlCircle;
+        public Texture2D ControlCircle
+        {
+            get { return controlCircle; }
+            set { controlCircle = value; }
         }
     }
 }

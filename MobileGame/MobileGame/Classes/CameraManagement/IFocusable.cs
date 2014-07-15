@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace MobileGame.CameraManagement
 {
@@ -23,6 +24,16 @@ namespace MobileGame.CameraManagement
         /// The radius used to take full control over the camera
         /// </summary>
         int ControlRadius { get; }
+
+        /// <summary>
+        /// The texture used to draw interest-debug
+        /// </summary>
+        Texture2D InterestCircle { get; set; }
+
+        /// <summary>
+        /// The texture used to draw control-debug
+        /// </summary>
+        Texture2D ControlCircle { get; set; }
 
     }
 }

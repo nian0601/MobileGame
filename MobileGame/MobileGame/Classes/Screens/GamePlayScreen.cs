@@ -40,7 +40,7 @@ namespace MobileGame.Screens
                 gameManager = new GameManager();
 
             gameManager.Initialize();
-
+            gameManager.mapManager.graphicsDevice = ScreenManager.Game.GraphicsDevice;
         }
 
         public override void Unload()

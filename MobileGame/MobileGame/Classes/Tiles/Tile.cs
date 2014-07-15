@@ -101,5 +101,19 @@ namespace MobileGame
             get { return controlRadius; }
             set { controlRadius = value; }
         }
+
+        private Texture2D interestCircle;
+        public Texture2D InterestCircle
+        {
+            get { return interestCircle; }
+            set { interestCircle = value; }
+        }
+
+        private Texture2D controlCircle;
+        public Texture2D ControlCircle
+        {
+            get { return controlCircle; }
+            set { controlCircle = value; }
+        }
     }
 }

@@ -28,6 +28,8 @@ namespace MobileGame
         private static int mapHeight;
         private Vector2 playerStartPos;
 
+        internal GraphicsDevice graphicsDevice;
+
         #region Properties
 
         public int[, ,] CurrentMap

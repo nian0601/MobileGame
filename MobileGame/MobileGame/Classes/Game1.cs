@@ -60,7 +60,7 @@ namespace MobileGame
             screenManager.AddScreen(new BackgroundScreen());
             screenManager.AddScreen(new MainMenuScreen());
 
-            Camera.Initialize(GraphicsDevice.Viewport.Height, GraphicsDevice.Viewport.Width);
+            Camera.Initialize(GraphicsDevice.Viewport.Height, GraphicsDevice.Viewport.Width, GraphicsDevice);
             Camera.LoadStuff(Content);
             // TODO: use this.Content to load your game content here
         }
@@ -86,11 +86,10 @@ namespace MobileGame
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.SaddleBrown);
 
             screenManager.Draw(gameTime);
 
-            
             base.Draw(gameTime);
         }
     }

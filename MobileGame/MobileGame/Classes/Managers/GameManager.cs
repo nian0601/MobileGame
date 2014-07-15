@@ -13,7 +13,7 @@ namespace MobileGame
 {
     class GameManager
     {
-        private MapManager mapManager;
+        internal MapManager mapManager;
         public static Player Player;
         private bool gameWon, gameLost;
 

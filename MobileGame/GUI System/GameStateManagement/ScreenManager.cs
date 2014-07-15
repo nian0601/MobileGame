@@ -48,7 +48,6 @@ namespace GUI_System.GameStateManagement
         public ScreenManager(Game game)
         {
             Game = game;
-
         }
 
         public void Update(GameTime gameTime)
