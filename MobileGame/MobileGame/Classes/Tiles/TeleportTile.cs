@@ -22,7 +22,11 @@ namespace MobileGame
 
             if(HitBox().Contains(unitCollisionPoint) && KeyMouseReader.KeyClick(Keys.Space))
                 Unit.ResetPosition();
-            base.CollideWithUnit(Unit);
+        }
+
+        public override Rectangle HitBox()
+        {
+            return new Rectangle((int)pixelPos.X, (int)pixelPos.Y, tileTexture.Width, tileTexture.Height);
         }
     }
 }

@@ -14,8 +14,6 @@ namespace MobileGame
         public SimpleTile(int x, int y, int tileType, bool collidable)
             : base(x, y, collidable)
         {
-            tileTexture = TextureManager.AirTile;
-
             if (tileType == 0)
                 shouldDraw = false;
 

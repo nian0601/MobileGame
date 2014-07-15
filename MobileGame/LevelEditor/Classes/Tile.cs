@@ -12,18 +12,21 @@ namespace LevelEditor
 {
     class Tile
     {
-        private Texture2D Texture;
-        private Vector2 Pos;
+        protected Texture2D Texture;
+        
+        protected bool ShouldDraw;
+        protected int TileSize;
+
         public Vector2 IndexPos;
-        private bool ShouldDraw;
         public bool Collidable;
 
-        public Tile(int X, int Y, Texture2D TileTexture, int TileSize, bool Draw, bool Collidable)
+        public Tile(int X, int Y, Texture2D TileTexture, bool Draw, bool Collidable)
         {
             Texture = TileTexture;
             ShouldDraw = Draw;
             IndexPos = new Vector2(X, Y);
-            Pos = new Vector2(X * TileSize, Y * TileSize);
+            
+            this.TileSize = MapManager.TileSize;
             this.Collidable = Collidable;
         }
 
@@ -31,7 +34,12 @@ namespace LevelEditor
         {
             if (ShouldDraw)
             {
-                Vector2 DrawPos = new Vector2(x * MapManager.TileSize, y * MapManager.TileSize) + offset;
+                Vector2 DrawPos;
+                if(Collidable)
+                    DrawPos = new Vector2(x * TileSize, y * TileSize) + offset;
+                else
+                    DrawPos = new Vector2(x * TileSize, y * TileSize - Texture.Height/2) + offset;
+
                 spritebatch.Draw(Texture, DrawPos, Color.White);
             }
         }
@@ -44,16 +52,30 @@ namespace LevelEditor
 
     class PlayerTile : Tile
     {
-        public PlayerTile(int X, int Y, Texture2D TileTexture, int TileSize, bool Draw)
-            : base(X, Y, TileTexture, TileSize, Draw, false)
-        { }
+        public PlayerTile(int X, int Y, Texture2D TileTexture, bool Draw): base(X, Y, TileTexture, Draw, false)
+        {
+        }
     }
 
     class GoalTile : Tile
     {
-        public GoalTile(int X, int Y, Texture2D TileTexture, int TileSize, bool Draw)
-            : base(X, Y, TileTexture, TileSize, Draw, false)
-        { }
+        public GoalTile(int X, int Y, Texture2D TileTexture, bool Draw): base(X, Y, TileTexture, Draw, false)
+        {
+        }
+    }
+
+    class TeleportTile : Tile
+    {
+        public TeleportTile(int X, int Y, Texture2D TileTexture, bool Draw): base(X, Y, TileTexture, Draw, false)
+        {
+        }
+    }
+
+    class JumpTile : Tile
+    {
+        public JumpTile(int X, int Y, Texture2D TileTexture, bool Draw): base(X, Y, TileTexture, Draw, false)
+        {
+        }
     }
 
 }

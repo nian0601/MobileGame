@@ -5,6 +5,8 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using MobileGame.FileManagement;
+
 namespace MobileGame
 {
     class SimpleEnemy : IEnemy
@@ -23,7 +25,7 @@ namespace MobileGame
         public SimpleEnemy(int x, int y)
         {
             enemyTex = TextureManager.SmallerEnemyTex;
-            position = new Vector2(x * TextureManager.AirTile.Width, y * TextureManager.AirTile.Height);
+            position = new Vector2(x * FileLoader.LoadedLevelTileSize, y * FileLoader.LoadedLevelTileSize);
             gravity = 0.4f;
 
             isOnGround = false;

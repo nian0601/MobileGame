@@ -151,145 +151,52 @@
     <None Include="Content\GameTextures\TeleportTile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\BottomClosedLeftCornerTile.xnb">
+    <None Include="Content\GameTextures\Tiles\0Tile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\BottomClosedRightCornerTile.xnb">
+    <None Include="Content\GameTextures\Tiles\10Tile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\BottomClosedTile.xnb">
+    <None Include="Content\GameTextures\Tiles\11Tile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\BottomLeftCorner.xnb">
+    <None Include="Content\GameTextures\Tiles\12Tile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\BottomLeftOpenTile.xnb">
+    <None Include="Content\GameTextures\Tiles\13Tile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\BottomLeftTile.xnb">
+    <None Include="Content\GameTextures\Tiles\14Tile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\BottomMiddleTile.xnb">
+    <None Include="Content\GameTextures\Tiles\15Tile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\BottomOpenTile.xnb">
+    <None Include="Content\GameTextures\Tiles\1Tile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\BottomRightCorner.xnb">
+    <None Include="Content\GameTextures\Tiles\2Tile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\BottomRightOpenTile.xnb">
+    <None Include="Content\GameTextures\Tiles\3Tile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\BottomRightTile.xnb">
+    <None Include="Content\GameTextures\Tiles\4Tile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\BottomTopOpenTile.xnb">
+    <None Include="Content\GameTextures\Tiles\5Tile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\FourCornersTile.xnb">
+    <None Include="Content\GameTextures\Tiles\6Tile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\LeftClosedBottomCornerTile.xnb">
+    <None Include="Content\GameTextures\Tiles\7Tile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\LeftClosedTile.xnb">
+    <None Include="Content\GameTextures\Tiles\8Tile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\LeftClosedTopCornerTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\LeftOpenTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\LeftRightOpenTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\MiddleLeftTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\MiddleRightTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\MiddleTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\RightClosedBottomCornerTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\RightClosedTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\RightClosedTopCornerTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\RightOpenTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\SingleTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\ThreeCornersBottomLeftTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\ThreeCornersBottomRightTIle.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\ThreeCornersTopLeftTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\ThreeCornersTopRightTIle.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\TopClosedLeftCornerTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\TopClosedRightCornerTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\TopClosedTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\TopLeftBottomRightCornerTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\TopLeftCorner.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\TopLeftOpenTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\TopLeftTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\TopMiddleTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\TopOpenTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\TopRightBottomLeftCornerTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\TopRightCorner.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\TopRightOpenTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\TopRightTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\TwoCornersBottomTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\TwoCornersLeftTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\TwoCornersRightTile.xnb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\GameTextures\Tiles\TwoCornersTopTile.xnb">
+    <None Include="Content\GameTextures\Tiles\9Tile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

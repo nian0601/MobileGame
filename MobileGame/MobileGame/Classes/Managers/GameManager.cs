@@ -39,9 +39,6 @@ namespace MobileGame
             Camera.Position = Player.Position;
             Camera.DefaultFocus = Player;
 
-            Console.WriteLine("Player.X: " + Player.Position.X + ", Player.Y: " + Player.Position.Y);
-            Console.WriteLine("Camera.X: " + Camera.Position.X + ", Camera.: " + Camera.Position.Y);
-
             Game1.graphics.PreferredBackBufferHeight = Camera.CameraHeight;
             Game1.graphics.PreferredBackBufferWidth = Camera.CameraWidth;
             Game1.graphics.ApplyChanges();

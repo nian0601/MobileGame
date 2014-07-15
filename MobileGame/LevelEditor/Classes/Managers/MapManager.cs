@@ -130,20 +130,20 @@ namespace LevelEditor.Managers
             MapWidth = 20;
             TileSize = 0;
 
-            mapXTiles = 40;
-            mapYTiles = 30;
+            mapXTiles = 100;
+            mapYTiles = 60;
 
             currentMap = new int[Layers, mapXTiles, mapYTiles];
             TileArray = new Tile[Layers, mapXTiles, mapYTiles];
 
-            editorXTiles = 20;
-            editorYTiles = 15;
+            editorXTiles = 40;
+            editorYTiles = 30;
 
             xDisplayMin = 0;
-            xDisplayMax = editorXTiles;
+            xDisplayMax = mapXTiles;
 
             yDisplayMin = 0;
-            yDisplayMax = editorYTiles;
+            yDisplayMax = mapYTiles;
 
             xOffset = 0;
             yOffset = 0;
@@ -163,7 +163,7 @@ namespace LevelEditor.Managers
                 GridTexture = Content.Load<Texture2D>("Editor/GridTexture");
                 Background = Content.Load<Texture2D>("Editor/Background");
 
-                TileSize = AirTexture.Width;
+                TileSize = 20;
 
                 LoadTileTextures();
 
@@ -261,7 +261,7 @@ namespace LevelEditor.Managers
                 for (int y = 0; y < mapYTiles; y++)
                 {
                     currentMap[0, x, y] = 0;
-                    TileArray[0, x, y] = new Tile(x, y, AirTexture, TileSize, false, false);
+                    TileArray[0, x, y] = new Tile(x, y, AirTexture, false, false);
                 }
             }
 
@@ -271,7 +271,7 @@ namespace LevelEditor.Managers
                 for (int y = 0; y < mapYTiles; y++)
                 {
                     currentMap[1, x, y] = 0;
-                    TileArray[1, x, y] = new Tile(x, y, AirTexture, TileSize, false, false);
+                    TileArray[1, x, y] = new Tile(x, y, AirTexture, false, false);
                 }
             }
 
@@ -285,8 +285,8 @@ namespace LevelEditor.Managers
 
             tempRect.X = (int)Offset.X;
             tempRect.Y = (int)Offset.Y;
-            tempRect.Width = MapWidth * TileSize;
-            tempRect.Height = MapHeight* TileSize;
+            tempRect.Width = editorXTiles * TileSize;
+            tempRect.Height = editorYTiles * TileSize;
 
             return tempRect;
         }
@@ -368,61 +368,60 @@ namespace LevelEditor.Managers
         #region Create-functions
         private void CreateAir(int X, int Y)
         {
-            TileArray[0, X, Y] = new Tile(X, Y, AirTexture, TileSize, false, false);
-            TileArray[1, X, Y] = new Tile(X, Y, AirTexture, TileSize, false, false);
+            TileArray[0, X, Y] = new Tile(X, Y, AirTexture, false, false);
+            TileArray[1, X, Y] = new Tile(X, Y, AirTexture, false, false);
 
             CurrentMap[0, X, Y] = 0;
             CurrentMap[1, X, Y] = 0;
 
             List<Tile> tempTileList = FindConnectedTiles(TileArray[0, X, Y].IndexPos);
             foreach (Tile T in tempTileList)
-                T.SetTexture(TileBitTextures[CalculateTileValue((int)T.IndexPos.X, (int)T.IndexPos.Y)]);
-                //AssignTileType(T);
+                T.SetTexture(TileTextures[CalculateTileValue((int)T.IndexPos.X, (int)T.IndexPos.Y)]);
         }
 
         private void CreatePlatform(int X, int Y)
         {
-            TileArray[0, X, Y] = new Tile(X, Y, PlatformTexture, TileSize, true, true);
+            TileArray[0, X, Y] = new Tile(X, Y, PlatformTexture, true, true);
             CurrentMap[0, X, Y] = 1;
 
-            TileArray[0, X, Y].SetTexture(TileBitTextures[CalculateTileValue(X, Y)]);
+            TileArray[0, X, Y].SetTexture(TileTextures[CalculateTileValue(X, Y)]);
 
             List<Tile> tempTileList = FindConnectedTiles(TileArray[0, X, Y].IndexPos);
             foreach (Tile T in tempTileList)
-                T.SetTexture(TileBitTextures[CalculateTileValue((int)T.IndexPos.X, (int)T.IndexPos.Y)]);
+                T.SetTexture(TileTextures[CalculateTileValue((int)T.IndexPos.X, (int)T.IndexPos.Y)]);
         }
 
         private void CreateJumpTile(int X, int Y)
         {
-            TileArray[1, X, Y] = new Tile(X, Y, JumpTileTexture, TileSize, true, false);
+            TileArray[1, X, Y] = new JumpTile(X, Y, JumpTileTexture, true);
 
             CurrentMap[1, X, Y] = 1;
         }
 
         private void CreateTeleportTile(int X, int Y)
         {
-            TileArray[1, X, Y] = new Tile(X, Y, TeleportTileTexture, TileSize, true, false);
+            TileArray[1, X, Y] = new TeleportTile(X, Y, TeleportTileTexture, true);
 
             CurrentMap[1, X, Y] = 2;
         }
 
         private void CreateGoalTile(int X, int Y)
         {
-            TileArray[1, X, Y] = new GoalTile(X, Y, GoalTexture, TileSize, true);
+            TileArray[1, X, Y] = new GoalTile(X, Y, GoalTexture, true);
 
             CurrentMap[1, X, Y] = 3;
         }
 
         private void CreatePlayerSpawn(int X, int Y)
         {
-            TileArray[0, X, Y] = new PlayerTile(X, Y, PlayerTexture, TileSize, true);
+            TileArray[0, X, Y] = new PlayerTile(X, Y, PlayerTexture, true);
 
             CurrentMap[0, X, Y] = 9;
         }
 
         private void CreateEnemy(int X, int Y)
         {
-            TileArray[1, X, Y] = new Tile(X, Y, EnemyTexture, TileSize, true, false);
+            TileArray[1, X, Y] = new Tile(X, Y, EnemyTexture, true, false);
 
             CurrentMap[1, X, Y] = 4;
         }
@@ -568,23 +567,25 @@ namespace LevelEditor.Managers
 
         private void LoadTileTextures()
         {
-            TileBitTextures = new List<Texture2D>();
-            TileBitTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/SingleTile"));          // 0
-            TileBitTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/TopOpenTile"));         // 1
-            TileBitTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/RightOpenTile"));       // 2
-            TileBitTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/TopRightOpenTile"));    // 3
-            TileBitTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/BottomOpenTile"));      // 4
-            TileBitTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/BottomTopOpenTile"));   // 5
-            TileBitTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/BottomRightOpenTile")); // 6
-            TileBitTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/LeftClosedTile"));      // 7
-            TileBitTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/LeftOpenTile"));        // 8
-            TileBitTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/TopLeftOpenTile"));     // 9
-            TileBitTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/LeftRightOpenTile"));   // 10
-            TileBitTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/BottomClosedTile"));    // 11
-            TileBitTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/BottomLeftOpenTile"));  // 12
-            TileBitTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/RightClosedTile"));     // 13
-            TileBitTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/TopClosedTile"));       // 14
-            TileBitTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/MiddleTile"));          // 15
+            TileTextures = new List<Texture2D>();
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/0Tile"));     // 0
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/1Tile"));     // 1
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/2Tile"));     // 2
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/3Tile"));     // 3
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/4Tile"));     // 4
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/5Tile"));     // 5
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/6Tile"));     // 6
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/7Tile"));     // 7
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/8Tile"));     // 8
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/9Tile"));     // 9
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/10Tile"));    // 10
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/11Tile"));    // 11
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/12Tile"));    // 12
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/13Tile"));    // 13
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/14Tile"));    // 14
+            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/15Tile"));    // 15
+
+            TileSize = TileTextures[0].Width;
         }
         #endregion
     }

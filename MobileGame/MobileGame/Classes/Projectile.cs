@@ -23,7 +23,7 @@ namespace MobileGame
 
         public Projectile(Vector2 Position, float Speed, Vector2 Target)
         {
-            projTex = TextureManager.LayerdGoalTile;
+            projTex = TextureManager.SmallerEnemyTex;
             position = Position;
             target = Target;
             speed = Speed;

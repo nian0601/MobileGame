@@ -9,7 +9,7 @@ namespace MobileGame
     {
         public FastEnemy(int x, int y): base(x, y)
         {
-            enemyTex = TextureManager.LayerdGoalTile;
+            enemyTex = TextureManager.SmallerEnemyTex;
             velocity *= 3;
         }
     }

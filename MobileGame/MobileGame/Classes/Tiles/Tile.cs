@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
 
 using MobileGame.CameraManagement;
+using MobileGame.FileManagement;
 
 namespace MobileGame
 {
@@ -30,11 +31,11 @@ namespace MobileGame
         public Tile(int x, int y, bool collidable)
         {   
             index = new Vector2(x, y);
-            tileSize = TextureManager.TileSize;
+            tileSize = FileLoader.LoadedLevelTileSize;
             shouldDraw = true;
 
             interestRadius = 400;
-            controlRadius = 200;
+            controlRadius = 50;
 
             Collidable = collidable;
         }
@@ -47,8 +48,7 @@ namespace MobileGame
 
         public void SetTileBitType(int tileValue)
         {
-            //tileTexture = TextureManager.TileTextures[tileValue];
-            tileTexture = TextureManager.TestSmallTile;
+            tileTexture = TextureManager.TileTextures[tileValue];
             colorArray = new Color[tileTexture.Width * tileTexture.Height];
             tileTexture.GetData(colorArray);
         }
@@ -61,7 +61,7 @@ namespace MobileGame
             }
         }
 
-        public Rectangle HitBox()
+        public virtual Rectangle HitBox()
         {
             return new Rectangle((int)pixelPos.X, (int)pixelPos.Y, tileSize, tileSize);
         }

@@ -100,6 +100,8 @@ namespace MobileGame.CameraManagement
 
         #endregion
 
+        //private static Vector2 defaultFocusOffset;
+
         public static void Initialize(int Height, int Width)
         {
             activeList = new List<IFocusable>();
@@ -109,11 +111,12 @@ namespace MobileGame.CameraManagement
             zoom = 1f;
             moveSpeed = 1.5f;
             targetChangeSpeed = 2.5f;
-            setFocusSpeed = 2.5f;
+            setFocusSpeed = 4.5f;
             position = Vector2.Zero;
 
             defaultFocus = null;
             currentFocus = null;
+            //defaultFocusOffset = new Vector2(200, 0);
 
             cameraHeight = Height;
             cameraWidth = Width;
@@ -160,7 +163,7 @@ namespace MobileGame.CameraManagement
             else //If we dont have any focuspoints in range we want to follow the defaultFocus
             {
                 //Set our desired target to the defaultFocus
-                finalTarget = defaultFocus.Position;
+                finalTarget = defaultFocus.Position;// + defaultFocusOffset;
 
                 finalChangeSpeed = setFocusSpeed;
             }
@@ -173,7 +176,6 @@ namespace MobileGame.CameraManagement
             //and then we lerp the cameraPosition towards the targetPosition;
             position.X += (target.X - position.X) * moveSpeed * delta;
             position.Y += (target.Y - position.Y) * moveSpeed * delta;
-
             //This makes sure that the camera keeps a smooth movementcurve at all times, even when changeing focus, adding interestpoints etc
 
 
