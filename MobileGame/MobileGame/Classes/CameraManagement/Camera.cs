@@ -63,57 +63,43 @@ namespace MobileGame.CameraManagement
 
         #region Properties
 
+        private static Viewport viewPort;
+        public static Viewport ViewPort
+        {
+            get { return viewPort; }
+            set { viewPort = value; }
+        }
+
         private static float zoom;
         public static float Zoom
         {
             get { return zoom; }
-            set { zoom = value; if (zoom < 0.1f) zoom = 0.1f; } //Negative zoomvalue will flip images, dont want that
+            set { zoom = value; if (zoom < 0.1f) zoom = 0.1f; ValidateZoom(); } //Negative zoomvalue will flip images, dont want that
         }
 
         private static Vector2 position;
         public static Vector2 Position
         {
             get { return position; }
-            set { position = value; }
+            set { position = value; ValidatePosition(); }
         }
 
-        private static int cameraWidth;
-        public static int CameraWidth
-        {
-            get { return cameraWidth; }
-        }
-
-        private static int cameraHeight;
-        public static int CameraHeight
-        {
-            get { return cameraHeight; }
-        }
-
-        private static int xBoundary;
-        public static int XBoundary
-        {
-            get { return xBoundary; }
-            set { xBoundary = value - cameraWidth/2; Console.WriteLine("xBoundary: " + xBoundary); }
-        }
-
-        private static int yBoundary;
-        public static int YBoundary
-        {
-            get { return yBoundary; }
-            set { yBoundary = value - cameraHeight/2; Console.WriteLine("yBoundary: " + yBoundary); }
-        }
+        private static Rectangle? limits;
+        public static Rectangle? Limits { set { limits = value; ValidateZoom(); ValidatePosition(); } }
 
         #endregion
 
-        //private static Vector2 defaultFocusOffset;
-
-        public static void Initialize(int Height, int Width, GraphicsDevice GraphicsDevice)
+        public static void Initialize(GraphicsDevice GraphicsDevice)
         {
+            graphicsDevice = GraphicsDevice;
+
+            viewPort = graphicsDevice.Viewport;
+
             activeList = new List<IFocusable>();
             allFocusPoints = new List<IFocusable>();
             target = Vector2.Zero;
             rotation = 0f;
-            zoom = 1f;
+            zoom = 0.9f;
             moveSpeed = 1.5f;
             targetChangeSpeed = 2.5f;
             setFocusSpeed = 2.5f;
@@ -122,13 +108,8 @@ namespace MobileGame.CameraManagement
 
             defaultFocus = null;
             currentFocus = null;
-            //defaultFocusOffset = new Vector2(200, 0);
 
-            cameraHeight = Height;
-            cameraWidth = Width;
-
-            DrawDebug = false;
-            graphicsDevice = GraphicsDevice;
+            DrawDebug = false; 
         }
 
         public static void LoadStuff(ContentManager content)
@@ -144,9 +125,15 @@ namespace MobileGame.CameraManagement
             float finalChangeSpeed;
             CheckRanges();
 
+            if (KeyMouseReader.KeyClick(Keys.Z))
+                zoom -= 0.1f;
+            else if (KeyMouseReader.KeyClick(Keys.X))
+                zoom += 0.1f;
+
             if (KeyMouseReader.KeyClick(Keys.I))
                 DrawDebug = !DrawDebug;
 
+            #region Target-Follow-And-Select-Code
             if (currentFocus != null) //If we have a currentFocus we wnat to focus soley on that
             {
                 //Set our desired target to currentFocus
@@ -201,12 +188,13 @@ namespace MobileGame.CameraManagement
                     targetOffset.Y = 200;
 
                 //Set our desired target to the defaultFocus
-                finalTarget = defaultFocus.Position +targetOffset;
+                finalTarget = defaultFocus.Position + targetOffset;
 
                 finalChangeSpeed = setFocusSpeed;
 
                 pastDefaultFocusPos = defaultFocus.Position;
             }
+            #endregion
 
             //The camera position is updated in two steps:
             //First we lerp the targetPosition towards the finalTargetPosition
@@ -216,14 +204,8 @@ namespace MobileGame.CameraManagement
             //and then we lerp the cameraPosition towards the targetPosition;
             position.X += (target.X - position.X) * moveSpeed * delta;
             position.Y += (target.Y - position.Y) * moveSpeed * delta;
-            //This makes sure that the camera keeps a smooth movementcurve at all times, even when changeing focus, adding interestpoints etc
-
-
-            position.X = MathHelper.Clamp(position.X, cameraWidth / 2, xBoundary);
-            position.Y = MathHelper.Clamp(position.Y, cameraHeight / 2, yBoundary);
-
-            //Console.WriteLine("CameraPos.x: " + position.X + ", CameraPos.y: " + position.Y);
-        }
+            ValidatePosition();
+        } 
 
         public static void Draw(SpriteBatch sb)
         {
@@ -277,18 +259,13 @@ namespace MobileGame.CameraManagement
             activeList.Clear();
         }
 
-        public static void Move(Vector2 amount)
-        {
-            position += amount;
-        }
-
         public static Matrix Get_Transformation()
         {
             transform =
-                Matrix.CreateTranslation(new Vector3(-position.X - cameraWidth/2, -position.Y - cameraHeight/2, 0)) *
+                Matrix.CreateTranslation(new Vector3(-position.X - viewPort.Width/2, -position.Y - viewPort.Height/2, 0)) *
                 Matrix.CreateRotationZ(rotation) *
                 Matrix.CreateScale(new Vector3(zoom, zoom, 1)) *
-                Matrix.CreateTranslation(new Vector3(cameraWidth, cameraHeight, 0));
+                Matrix.CreateTranslation(new Vector3(viewPort.Width, viewPort.Height, 0));
 
             return transform;
         }
@@ -383,6 +360,29 @@ namespace MobileGame.CameraManagement
 
             texture.SetData(data);
             return texture;
+        }
+
+        private static void ValidateZoom()
+        {
+            if (limits.HasValue)
+            {
+                float minZoomX = (float)viewPort.Width / limits.Value.Width;
+                float minZoomY = (float)viewPort.Height / limits.Value.Height;
+                zoom = MathHelper.Max(zoom, MathHelper.Max(minZoomX, minZoomY));
+            }
+        }
+
+        private static void ValidatePosition()
+        {
+            if (limits.HasValue)
+            {
+                Vector2 cameraWorldMin = Vector2.Transform(Vector2.Zero, Matrix.Invert(Get_Transformation()));
+                Vector2 cameraSize = new Vector2(viewPort.Width, viewPort.Height) / zoom;
+                Vector2 limitWorldMin = new Vector2(limits.Value.Left, limits.Value.Top);
+                Vector2 limitWorldMax = new Vector2(limits.Value.Right, limits.Value.Bottom);
+                Vector2 positionOffset = position - cameraWorldMin;
+                position = Vector2.Clamp(cameraWorldMin, limitWorldMin, limitWorldMax - cameraSize) + positionOffset;
+            }
         }
     }
 }

@@ -60,7 +60,8 @@ namespace MobileGame
             screenManager.AddScreen(new BackgroundScreen());
             screenManager.AddScreen(new MainMenuScreen());
 
-            Camera.Initialize(GraphicsDevice.Viewport.Height, GraphicsDevice.Viewport.Width, GraphicsDevice);
+            Camera.Initialize(GraphicsDevice);
+            Camera.Limits = new Rectangle(0, 0, 800, 600);
             Camera.LoadStuff(Content);
             // TODO: use this.Content to load your game content here
         }

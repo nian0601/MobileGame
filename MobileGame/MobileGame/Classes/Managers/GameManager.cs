@@ -34,14 +34,9 @@ namespace MobileGame
 
             Player.SetStartPos(mapManager.PlayerStartPos);
 
-            Camera.XBoundary = MapManager.MapWidth;
-            Camera.YBoundary = MapManager.MapHeight;
             Camera.Position = Player.Position;
             Camera.DefaultFocus = Player;
-
-            Game1.graphics.PreferredBackBufferHeight = Camera.CameraHeight;
-            Game1.graphics.PreferredBackBufferWidth = Camera.CameraWidth;
-            Game1.graphics.ApplyChanges();
+            Camera.Limits = new Rectangle(0, 0, MapManager.MapWidth, MapManager.MapHeight);
         }
 
         public void Update(float elapsedTime)

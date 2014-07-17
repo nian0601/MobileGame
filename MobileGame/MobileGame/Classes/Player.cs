@@ -40,7 +40,7 @@ namespace MobileGame
             acceleration = 0.1f;
             friction = 0.95f;
             gravity = 0.4f;
-            jumpPower = 5.0f;
+            jumpPower = 6.0f;
 
             isOnGround = false;
 
@@ -56,7 +56,7 @@ namespace MobileGame
             //Apply horizontal velocity
             position.X += velocity.X;
             //Make sure position isnt outside the map
-            position.X = MathHelper.Clamp(position.X, 0, MapManager.MapWidth - playerTex.Width);
+            position.X = MathHelper.Clamp(position.X, -100, MapManager.MapWidth);
             if (position.X == 0 || position.X == MapManager.MapWidth - playerTex.Width)
                 velocity.X = 0;
             //Run CollisionCheck
@@ -66,10 +66,10 @@ namespace MobileGame
             velocity.Y += gravity;
             position.Y += velocity.Y;
             //Make sure position isnt outside the map
-            position.Y = MathHelper.Clamp(position.Y, 0, MapManager.MapHeight - playerTex.Height);
+            position.Y = MathHelper.Clamp(position.Y, -100, MapManager.MapHeight);
             if (position.Y == 0)
                 velocity.Y = 0;
-            else if (position.Y == MapManager.MapHeight - playerTex.Height)
+            else if (position.Y >= MapManager.MapHeight - playerTex.Height)
             {
                 gotKilled = true;
             }
