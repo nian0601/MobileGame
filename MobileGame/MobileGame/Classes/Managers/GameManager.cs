@@ -15,7 +15,7 @@ namespace MobileGame
     {
         internal MapManager mapManager;
         public static Player Player;
-        private bool gameWon, gameLost;
+        private static bool gameWon, gameLost;
 
         public GameManager(){}
 
@@ -63,7 +63,8 @@ namespace MobileGame
             List<Tile> CollisionList = mapManager.FindConnectedTiles(mapManager.ConvertPixelsToIndex(Player.Position));
 
             //The player handles collision against the generic platforms itself inside the update.
-            Player.Update(mapManager.ColliderList);
+            if (Player != null)
+                Player.Update(mapManager.ColliderList);
             //Player.Update(CollisionList);
         }
 
@@ -73,10 +74,11 @@ namespace MobileGame
 
             EnemyManager.Draw(spriteBatch);
 
-            Player.Draw(spriteBatch);
+            if(Player != null)
+                Player.Draw(spriteBatch);
         }
 
-        public void RestarLevel()
+        public static void RestarLevel()
         {
             gameWon = false;
             gameLost = false;

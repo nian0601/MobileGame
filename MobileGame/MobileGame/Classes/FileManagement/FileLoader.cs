@@ -65,6 +65,7 @@ namespace MobileGame.FileManagement
             }
             finally
             {
+                GameManager.Player = null;
                 stream.Close();
             }
         }

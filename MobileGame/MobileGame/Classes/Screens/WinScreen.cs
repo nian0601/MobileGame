@@ -18,12 +18,9 @@ namespace MobileGame.Screens
     {
         private MenuButton MenuButton, LevelSelectButton, RestartButton, ContinueButton;
         private Texture2D TitleTexture, ScoreTexture;
-        private GameManager GameManager;
 
-        public WinScreen(GameManager gameManager): base("")
+        public WinScreen(): base("")
         {
-            GameManager = gameManager;
-
             MenuButton = new MenuButton(new MenuButtonStyle(ScreenManager.Game.Content));
             LevelSelectButton = new MenuButton(new LevelSelectStyle(ScreenManager.Game.Content));
             RestartButton = new MenuButton(new RestartButtonStyle(ScreenManager.Game.Content));
@@ -49,10 +46,14 @@ namespace MobileGame.Screens
         public override void HandleInput(GameTime gameTime)
         {
             if (MenuButton.LeftClick())
+            {
                 LoadingScreen.Load(ScreenManager, true, new BackgroundScreen(), new MainMenuScreen());
+            }
 
             else if (LevelSelectButton.LeftClick())
+            {
                 LoadingScreen.Load(ScreenManager, true, new BackgroundScreen(), new MainMenuScreen(), new LevelSelectScreen());
+            }
 
             else if (RestartButton.LeftClick())
             {

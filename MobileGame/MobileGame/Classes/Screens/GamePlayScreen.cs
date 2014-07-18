@@ -41,6 +41,7 @@ namespace MobileGame.Screens
 
             gameManager.Initialize();
             gameManager.mapManager.graphicsDevice = ScreenManager.Game.GraphicsDevice;
+            GameManager.RestarLevel();
         }
 
         public override void Unload()
@@ -67,12 +68,10 @@ namespace MobileGame.Screens
                 ScreenManager.AddScreen(new PausScreen());
 
             if (gameManager.GameWon)
-                ScreenManager.AddScreen(new WinScreen(gameManager));
+                ScreenManager.AddScreen(new WinScreen());
             
             if (gameManager.GameLost)
-                ScreenManager.AddScreen(new DefeatedScreen(gameManager));
-
-            
+                ScreenManager.AddScreen(new DefeatedScreen(gameManager));   
         }
 
         public override void Draw(GameTime gameTime)

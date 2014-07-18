@@ -37,11 +37,15 @@ namespace MobileGame.Screens
             if (returnToMenuButton.LeftClick())
                 LoadingScreen.Load(ScreenManager, true, new BackgroundScreen(), new MainMenuScreen());
 
-            else if (exitPausButton.LeftClick())
+            else if (exitPausButton.LeftClick() || KeyMouseReader.KeyClick(Microsoft.Xna.Framework.Input.Keys.P))
                 ExitScreen();
 
             else if (restartLevelButton.LeftClick())
-                //RESTART THE LEVEL HERE
+            {
+                GameManager.RestarLevel();
+                ExitScreen();
+            }
+                
 
             base.HandleInput(gameTime);
         }

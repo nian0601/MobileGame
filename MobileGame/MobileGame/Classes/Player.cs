@@ -79,8 +79,7 @@ namespace MobileGame
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            //spriteBatch.Draw(playerTex, position, Color.White);
-            spriteBatch.Draw(playerTex, position, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
+            spriteBatch.Draw(playerTex, position, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
         }
 
         public void Jump(float jumpMultiplier)
