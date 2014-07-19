@@ -11,13 +11,11 @@ namespace MobileGame
     {
         private static List<SimpleEnemy> enemyList = new List<SimpleEnemy>();
 
-        //Is not used at the moment, each enemy is updated individually in GameManager.cs when the enemyList is being looped through anyway
-        //Might be useful later though, if i change my mind. Lets keep it for now
-        public static void Update(Player player, float elapsedTime, List<SimpleTile> simpleCollideList)
+        public static void Update(Player player, float elapsedTime)
         {
             for (int i = 0; i < enemyList.Count; i++)
             {
-                enemyList[i].Update(elapsedTime, player, simpleCollideList);
+                enemyList[i].Update(elapsedTime, player);
 
                 if (enemyList[i].HitBox().Intersects(player.HitBox()))
                     enemyList[i].CollideWithPlayer(player);
@@ -26,8 +24,6 @@ namespace MobileGame
             }
         }
 
-        //This is not being used at the moment either, for the same reason as Update()
-        //Should I however move away from looping through everything in GameManager this will be very useful, so lets keep it for now aswell
         public static void Draw(SpriteBatch spritebatch)
         {
             for (int i = 0; i < enemyList.Count; i++)

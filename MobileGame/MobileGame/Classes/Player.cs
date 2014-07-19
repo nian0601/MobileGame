@@ -25,10 +25,59 @@ namespace MobileGame
         private float jumpPower;
 
         private bool isOnGround;
+
         internal bool foundGoal;
         internal bool gotKilled;
 
         private Color[] colorArray;
+
+        #region Properties
+
+        public Vector2 Position
+        {
+            get { return position; }
+        }
+
+        public Color[] ColorArray
+        {
+            get { return colorArray; }
+        }
+
+        public bool FoundGoal
+        {
+            get { return foundGoal; }
+        }
+
+        public bool GotKilled
+        {
+            get { return gotKilled; }
+        }
+
+        public int InterestRadius
+        {
+            get { return 200; }
+        }
+
+        public int ControlRadius
+        {
+            get { return 100; }
+        }
+
+        private Texture2D interestCircle;
+        public Texture2D InterestCircle
+        {
+            get { return interestCircle; }
+            set { interestCircle = value; }
+        }
+
+        private Texture2D controlCircle;
+        public Texture2D ControlCircle
+        {
+            get { return controlCircle; }
+            set { controlCircle = value; }
+        }
+
+        #endregion
 
         public Player()
         {
@@ -48,19 +97,23 @@ namespace MobileGame
             playerTex.GetData(colorArray);
         }
 
-        public void Update(List<Tile> collisionList)
+        public void Update()
         {
+            //Generate the CollisionList
+            List<Tile> CollisionList = MapManager.GenerateCollisionList((int)position.X, (int)position.Y, 3, 3);
+
             ListenToInput();
-            CheckIfOnGround(collisionList);
+            CheckIfOnGround(CollisionList);
 
             //Apply horizontal velocity
             position.X += velocity.X;
             //Make sure position isnt outside the map
             position.X = MathHelper.Clamp(position.X, -100, MapManager.MapWidth);
+            //And set the players speed to 0 if he is at the edge of the map
             if (position.X == 0 || position.X == MapManager.MapWidth - playerTex.Width)
                 velocity.X = 0;
             //Run CollisionCheck
-            HorizontalCollision(collisionList);
+            HorizontalCollision(CollisionList);
 
             //Apply gravity and vertical velocity
             velocity.Y += gravity;
@@ -74,7 +127,7 @@ namespace MobileGame
                 gotKilled = true;
             }
             //Run CollisionCheck
-            VerticalCollision(collisionList);  
+            VerticalCollision(CollisionList);  
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -102,6 +155,11 @@ namespace MobileGame
             position = startPos;
             gotKilled = false;
             foundGoal = false;
+        }
+
+        public Rectangle HitBox()
+        {
+            return new Rectangle((int)position.X, (int)position.Y, playerTex.Width, playerTex.Height);
         }
 
         private void ListenToInput()
@@ -132,8 +190,8 @@ namespace MobileGame
 
         private void CheckIfOnGround(List<Tile> collisionList)
         {
-            Point collisionPointLeft = new Point(HitBox().Left + 1, HitBox().Top + HitBox().Height);
-            Point collisionPointRight = new Point(HitBox().Right - 1, HitBox().Top + HitBox().Height);
+            Point collisionPointLeft = new Point(HitBox().Left, HitBox().Top + HitBox().Height);
+            Point collisionPointRight = new Point(HitBox().Right, HitBox().Top + HitBox().Height);
             Point collisionPointCenter = new Point(HitBox().Right - HitBox().Width / 2, HitBox().Top + HitBox().Height);
 
             isOnGround = false;
@@ -214,61 +272,6 @@ namespace MobileGame
             return false;
         }
 
-        public Rectangle HitBox()
-        {
-            Rectangle temp = new Rectangle((int)position.X, (int)position.Y, playerTex.Width, playerTex.Height);
-
-            return new Rectangle((int)position.X, (int)position.Y, playerTex.Width, playerTex.Height);
-        }
-
-        public Vector2 Position
-        {
-            get
-            {
-                return position;
-            }
-        }
-
-        public Color[] ColorArray
-        {
-            get
-            {
-                return colorArray;
-            }
-        }
-
-        public bool FoundGoal
-        {
-            get { return foundGoal; }
-        }
-
-        public bool GotKilled
-        {
-            get { return gotKilled; }
-        }
-
-        public int InterestRadius
-        {
-            get { return 200; }
-        }
-
-        public int ControlRadius
-        {
-            get { return 100; }
-        }
-
-        private Texture2D interestCircle;
-        public Texture2D InterestCircle
-        {
-            get { return interestCircle; }
-            set { interestCircle = value; }
-        }
-
-        private Texture2D controlCircle;
-        public Texture2D ControlCircle
-        {
-            get { return controlCircle; }
-            set { controlCircle = value; }
-        }
+        
     }
 }

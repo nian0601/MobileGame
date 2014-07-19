@@ -47,7 +47,7 @@ namespace MobileGame
             position.X += velocity.X;
         }
 
-        public virtual void Update(float elapsedTime, Player player, List<SimpleTile> collisionList)
+        public virtual void Update(float elapsedTime, Player player)
         {
             List<Tile> CollisionList = MapManager.GenerateCollisionList((int)position.X, (int)position.Y, 3, 3);
 
@@ -73,15 +73,10 @@ namespace MobileGame
                 player.gotKilled = true;     
         }
 
-        public virtual void SpecialAbility(Player player)
-        {
-
-        }
+        public virtual void SpecialAbility(Player player) {}
 
         public virtual Rectangle HitBox()
         {
-            Rectangle temp = new Rectangle((int)position.X, (int)position.Y, enemyTex.Width, enemyTex.Height);
-
             return new Rectangle((int)position.X, (int)position.Y, enemyTex.Width, enemyTex.Height);
         }
 

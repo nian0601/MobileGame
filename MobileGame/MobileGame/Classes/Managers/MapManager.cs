@@ -19,38 +19,31 @@ namespace MobileGame
     {
         private static int[, ,] currentMap;
         private static Tile[, ,] tileArray;
-        private List<SimpleTile> colliderList;
-        private List<SpecialTile> specialBlockList;
         private static int tileSize;
-        private int mapYTiles;
-        private int mapXTiles;
         private static int mapWidth;
         private static int mapHeight;
+
+        private List<SimpleTile> platformList;
+        private List<SpecialTile> specialBlockList;
+        private int mapYTiles;
+        private int mapXTiles;
         private Vector2 playerStartPos;
 
         internal GraphicsDevice graphicsDevice;
 
         #region Properties
 
+        /// <summary>
+        /// This array is used in the loading and building of maps and contains the 1's and 0's that gets converted into tiles in the BuildMap-function
+        /// </summary>
         public int[, ,] CurrentMap
         {
             get { return currentMap; }
         }
 
-        public List<SimpleTile> ColliderList
-        {
-            get
-            {
-                return colliderList;
-            }
-        }
-
         public List<SpecialTile> SpecialBlocksList
         {
-            get
-            {
-                return specialBlockList;
-            }
+            get { return specialBlockList; }
         }
 
         public Vector2 PlayerStartPos
@@ -72,7 +65,7 @@ namespace MobileGame
 
         public MapManager()
         {
-            colliderList = new List<SimpleTile>();
+            platformList = new List<SimpleTile>();
             specialBlockList = new List<SpecialTile>();
             playerStartPos = new Vector2(200, 200);
         }
@@ -87,12 +80,13 @@ namespace MobileGame
             mapHeight = mapYTiles * tileSize;
             mapWidth = mapXTiles * tileSize;
 
-            colliderList.Clear();
+            platformList.Clear();
             specialBlockList.Clear();
 
             BuildLevel(currentMap);
         }
 
+        //This entire function should not be in the final game, we do not want the player to be able to draw on the map while playing
         public void Update()
         {
             Vector2 mousePos = Camera.ScreenToWorldCoordinates(new Vector2(KeyMouseReader.mousePos.X, KeyMouseReader.mousePos.Y));
@@ -175,25 +169,29 @@ namespace MobileGame
                 {
                     int tileType = level[0, x, y];
 
+                    //If the tiletype is 9 that means we found the place where the player should spawn
+                    //So we do some stuff that we dont do with the normal tiles and then continue on with the loops
                     if (tileType == 9)
                     {
                         playerStartPos = ConvertIndexToPixels(x, y);
-                        tileArray[0, x, y] = new SimpleTile(x, y, 0, false);
+                        tileArray[0, x, y] = new SimpleTile(x, y, 0);
                         continue;
                     }
 
+                    //We create an empty simpletile before we check tiletypes
+                    //Then we define the simpleTile after the tileType checks
                     SimpleTile tempTile;
                     if (tileType != 0)
                     {
-                        tempTile = new SimpleTile(x, y, tileType, true);
-                        colliderList.Add(tempTile);
+                        tempTile = new SimpleTile(x, y, tileType);
+                        platformList.Add(tempTile);
                     }
                     else
                     {
-                        tempTile = new SimpleTile(x, y, tileType, false);
+                        tempTile = new SimpleTile(x, y, tileType);
                     }
                     
-
+                    //And adds it to the levelarray
                     tileArray[0, x, y] = tempTile;
                 }
             }
@@ -221,10 +219,12 @@ namespace MobileGame
                 }
             }
 
-            foreach (SimpleTile Tile in colliderList)
+            //To make sure that all the tiles get their correct texture we have to wait until all the tiles have been added
+            //and then loop through them all and set TileTextures
+            foreach (SimpleTile Tile in platformList)
                 Tile.SetTileBitType(CalculateTileValue((int)Tile.IndexPos.X, (int)Tile.IndexPos.Y));
-            //AssignTileType(Tile);
 
+            #region Performance Check Code
             //PERFORMANCE CHECK!!
             //for (int i = 0; i < 1000; i++)
             //{
@@ -241,8 +241,12 @@ namespace MobileGame
             //    //Console.WriteLine("Measured time: " + watch.ElapsedMilliseconds + " ms.");
             //    Console.WriteLine("Measured time: " + (end - begin).TotalMilliseconds + " ms.");
             //}
+            #endregion
         }
 
+        /// <summary>
+        /// Simple Helperfunction that takes an index and converts it into pixels
+        /// </summary>
         public Vector2 ConvertIndexToPixels(int X, int Y)
         {
             int x = X * tileSize;
@@ -251,6 +255,9 @@ namespace MobileGame
             return new Vector2(x, y);
         }
 
+        /// <summary>
+        /// A simple helperfunction that takes an vector (pixelpos) and converts it into an index
+        /// </summary>
         public static Vector2 ConvertPixelsToIndex(Vector2 pos)
         {
             int x = (int)pos.X / tileSize;
@@ -259,11 +266,17 @@ namespace MobileGame
             return new Vector2(x, y);
         }
 
+        /// <summary>
+        /// Simple helperfunction that finds the tile at an given index
+        /// </summary>
         private Tile FindTileAtIndex(int x, int y)
         {
             return tileArray[0, x, y];
         }
 
+        /// <summary>
+        /// This function takes the index of a tile and calulates its value based on its neighbours, used to set the tiletextures
+        /// </summary>
         private int CalculateTileValue(int x, int y)
         {
             int TileValue = 0;
@@ -273,7 +286,7 @@ namespace MobileGame
             {
                 Tile northTile = FindTileAtIndex(x, y - 1);
 
-                if (colliderList.Contains(northTile))
+                if (platformList.Contains(northTile))
                     TileValue += 1;
             }
 
@@ -282,7 +295,7 @@ namespace MobileGame
             {
                 Tile eastTile = FindTileAtIndex(x + 1, y);
 
-                if (colliderList.Contains(eastTile))
+                if (platformList.Contains(eastTile))
                     TileValue += 2;
             }
 
@@ -291,7 +304,7 @@ namespace MobileGame
             {
                 Tile southTile = FindTileAtIndex(x, y + 1);
 
-                if (colliderList.Contains(southTile))
+                if (platformList.Contains(southTile))
                     TileValue += 4;
             }
 
@@ -300,29 +313,32 @@ namespace MobileGame
             {
                 Tile westTile = FindTileAtIndex(x - 1, y);
 
-                if (colliderList.Contains(westTile))
+                if (platformList.Contains(westTile))
                     TileValue += 8;
             }
             return TileValue;
         }
 
+        /// <summary>
+        /// Simple helperfunction that creates a simpletile (a platform) at a given index
+        /// </summary>
         private void CreateSimpleTile(int x, int y)
         {
-            SimpleTile tempTile = new SimpleTile(x, y, 1, true);
+            SimpleTile tempTile = new SimpleTile(x, y, 1);
 
             bool newTile = true;
             Vector2 tempVector = new Vector2(x, y);
 
             //This is to make sure that we only add ONE tile to the colliderList
             //Is needed if we want it to be possible to "draw" the map, i.e not having to click each tile
-            for (int i = 0; i < colliderList.Count; i++)
-                if (colliderList[i].IndexPos == tempVector)
+            for (int i = 0; i < platformList.Count; i++)
+                if (platformList[i].IndexPos == tempVector)
                     newTile = false;
 
             if (newTile)
             {
                 tileArray[0, x, y] = tempTile;
-                colliderList.Add(tempTile);
+                platformList.Add(tempTile);
 
                 tempTile.SetTileBitType(CalculateTileValue((int)tempTile.IndexPos.X, (int)tempTile.IndexPos.Y));
 
@@ -335,28 +351,35 @@ namespace MobileGame
 
         }
 
+        /// <summary>
+        /// A simple helperfunction that removes a simpletile (platform) at a given index
+        /// </summary>
         private void RemoveSimpleTile(int x, int y)
         {
-            tileArray[0, x, y] = new SimpleTile(x, y, 0, false);
+            tileArray[0, x, y] = new SimpleTile(x, y, 0);
             currentMap[0, x, y] = 0;
 
             Vector2 tempVector = new Vector2(x, y);
 
-            for (int i = 0; i < colliderList.Count; i++)
+            for (int i = 0; i < platformList.Count; i++)
             {
-                if (colliderList[i].IndexPos == tempVector)
+                if (platformList[i].IndexPos == tempVector)
                 {
-                    List<Tile> tempTileList = FindSurroundingTiles(colliderList[i].IndexPos, 1, 1);
+                    List<Tile> tempTileList = FindSurroundingTiles(platformList[i].IndexPos, 1, 1);
                     foreach (Tile T in tempTileList)
                         T.SetTileBitType(CalculateTileValue((int)T.IndexPos.X, (int)T.IndexPos.Y));
 
 
-                    colliderList.RemoveAt(i);
+                    platformList.RemoveAt(i);
                     break;
                 }
             }
         }
 
+        /// <summary>
+        /// A function that takes a index and then returns all the surrounding simpletiles(platforms) within the defined ranges
+        /// </summary>
+        /// <param name="centerIndex"></param>
         private static List<Tile> FindSurroundingTiles(Vector2 centerIndex, int xRange, int yRange)
         {
             List<Tile> tempList = new List<Tile>();
@@ -387,13 +410,8 @@ namespace MobileGame
                     //Is the tile we are looking at inside the map-array?
                     if (IsXInsideArray(currentX, tileArray) && IsYInsideArray(currentY, tileArray))
                     {
-                        //Console.WriteLine("Current Index is inside array");
-                        //if (colliderList.Contains(tileArray[0, currentX, currentY]))
-                        //    tempList.Add(tileArray[0, currentX, currentY]);
-
                         if (tileArray[0, currentX, currentY].shouldDraw)
-                            tempList.Add(tileArray[0, currentX, currentY]);
-                            
+                            tempList.Add(tileArray[0, currentX, currentY]);      
                     }
                 }
             }
@@ -402,13 +420,19 @@ namespace MobileGame
             return tempList;
         }
 
+        /// <summary>
+        /// A simple helperfunction that checks if a given value is inside the y-bounds of the given array
+        /// </summary>
         private static bool IsYInsideArray(int y, Tile[, ,] array)
         {
             if (y < 0 || y > array.GetUpperBound(2))
                 return false;
             return true;
         }
-
+        
+        /// <summary>
+        /// A simple helperfunction that checks if a given value is inside the x-bounds of the given array
+        /// </summary>
         private static bool IsXInsideArray(int x, Tile[, ,] array)
         {
             if (x < 0 || x > array.GetUpperBound(1))

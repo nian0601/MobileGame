@@ -46,7 +46,6 @@ namespace MobileGame.Screens
                 ExitScreen();
                 GameManager.RestarLevel();
             }
-                
 
             base.HandleInput(gameTime);
         }

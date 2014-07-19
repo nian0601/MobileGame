@@ -60,6 +60,9 @@ namespace MobileGame.CameraManagement
 
         #region Properties
 
+        /// <summary>
+        /// This is used as the camera size, its get set to the size of the gameWindow
+        /// </summary>
         private static Viewport viewPort;
         public static Viewport ViewPort
         {
@@ -67,6 +70,9 @@ namespace MobileGame.CameraManagement
             set { viewPort = value; }
         }
 
+        /// <summary>
+        /// The zoomvalue of the camera
+        /// </summary>
         private static float zoom;
         public static float Zoom
         {
@@ -74,6 +80,9 @@ namespace MobileGame.CameraManagement
             set { zoom = value; if (zoom < 0.1f) zoom = 0.1f; ValidateZoom(); } //Negative zoomvalue will flip images, dont want that
         }
 
+        /// <summary>
+        /// The position of the camera, also calls ValidatePos() when the setter is used
+        /// </summary>
         private static Vector2 position;
         public static Vector2 Position
         {
@@ -81,6 +90,9 @@ namespace MobileGame.CameraManagement
             set { position = value; ValidatePosition(); }
         }
 
+        /// <summary>
+        /// This is the total area the camera should be able to show, so this should be equal to the pixelsize of the entire map
+        /// </summary>
         private static Rectangle? limits;
         public static Rectangle? Limits { set { limits = value; ValidateZoom(); ValidatePosition(); } }
 

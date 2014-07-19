@@ -52,12 +52,15 @@ namespace MobileGame.FileManagement
             LoadLevel(gameData.CurrentMap);
         }
 
+
         public static void LoadLevel(int LevelNumber)
         {
+            //Get the path to the map we want to load
             string LoadPath = LevelDirectoryPath + @"\" + gameData.MapList[LevelNumber-1];
-
+            //Open the stream
             FileStream stream = File.Open(LoadPath, FileMode.Open);
 
+            //And then we do the serializing process
             try
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(LevelData));
@@ -65,82 +68,20 @@ namespace MobileGame.FileManagement
             }
             finally
             {
+                //Before closing the stream we set the Player to null
+                //This forces the GameManager to create a new player object which
+                //will make sure that the player gets spawnd with all the correct values on the new map
                 GameManager.Player = null;
                 stream.Close();
             }
         }
 
-        public static void SaveLevel(int[,,] LevelArray)
-        {
-            //First we read the GameData file so that we get access to the MapList
-            //We will use that to propperly name the new map
-            string GameDataPath = SaveFilesDirectoryPath + @"\GameData";
-            GameData TempGameData;
-            FileStream GameDataStream = File.Open(GameDataPath, FileMode.Open);
-
-            try
-            {
-                XmlSerializer GameDataSerializer = new XmlSerializer(typeof(GameData));
-                TempGameData = (GameData)GameDataSerializer.Deserialize(GameDataStream); 
-            }
-            finally
-            {
-                GameDataStream.Close();
-            }
-
-            //Now we make sure that we have a Levels directory
-            System.IO.Directory.CreateDirectory(LevelDirectoryPath);
-
-            //Get all the necessary LevelData
-            LevelData LevelData = new LevelData();
-            LevelData.LevelArray = ConvertToJaggedArray(LevelArray);
-            LevelData.TileSize = TextureManager.TileSize;
-
-            //And now its time to build the SavePath
-            //The new level we want to save should get number "MapList.Count + 1"
-            //So if the MapList is empty, that is we have no maps, 
-            //then the new map we save will get number "0 + 1 = 1"
-            //If there are 8 maps in the list then the new map will get number "8 + 1 = 9"
-            string savePath = LevelDirectoryPath + @"\Level" + (TempGameData.MapList.Count + 1);
-            FileStream stream = File.Open(savePath, FileMode.Create);
-
-            try
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(LevelData));
-                serializer.Serialize(stream, LevelData);
-            }
-            finally
-            {
-                stream.Close();
-            }
-
-            //After we have saved the new level we need to update the GameData file (update the MapList)
-            TempGameData.MapList = gameData.MapList;
-            TempGameData.MapList.Add("Level" + (TempGameData.MapList.Count + 1));
-            GameDataStream = File.Open(GameDataPath, FileMode.Create);
-
-            try
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(GameData));
-                serializer.Serialize(GameDataStream, TempGameData);
-            }
-            finally
-            {
-                GameDataStream.Close();
-            }
-
-            gameData = TempGameData;
-        }
-
         public static void UpdateGameData()
         {
-            //We get the filePath to the nextlevel (if there is one)
-            //string levelPath = LevelDirectoryPath + @"\Level" + (gameData.CurrentMap + 1).ToString();
-            //string levelPath = LevelDirectoryPath + @"\" + gameData.MapList[gameData.CurrentMap];
-
             //Instansiate a new GameData object that we later will serialize
             GameData GameData = new GameData();
 
+            //If the MapListCount is greater then the current mapvalue that means have more maps to play
             if (gameData.MapList.Count > gameData.CurrentMap)
             {
                 //So we set AllMapsDone to FALSE
@@ -148,6 +89,7 @@ namespace MobileGame.FileManagement
                 //And set LastMapPlayed to the next level (increment it with one)
                 GameData.CurrentMap = gameData.CurrentMap + 1;
             }
+            //and if it isnt then we just played the last map in the game
             else
             {   
                 //So we set AllMapsDone to true
@@ -156,6 +98,7 @@ namespace MobileGame.FileManagement
                 GameData.CurrentMap = gameData.CurrentMap;
             }
 
+            //Make sure that we transfer the MapList between GameData's
             GameData.MapList = gameData.MapList;
 
             //Make sure that the gameData variable that the game actually uses gets updated aswell!
@@ -180,6 +123,9 @@ namespace MobileGame.FileManagement
             }
         }
 
+        //Because reasons you cant serialize a multidimentional-array ( [, , ] ), but you can serialize a jagged array ( [][][] )
+        //So we use these helperfunction to convert between the two
+        //Convert to jaggedArray when we want to save data and convert to MultiArray when we want to load data
         private static int[][][] ConvertToJaggedArray(int[, ,] multiArray)
         {
             int layers = multiArray.GetLength(0);

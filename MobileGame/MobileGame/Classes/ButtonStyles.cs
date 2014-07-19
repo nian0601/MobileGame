@@ -12,8 +12,7 @@ namespace MobileGame.Screens
 {
     public class PlayButtonStyle : ButtonStyle
     {
-        public PlayButtonStyle(ContentManager content)
-            : base(content)
+        public PlayButtonStyle(ContentManager content) : base(content)
         {
             normalTexture = content.Load<Texture2D>("GUI Textures/MainMenu/PlayButton");
             TextureToDraw = normalTexture;
@@ -24,8 +23,7 @@ namespace MobileGame.Screens
 
     public class LevelSelectStyle : ButtonStyle
     {
-        public LevelSelectStyle(ContentManager content)
-            : base(content)
+        public LevelSelectStyle(ContentManager content) : base(content)
         {
             normalTexture = content.Load<Texture2D>("GUI Textures/MainMenu/LevelSelectionButton");
             TextureToDraw = normalTexture;
@@ -36,8 +34,7 @@ namespace MobileGame.Screens
 
     public class MenuButtonStyle : ButtonStyle
     {
-        public MenuButtonStyle(ContentManager content)
-            : base(content)
+        public MenuButtonStyle(ContentManager content) : base(content)
         {
             normalTexture = content.Load<Texture2D>("GUI Textures/LevelSelection/ReturnButton");
             TextureToDraw = normalTexture;
@@ -48,8 +45,7 @@ namespace MobileGame.Screens
 
     public class RestartButtonStyle : ButtonStyle
     {
-        public RestartButtonStyle(ContentManager content)
-            : base(content)
+        public RestartButtonStyle(ContentManager content) : base(content)
         {
             normalTexture = content.Load<Texture2D>("GUI Textures/PausScreen/RestartButton");
             TextureToDraw = normalTexture;

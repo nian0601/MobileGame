@@ -9,7 +9,7 @@ namespace MobileGame
 {
     class JumpTile : SpecialTile
     {
-        public JumpTile(int x, int y): base(x, y, false)
+        public JumpTile(int x, int y): base(x, y)
         {
             tileTexture = TextureManager.JumpTile;
 

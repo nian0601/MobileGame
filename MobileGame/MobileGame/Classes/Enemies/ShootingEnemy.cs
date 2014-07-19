@@ -14,6 +14,7 @@ namespace MobileGame
         private float range;
         private float fireRate;
         private float lastShot;
+        private float projectileSpeed;
 
         private bool canShoot;
 
@@ -24,10 +25,11 @@ namespace MobileGame
             range = 200;
             fireRate = 1000;
             lastShot = 0;
+            projectileSpeed = 5f;
             canShoot = true;
         }
 
-        public override void Update(float elapsedTime, Player player, List<SimpleTile> collisionList)
+        public override void Update(float elapsedTime, Player player)
         {
             lastShot += elapsedTime;
 
@@ -39,7 +41,7 @@ namespace MobileGame
 
             projectileManager.Update(player, elapsedTime);
 
-            base.Update(elapsedTime, player, collisionList);
+            base.Update(elapsedTime, player);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -57,17 +59,14 @@ namespace MobileGame
 
         private void Shoot(Vector2 Target)
         {
-            projectileManager.AddProjectile(position, 5, Target);
+            projectileManager.AddProjectile(position, projectileSpeed, Target);
             lastShot = 0;
             canShoot = false;
         }
 
         public float Range
         {
-            get
-            {
-                return range;
-            }
+            get { return range; }
         }
 
         public bool CanShoot()

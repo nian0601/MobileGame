@@ -13,8 +13,9 @@ namespace MobileGame
 {
     class GameManager
     {
-        internal MapManager mapManager;
         public static Player Player;
+
+        internal MapManager mapManager;
         private static bool gameWon, gameLost;
 
         public GameManager(){}
@@ -55,16 +56,14 @@ namespace MobileGame
                 }
             }
 
-            EnemyManager.Update(Player, elapsedTime, mapManager.ColliderList);
+            EnemyManager.Update(Player, elapsedTime);
 
+            //End the game if the player got killed by something
             if (Player.GotKilled)
                 gameLost = true;
 
-            List<Tile> CollisionList = MapManager.GenerateCollisionList((int)Player.Position.X, (int)Player.Position.Y, 3, 3);
             //The player handles collision against the generic platforms itself inside the update.
-            if (Player != null)
-                Player.Update(CollisionList);
-            //Player.Update(CollisionList);
+            Player.Update();
 
             //Console.WriteLine("FPS: " + (1000 / elapsedTime));
         }
@@ -75,8 +74,7 @@ namespace MobileGame
 
             EnemyManager.Draw(spriteBatch);
 
-            if(Player != null)
-                Player.Draw(spriteBatch);
+            Player.Draw(spriteBatch);
         }
 
         public static void RestarLevel()

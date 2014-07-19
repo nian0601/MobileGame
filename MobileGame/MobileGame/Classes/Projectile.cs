@@ -83,18 +83,16 @@ namespace MobileGame
 
         private Rectangle HitBox()
         {
-            Rectangle temp = new Rectangle((int)position.X, (int)position.Y, projTex.Width, projTex.Height);
-            return temp;
+            return new Rectangle((int)position.X, (int)position.Y, projTex.Width, projTex.Height);
         }
 
         public bool Active
         {
-            get
-            {
-                return active;
-            }
+            get { return active; }
         }
 
+        //This could use some work, perhaps implement pixelperfect collision?
+        //or atleast use like 4 points
         private bool AccuratePlayerHitCheck(Rectangle PlayerHitBox)
         {
             Point projCenterPoint = new Point(HitBox().Left + HitBox().Width / 2, HitBox().Top + HitBox().Height / 2);
