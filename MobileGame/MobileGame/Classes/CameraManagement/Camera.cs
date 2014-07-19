@@ -40,9 +40,6 @@ namespace MobileGame.CameraManagement
         private static Matrix transform;
         private static float rotation;
 
-        //Should we draw debugtextures or not?!?!?!?
-        private static bool DrawDebug;
-
         //Used to create fancy circles
         private static GraphicsDevice graphicsDevice;
 
@@ -108,8 +105,6 @@ namespace MobileGame.CameraManagement
 
             defaultFocus = null;
             currentFocus = null;
-
-            DrawDebug = false; 
         }
 
         public static void LoadStuff(ContentManager content)
@@ -129,9 +124,6 @@ namespace MobileGame.CameraManagement
                 zoom -= 0.1f;
             else if (KeyMouseReader.KeyClick(Keys.X))
                 zoom += 0.1f;
-
-            if (KeyMouseReader.KeyClick(Keys.I))
-                DrawDebug = !DrawDebug;
 
             #region Target-Follow-And-Select-Code
             if (currentFocus != null) //If we have a currentFocus we wnat to focus soley on that
@@ -209,7 +201,7 @@ namespace MobileGame.CameraManagement
 
         public static void Draw(SpriteBatch sb)
         {
-            if (DrawDebug)
+            if (Game1.Debugging)
             {
                 //Draw debugtextures for all focuspoints
                 foreach (IFocusable Object in allFocusPoints)
@@ -223,11 +215,11 @@ namespace MobileGame.CameraManagement
 
                 //Draw debugtexture for cameratarget
                 Rectangle rect = new Rectangle((int)target.X, (int)target.Y, 10, 10);
-                sb.Draw(filledCircle, rect, Color.Blue);
+                sb.Draw(filledCircle, rect, null, Color.Blue, 1f, Vector2.Zero, SpriteEffects.None, 1f); 
 
                 //Draw debugtexture for cameraposition
                 Rectangle cameraPos = new Rectangle((int)position.X, (int)position.Y, 10, 10);
-                sb.Draw(filledCircle, cameraPos, Color.Green);
+                sb.Draw(filledCircle, cameraPos, null, Color.Green, 1f, Vector2.Zero, SpriteEffects.None, 1f); 
 
                 //Draw debugtexture for defaultfocus
                 //Vector2 defInterestPos = new Vector2(defaultFocus.Position.X - defaultFocus.InterestRadius, defaultFocus.Position.Y - defaultFocus.InterestRadius);

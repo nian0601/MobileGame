@@ -49,15 +49,17 @@ namespace MobileGame
 
         public virtual void Update(float elapsedTime, Player player, List<SimpleTile> collisionList)
         {
-            CheckIfOnGround(collisionList);
+            List<Tile> CollisionList = MapManager.GenerateCollisionList((int)position.X, (int)position.Y, 3, 3);
+
+            CheckIfOnGround(CollisionList);
 
             position.X += velocity.X;
-            HorizontalCollision(collisionList);
+            HorizontalCollision(CollisionList);
 
             velocity.Y += gravity;
 
             position.Y += velocity.Y;
-            VerticalCollision(collisionList);
+            VerticalCollision(CollisionList);
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)
@@ -91,7 +93,7 @@ namespace MobileGame
             }
         }
 
-        private void CheckIfOnGround(List<SimpleTile> collisionList)
+        private void CheckIfOnGround(List<Tile> collisionList)
         {
             Point collisionPointLeft = new Point(HitBox().Left + 1, HitBox().Top + HitBox().Height);
             Point collisionPointRight = new Point(HitBox().Right - 1, HitBox().Top + HitBox().Height);
@@ -109,7 +111,7 @@ namespace MobileGame
         }
 
         //Collision in the X-Axis
-        private void HorizontalCollision(List<SimpleTile> collisionList)
+        private void HorizontalCollision(List<Tile> collisionList)
         {
             Point collisionPointLeft = new Point(HitBox().Left - 2, HitBox().Top + HitBox().Height / 2);
             Point collisionPointRight = new Point(HitBox().Right + 2, HitBox().Top + HitBox().Height / 2);
@@ -133,7 +135,7 @@ namespace MobileGame
         }
 
         //Collision in the Y-Axis
-        private void VerticalCollision(List<SimpleTile> collisionList)
+        private void VerticalCollision(List<Tile> collisionList)
         {
             Point collisionPointTop = new Point(HitBox().Left + HitBox().Width / 2, HitBox().Top);
             Point collisionPointBot = new Point(HitBox().Left + HitBox().Width / 2, HitBox().Bottom);

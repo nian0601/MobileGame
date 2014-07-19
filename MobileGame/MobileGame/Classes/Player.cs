@@ -48,7 +48,7 @@ namespace MobileGame
             playerTex.GetData(colorArray);
         }
 
-        public void Update(List<SimpleTile> collisionList)
+        public void Update(List<Tile> collisionList)
         {
             ListenToInput();
             CheckIfOnGround(collisionList);
@@ -130,7 +130,7 @@ namespace MobileGame
 
         }
 
-        private void CheckIfOnGround(List<SimpleTile> collisionList)
+        private void CheckIfOnGround(List<Tile> collisionList)
         {
             Point collisionPointLeft = new Point(HitBox().Left + 1, HitBox().Top + HitBox().Height);
             Point collisionPointRight = new Point(HitBox().Right - 1, HitBox().Top + HitBox().Height);
@@ -149,7 +149,7 @@ namespace MobileGame
         }
 
         //Collision in the X-Axis
-        private void HorizontalCollision(List<SimpleTile> collisionList)
+        private void HorizontalCollision(List<Tile> collisionList)
         {
             for (int i = 0; i < collisionList.Count; i++)
             {
@@ -170,7 +170,7 @@ namespace MobileGame
         }
 
         //Collision in the Y-Axis
-        private void VerticalCollision(List<SimpleTile> collisionList)
+        private void VerticalCollision(List<Tile> collisionList)
         {
             for (int i = 0; i < collisionList.Count; i++)
             {

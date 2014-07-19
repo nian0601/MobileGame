@@ -60,12 +60,13 @@ namespace MobileGame
             if (Player.GotKilled)
                 gameLost = true;
 
-            List<Tile> CollisionList = mapManager.FindConnectedTiles(mapManager.ConvertPixelsToIndex(Player.Position));
-
+            List<Tile> CollisionList = MapManager.GenerateCollisionList((int)Player.Position.X, (int)Player.Position.Y, 3, 3);
             //The player handles collision against the generic platforms itself inside the update.
             if (Player != null)
-                Player.Update(mapManager.ColliderList);
+                Player.Update(CollisionList);
             //Player.Update(CollisionList);
+
+            //Console.WriteLine("FPS: " + (1000 / elapsedTime));
         }
 
         public void Draw(SpriteBatch spriteBatch)

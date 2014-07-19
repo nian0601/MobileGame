@@ -27,6 +27,8 @@ namespace MobileGame
 
         ScreenManager screenManager;
 
+        public static bool Debugging;
+
         public Game1(): base()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -42,6 +44,7 @@ namespace MobileGame
             graphics.ApplyChanges();
 
             IsMouseVisible = true;
+            Debugging = false;
 
             base.Initialize();
         }
@@ -77,9 +80,12 @@ namespace MobileGame
                 Exit();
 
             KeyMouseReader.Update();
+            if (KeyMouseReader.KeyClick(Keys.I))
+                Debugging = !Debugging;
+
             screenManager.Update(gameTime);
             
-
+            //The game will break if i try to pring FPS here, do it in GameManager instead, yay
             //Console.WriteLine("FPS: " + (1000 / gameTime.ElapsedGameTime.Milliseconds));
 
             base.Update(gameTime);

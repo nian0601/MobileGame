@@ -20,13 +20,15 @@ namespace MobileGame
         protected Vector2 index;
         protected Vector2 pixelPos;
         protected int tileSize;
-        protected bool shouldDraw;
+        public bool shouldDraw;
         protected Color[] colorArray;
 
         protected int interestRadius;
         protected int controlRadius;
 
         protected bool Collidable;
+
+        public Color Color;
 
         public Tile(int x, int y, bool collidable)
         {   
@@ -38,12 +40,18 @@ namespace MobileGame
             controlRadius = 50;
 
             Collidable = collidable;
+
+            Color = Color.White;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            if(shouldDraw)
-                spriteBatch.Draw(tileTexture, pixelPos, Color.White);
+            if (shouldDraw)
+            {
+                spriteBatch.Draw(tileTexture, pixelPos, Color);
+                Color = Color.White;
+            }
+                
         }
 
         public void SetTileBitType(int tileValue)

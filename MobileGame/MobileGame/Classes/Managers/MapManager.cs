@@ -17,11 +17,11 @@ namespace MobileGame
 {
     class MapManager
     {
-        private int[, ,] currentMap;
-        private Tile[, ,] tileArray;
+        private static int[, ,] currentMap;
+        private static Tile[, ,] tileArray;
         private List<SimpleTile> colliderList;
         private List<SpecialTile> specialBlockList;
-        private int tileSize;
+        private static int tileSize;
         private int mapYTiles;
         private int mapXTiles;
         private static int mapWidth;
@@ -101,7 +101,7 @@ namespace MobileGame
             int mouseY = (int)ConvertPixelsToIndex(mousePos).Y;
 
             if (KeyMouseReader.LeftClick())
-                CalculateTileValue(mouseX, mouseY);
+                EnemyManager.AddEnemy(new SimpleEnemy(mouseX, mouseY));
 
             if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.MouseWheelDown())
                 RemoveSimpleTile(mouseX, mouseY);
@@ -127,6 +127,41 @@ namespace MobileGame
 
             foreach (Tile T in specialBlockList)
                 T.Draw(spriteBatch);
+        }
+
+        /// <summary>
+        /// Use this to generate a list with all the tiles surrounding a certain pixelpos (playerpos, enemypos etc)
+        /// </summary>
+        /// <param name="x">The x-value</param>
+        /// <param name="y">The y-value</param>
+        /// <param name="xRange">The amount of tiles on the x-axis we want to include</param>
+        /// <param name="yRange">The amount of tiles on the y-axis we want to include</param>
+        /// <returns></returns>
+        public static List<Tile> GenerateCollisionList(int x, int y, int xRange, int yRange)
+        {
+            //Create a tempList which will hold the tiles we wanna send back
+            List<Tile> tempList = new List<Tile>();
+
+            //Convert the given x and y values into a vector for convinence
+            Vector2 originPoint = new Vector2(x, y);
+            //Convert the pixelposition into indexposition
+            Vector2 index = ConvertPixelsToIndex(originPoint);
+
+            //Then we get all the surrounding tiles, going xRange-num tiles to the left and right aswell as going yRange-num tiles up and down
+            tempList = FindSurroundingTiles(index, xRange, yRange);
+
+            //If the game is in debugmode we simply color the tiles we have found red
+            //(the tile-class makes sure that the tile gets their normal color if they arent in this list)
+            if (Game1.Debugging)
+            {
+                foreach (Tile t in tempList)
+                {
+                    t.Color = Color.Red;
+                }
+            }
+            
+
+            return tempList;
         }
 
         private void BuildLevel(int[, ,] level)
@@ -216,7 +251,7 @@ namespace MobileGame
             return new Vector2(x, y);
         }
 
-        public Vector2 ConvertPixelsToIndex(Vector2 pos)
+        public static Vector2 ConvertPixelsToIndex(Vector2 pos)
         {
             int x = (int)pos.X / tileSize;
             int y = (int)pos.Y / tileSize;
@@ -291,7 +326,7 @@ namespace MobileGame
 
                 tempTile.SetTileBitType(CalculateTileValue((int)tempTile.IndexPos.X, (int)tempTile.IndexPos.Y));
 
-                List<Tile> tempTileList = FindConnectedTiles(tempTile.IndexPos);
+                List<Tile> tempTileList = FindSurroundingTiles(tempTile.IndexPos, 1, 1);
                 foreach (Tile T in tempTileList)
                     T.SetTileBitType(CalculateTileValue((int)T.IndexPos.X, (int)T.IndexPos.Y));
 
@@ -311,7 +346,7 @@ namespace MobileGame
             {
                 if (colliderList[i].IndexPos == tempVector)
                 {
-                    List<Tile> tempTileList = FindConnectedTiles(colliderList[i].IndexPos);
+                    List<Tile> tempTileList = FindSurroundingTiles(colliderList[i].IndexPos, 1, 1);
                     foreach (Tile T in tempTileList)
                         T.SetTileBitType(CalculateTileValue((int)T.IndexPos.X, (int)T.IndexPos.Y));
 
@@ -322,21 +357,30 @@ namespace MobileGame
             }
         }
 
-        public List<Tile> FindConnectedTiles(Vector2 centerIndex)
+        private static List<Tile> FindSurroundingTiles(Vector2 centerIndex, int xRange, int yRange)
         {
             List<Tile> tempList = new List<Tile>();
 
             int currentY = 0;
             int currentX = 0;
-            //Loops through the 9 tiles that form a 3x3 square around the centerIndex (included the centerTile in the loop)
-            //If we find a tile that is air or a tile that is outside the arrayIndex we add a "0" to the list
-            //If we find a platformtile we add a "1" to the list
+            //We use the xRange and yRange variables to determine how many tiles we loop through.
+            //we start at -xRange and -yRange and loop all the way to xRange(positive value now) and yRange(positive value aswell)
+
+            //So if xRange gets the value of 5, we will loop from -5 to 5 in the xLoop
+            //and if yRange gets the value of 3, we will loop from -3 to 3 in the yLoop
+
+            //This functionality makes the function usuable in multiple situations.
+            //Its used to find the tiles directly connected to a certain tile, by setting both ranges to 1, used to set tiletypes
+            //and its also used to generate CollisionLists, by sending in the position of the player and a larger range, like 5 or so
+
+            //If we find a tile that is air or a tile that is outside the arrayIndex we simply ignore it
+            //If we find a platformtile we add it to the list
             #region Loop
-            for (int x = -1; x <= 1; x++)
+            for (int x = -xRange; x <= xRange; x++)
             {
                 currentX = (int)centerIndex.X + x;
 
-                for (int y = -1; y <= 1; y++)
+                for (int y = -yRange; y <= yRange; y++)
                 {
                     currentY = (int)centerIndex.Y + y;
 
@@ -344,11 +388,12 @@ namespace MobileGame
                     if (IsXInsideArray(currentX, tileArray) && IsYInsideArray(currentY, tileArray))
                     {
                         //Console.WriteLine("Current Index is inside array");
-                        if (colliderList.Contains(tileArray[0, currentX, currentY]))
+                        //if (colliderList.Contains(tileArray[0, currentX, currentY]))
+                        //    tempList.Add(tileArray[0, currentX, currentY]);
+
+                        if (tileArray[0, currentX, currentY].shouldDraw)
                             tempList.Add(tileArray[0, currentX, currentY]);
-                    }
-                    else //The tile we are currently looking at is NOT inside the map-array, i.e the tile does not exsit!
-                    {
+                            
                     }
                 }
             }
@@ -357,14 +402,14 @@ namespace MobileGame
             return tempList;
         }
 
-        private bool IsYInsideArray(int y, Tile[, ,] array)
+        private static bool IsYInsideArray(int y, Tile[, ,] array)
         {
             if (y < 0 || y > array.GetUpperBound(2))
                 return false;
             return true;
         }
 
-        private bool IsXInsideArray(int x, Tile[, ,] array)
+        private static bool IsXInsideArray(int x, Tile[, ,] array)
         {
             if (x < 0 || x > array.GetUpperBound(1))
                 return false;
