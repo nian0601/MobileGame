@@ -20,6 +20,9 @@ namespace MobileGame
         public static Texture2D SmallerEnemyTex { get; private set; }
         public static Texture2D SmallerPlayerTex { get; private set; }
 
+        public static Texture2D SpriteSheet { get; private set; }
+        public static Texture2D PlayerSheet { get; private set; }
+
         public static List<Texture2D> TileTextures { get; private set; }
 
         public static void LoadContents(ContentManager Content)
@@ -32,6 +35,9 @@ namespace MobileGame
             EnemyTex = Content.Load<Texture2D>("Units/Enemy");
             SmallerEnemyTex = Content.Load<Texture2D>("Units/SmallerEnemy");
             SmallerPlayerTex = Content.Load<Texture2D>("Units/SmallerPlayer");
+
+            SpriteSheet = Content.Load<Texture2D>("TestSpriteSheet");
+            PlayerSheet = Content.Load<Texture2D>("Units/PlayerSheet");
 
             TileTextures = new List<Texture2D>();
             TileTextures.Add(Content.Load<Texture2D>("Tiles/Tiles/0Tile"));     // 0

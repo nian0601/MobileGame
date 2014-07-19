@@ -38,6 +38,7 @@
     <Compile Include="Classes\CameraManagement\Camera.cs" />
     <Compile Include="Classes\ButtonStyles.cs" />
     <Compile Include="Classes\CameraManagement\IFocusable.cs" />
+    <Compile Include="Classes\Enemies\AnimatedObject.cs" />
     <Compile Include="Classes\FileManagement\GameData.cs" />
     <Compile Include="Classes\Game1.cs" />
     <Compile Include="Classes\KeyMouseReader.cs" />
@@ -170,6 +171,12 @@
     <None Include="Content\GUI Textures\WinScreen\WinTitle.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Content\Projectile.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\TestSpriteSheet.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Content\Tiles\GoalTile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -231,6 +238,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Units\Enemy.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Units\PlayerSheet.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Units\SmallerEnemy.xnb">

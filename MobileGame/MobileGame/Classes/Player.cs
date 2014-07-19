@@ -190,8 +190,8 @@ namespace MobileGame
 
         private void CheckIfOnGround(List<Tile> collisionList)
         {
-            Point collisionPointLeft = new Point(HitBox().Left, HitBox().Top + HitBox().Height);
-            Point collisionPointRight = new Point(HitBox().Right, HitBox().Top + HitBox().Height);
+            Point collisionPointLeft = new Point(HitBox().Left + 2, HitBox().Top + HitBox().Height);
+            Point collisionPointRight = new Point(HitBox().Right - 2, HitBox().Top + HitBox().Height);
             Point collisionPointCenter = new Point(HitBox().Right - HitBox().Width / 2, HitBox().Top + HitBox().Height);
 
             isOnGround = false;
@@ -270,8 +270,6 @@ namespace MobileGame
             }
 
             return false;
-        }
-
-        
+        }  
     }
 }
