@@ -137,9 +137,32 @@ namespace MobileGame
         //Collision in the Y-Axis
         private void VerticalCollision(List<Tile> collisionList)
         {
-            Point collisionPointTop = new Point(HitBox().Left + HitBox().Width / 2, HitBox().Top);
-            Point collisionPointBot = new Point(HitBox().Left + HitBox().Width / 2, HitBox().Bottom);
+            //We use these points to check if the unit is on his way to falling of a tile
+            Point collisionPointLeft = new Point(HitBox().Left, HitBox().Bottom);
+            Point collisionPointRight = new Point(HitBox().Right, HitBox().Bottom);
 
+            //By default we say that the unis is falling of both sides of some tile (which he isnt ofc, but we start this way)
+            bool SomethingContainsRightPoint = false;
+            bool SomethingContainsLeftPoint = false;
+
+            //Now we loop through all the tiles
+            foreach (Tile t in collisionList)
+            {
+                //If any one of them contains the above collisionpoints that means the unit is NOT falling of that side
+                //So we set the corresponding bool to true
+                if (t.HitBox().Contains(collisionPointRight))
+                    SomethingContainsRightPoint = true;
+
+                if (t.HitBox().Contains(collisionPointLeft))
+                    SomethingContainsLeftPoint = true;
+            }
+
+            //if either of the boolens is still false after we have checked all the tiles that means the unit is falling of the tile soon
+            //so we simply revers its x-position, dosent matter which side its falling of, just make him turn around
+            if (!SomethingContainsRightPoint || !SomethingContainsLeftPoint)
+                velocity.X *= -1;
+
+            //and after that we do the normal collisiondetection and handling
             for (int i = 0; i < collisionList.Count; i++)
             {
                 if (collisionList[i].HitBox().Intersects(HitBox()))
