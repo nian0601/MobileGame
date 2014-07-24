@@ -5,6 +5,9 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using MobileGame.Managers;
+using MobileGame.Units;
+
 namespace MobileGame
 {
     class Projectile

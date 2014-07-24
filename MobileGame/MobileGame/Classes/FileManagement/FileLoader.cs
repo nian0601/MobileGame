@@ -8,6 +8,8 @@ using System.Xml.Serialization;
 
 using Microsoft.Xna.Framework.Storage;
 
+using MobileGame.Managers;
+
 namespace MobileGame.FileManagement
 {
     static class FileLoader

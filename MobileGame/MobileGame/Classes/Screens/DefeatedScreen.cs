@@ -10,6 +10,8 @@ using Microsoft.Xna.Framework.Graphics;
 using GUI_System.GameStateManagement;
 using GUI_System.GUIObjects;
 
+using MobileGame.Managers;
+
 namespace MobileGame.Screens
 {
     class DefeatedScreen : MenuScreen

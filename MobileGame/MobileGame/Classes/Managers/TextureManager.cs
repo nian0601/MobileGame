@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 
-namespace MobileGame
+namespace MobileGame.Managers
 {
     static class TextureManager
     {
@@ -37,7 +37,7 @@ namespace MobileGame
             SmallerPlayerTex = Content.Load<Texture2D>("Units/SmallerPlayer");
 
             SpriteSheet = Content.Load<Texture2D>("TestSpriteSheet");
-            PlayerSheet = Content.Load<Texture2D>("Units/PlayerSheet");
+            PlayerSheet = Content.Load<Texture2D>("Units/BigPlayerSheet");
 
             TileTextures = new List<Texture2D>();
             TileTextures.Add(Content.Load<Texture2D>("Tiles/Tiles/0Tile"));     // 0

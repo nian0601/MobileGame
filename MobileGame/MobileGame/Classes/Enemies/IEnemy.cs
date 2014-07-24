@@ -5,7 +5,9 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MobileGame
+using MobileGame.Units;
+
+namespace MobileGame.Enemies
 {
     interface IEnemy
     {

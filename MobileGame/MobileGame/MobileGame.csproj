@@ -35,17 +35,17 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Classes\Animations\Animation.cs" />
+    <Compile Include="Classes\Animations\Animator.cs" />
     <Compile Include="Classes\CameraManagement\Camera.cs" />
     <Compile Include="Classes\ButtonStyles.cs" />
     <Compile Include="Classes\CameraManagement\IFocusable.cs" />
-    <Compile Include="Classes\Enemies\AnimatedObject.cs" />
     <Compile Include="Classes\FileManagement\GameData.cs" />
     <Compile Include="Classes\Game1.cs" />
     <Compile Include="Classes\KeyMouseReader.cs" />
     <Compile Include="Classes\FileManagement\LevelData.cs" />
     <Compile Include="Classes\FileManagement\FileLoader.cs" />
     <Compile Include="Classes\Managers\MapManager.cs" />
-    <Compile Include="Classes\Player.cs" />
     <Compile Include="Classes\Managers\GameManager.cs" />
     <Compile Include="Classes\Screens\BackgroundScreen.cs" />
     <Compile Include="Classes\Screens\DefeatedScreen.cs" />
@@ -61,6 +61,7 @@
     <Compile Include="Classes\Managers\EnemyManager.cs" />
     <Compile Include="Classes\Enemies\IEnemy.cs" />
     <Compile Include="Classes\Enemies\FastEnemy.cs" />
+    <Compile Include="Classes\Units\AnimatedPlayer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Classes\Projectile.cs" />
     <Compile Include="Classes\Managers\ProjectileManager.cs" />
@@ -237,6 +238,9 @@
     <None Include="Content\Tiles\Tiles\9Tile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Content\Units\BigPlayerSheet.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Content\Units\Enemy.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -250,6 +254,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

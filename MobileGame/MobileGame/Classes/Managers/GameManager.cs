@@ -2,19 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 using MobileGame.FileManagement;
 using MobileGame.CameraManagement;
-using Microsoft.Xna.Framework.Input;
+using MobileGame.Units;
 
-namespace MobileGame
+namespace MobileGame.Managers
 {
     class GameManager
     {
         public static Player Player;
-        private AnimatedObject testAnimation;
+
         internal MapManager mapManager;
         private static bool gameWon, gameLost;
 
@@ -22,8 +24,6 @@ namespace MobileGame
 
         public void Initialize()
         {
-            testAnimation = new AnimatedObject();
-
             EnemyManager.Reset();
             Camera.ClearFocusList();
 
@@ -39,9 +39,7 @@ namespace MobileGame
 
             Camera.Position = Player.Position;
             Camera.DefaultFocus = Player;
-            Camera.Limits = new Rectangle(0, 0, MapManager.MapWidth, MapManager.MapHeight);
-
-           
+            Camera.Limits = new Rectangle(0, 0, MapManager.MapWidth, MapManager.MapHeight); 
         }
 
         public void Update(float elapsedTime)
@@ -67,9 +65,7 @@ namespace MobileGame
                 gameLost = true;
 
             //The player handles collision against the generic platforms itself inside the update.
-            Player.Update();
-
-            testAnimation.Update(elapsedTime);
+            Player.Update(elapsedTime);
 
             //Console.WriteLine("FPS: " + (1000 / elapsedTime));
         }
@@ -80,9 +76,8 @@ namespace MobileGame
 
             EnemyManager.Draw(spriteBatch);
 
-            Player.Draw(spriteBatch);
-
-            testAnimation.Draw(spriteBatch);
+            if(Player != null)
+                Player.Draw(spriteBatch);
         }
 
         public static void RestarLevel()

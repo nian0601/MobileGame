@@ -6,8 +6,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using MobileGame.CameraManagement;
+using MobileGame.Managers;
+using MobileGame.Units;
 
-namespace MobileGame
+namespace MobileGame.Tiles
 {
     class GoalTile : SpecialTile
     {

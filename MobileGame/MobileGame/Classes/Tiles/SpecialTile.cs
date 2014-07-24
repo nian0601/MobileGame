@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MobileGame
+using MobileGame.Managers;
+using MobileGame.Enemies;
+using MobileGame.Units;
+
+namespace MobileGame.Tiles
 {
     class SpecialTile : Tile
     {

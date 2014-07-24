@@ -5,7 +5,10 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace MobileGame
+using MobileGame.Managers;
+using MobileGame.Units;
+
+namespace MobileGame.Tiles
 {
     class TeleportTile : SpecialTile
     {

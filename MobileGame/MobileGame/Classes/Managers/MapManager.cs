@@ -12,8 +12,10 @@ using Microsoft.Xna.Framework.GamerServices;
 
 using MobileGame.FileManagement;
 using MobileGame.CameraManagement;
+using MobileGame.Tiles;
+using MobileGame.Enemies;
 
-namespace MobileGame
+namespace MobileGame.Managers
 {
     class MapManager
     {
@@ -94,8 +96,10 @@ namespace MobileGame
             int mouseX = (int)ConvertPixelsToIndex(mousePos).X;
             int mouseY = (int)ConvertPixelsToIndex(mousePos).Y;
 
-            if (KeyMouseReader.LeftClick())
-                EnemyManager.AddEnemy(new SimpleEnemy(mouseX, mouseY));
+            if (KeyMouseReader.isKeyDown(Keys.LeftAlt) && KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.LeftClick())
+                EnemyManager.AddEnemy(new SimpleEnemy(mouseX, mouseY, true));
+            else if (KeyMouseReader.isKeyDown(Keys.LeftShift) &&  KeyMouseReader.LeftClick())
+                EnemyManager.AddEnemy(new SimpleEnemy(mouseX, mouseY, false));
 
             if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.MouseWheelDown())
                 RemoveSimpleTile(mouseX, mouseY);
@@ -215,7 +219,7 @@ namespace MobileGame
                     }
 
                     else if (tileType == 4)
-                        EnemyManager.AddEnemy(new SimpleEnemy(x, y));
+                        EnemyManager.AddEnemy(new SimpleEnemy(x, y, false));
                 }
             }
 

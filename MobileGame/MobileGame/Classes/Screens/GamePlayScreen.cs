@@ -12,6 +12,7 @@ using GUI_System.GameStateManagement;
 
 using MobileGame.FileManagement;
 using MobileGame.CameraManagement;
+using MobileGame.Managers;
 
 namespace MobileGame.Screens
 {

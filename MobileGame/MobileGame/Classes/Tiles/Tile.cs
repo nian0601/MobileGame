@@ -11,8 +11,9 @@ using Microsoft.Xna.Framework.GamerServices;
 
 using MobileGame.CameraManagement;
 using MobileGame.FileManagement;
+using MobileGame.Managers;
 
-namespace MobileGame
+namespace MobileGame.Tiles
 {
     class Tile : IFocusable
     {

@@ -5,7 +5,10 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MobileGame
+using MobileGame.Managers;
+using MobileGame.Units;
+
+namespace MobileGame.Enemies
 {
     class ShootingEnemy : SimpleEnemy
     {
@@ -18,7 +21,7 @@ namespace MobileGame
 
         private bool canShoot;
 
-        public ShootingEnemy(int x, int y): base(x, y)
+        public ShootingEnemy(int x, int y): base(x, y, false)
         {
             projectileManager = new ProjectileManager();
 

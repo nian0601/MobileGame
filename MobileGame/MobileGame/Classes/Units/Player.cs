@@ -2,20 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 using MobileGame.CameraManagement;
+using MobileGame.Tiles;
+using MobileGame.Managers;
+using MobileGame.Animations;
 
-namespace MobileGame
+namespace MobileGame.Units
 {
     class Player : IFocusable
     {
         private Texture2D playerTex;
 
-        private Vector2 startPos;
         private Vector2 position;
+        private Vector2 startPos;
         private Vector2 velocity;
 
         private float maxSpeed;
@@ -31,11 +35,17 @@ namespace MobileGame
 
         private Color[] colorArray;
 
+        private Animator animator;
+        private int FrameWidth, FrameHeight;
+
+        int colRange;
+
         #region Properties
 
         public Vector2 Position
         {
             get { return position; }
+            private set { position = value; }
         }
 
         public Color[] ColorArray
@@ -79,10 +89,10 @@ namespace MobileGame
 
         #endregion
 
-        public Player()
+        public Player() : base()
         {
-            position = new Vector2(150, 120);
-            playerTex = TextureManager.SmallerPlayerTex;
+            Position = new Vector2(150, 120);
+            playerTex = TextureManager.PlayerSheet;
 
             velocity = new Vector2(0, 0);
             maxSpeed = 3f;
@@ -95,22 +105,33 @@ namespace MobileGame
 
             colorArray = new Color[playerTex.Width * playerTex.Height];
             playerTex.GetData(colorArray);
+
+            colRange = 3;
+
+            FrameWidth = 30;
+            FrameHeight = 35;
+
+            animator = new Animator(FrameWidth, FrameHeight);
+            animator.AddAnimation(new Animation("right", 100, 0, 0, 4, 0));
+            animator.AddAnimation(new Animation("left", 100, 0, 1, 4, 1));
         }
 
-        public void Update()
+        public void Update(float ElapsedTime)
         {
-            //Generate the CollisionList
-            List<Tile> CollisionList = MapManager.GenerateCollisionList((int)position.X, (int)position.Y, 3, 3);
+            animator.Update(ElapsedTime);
 
-            ListenToInput();
+            //Generate the CollisionList
+            List<Tile> CollisionList = MapManager.GenerateCollisionList((int)Position.X, (int)Position.Y, colRange, colRange);
+
+            ListenToInput(ElapsedTime);
             CheckIfOnGround(CollisionList);
 
             //Apply horizontal velocity
             position.X += velocity.X;
             //Make sure position isnt outside the map
-            position.X = MathHelper.Clamp(position.X, -100, MapManager.MapWidth);
+            position.X = MathHelper.Clamp(Position.X, -100, MapManager.MapWidth);
             //And set the players speed to 0 if he is at the edge of the map
-            if (position.X == 0 || position.X == MapManager.MapWidth - playerTex.Width)
+            if (Position.X == 0 || Position.X == MapManager.MapWidth - FrameWidth)
                 velocity.X = 0;
             //Run CollisionCheck
             HorizontalCollision(CollisionList);
@@ -119,20 +140,21 @@ namespace MobileGame
             velocity.Y += gravity;
             position.Y += velocity.Y;
             //Make sure position isnt outside the map
-            position.Y = MathHelper.Clamp(position.Y, -100, MapManager.MapHeight);
-            if (position.Y == 0)
+            position.Y = MathHelper.Clamp(Position.Y, -100, MapManager.MapHeight);
+            if (Position.Y == 0)
                 velocity.Y = 0;
-            else if (position.Y >= MapManager.MapHeight - playerTex.Height)
+            else if (Position.Y >= MapManager.MapHeight - FrameHeight)
             {
                 gotKilled = true;
             }
             //Run CollisionCheck
-            VerticalCollision(CollisionList);  
+            VerticalCollision(CollisionList);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(playerTex, position, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            //spriteBatch.Draw(playerTex, Position, SourceRect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(playerTex, Position, animator.SourceRectangle, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
         }
 
         public void Jump(float jumpMultiplier)
@@ -152,20 +174,27 @@ namespace MobileGame
 
         public void ResetPosition()
         {
-            position = startPos;
+            Position = startPos;
             gotKilled = false;
             foundGoal = false;
         }
 
         public Rectangle HitBox()
         {
-            return new Rectangle((int)position.X, (int)position.Y, playerTex.Width, playerTex.Height);
+            return new Rectangle((int)Position.X, (int)Position.Y, FrameWidth+1, FrameHeight+1);
         }
 
-        private void ListenToInput()
+        private void ListenToInput(float ElapsedTime)
         {
+            if (KeyMouseReader.KeyClick(Keys.Y))
+                animator.StopAnimation();
+
             if (!KeyMouseReader.isKeyDown(Keys.A) && !KeyMouseReader.isKeyDown(Keys.D))
+            {
                 velocity.X *= friction;
+                animator.StopAnimation();
+            }
+                
 
             if (Math.Abs(velocity.X) < 0.05f)
                 velocity.X = 0;
@@ -177,6 +206,8 @@ namespace MobileGame
             {
                 if (velocity.X > -maxSpeed)
                     velocity.X -= acceleration;
+
+                animator.StartAnimation("left");
             }
 
             if (KeyMouseReader.isKeyDown(Keys.D))
@@ -184,8 +215,19 @@ namespace MobileGame
                 velocity.X += acceleration;
                 if (velocity.X > maxSpeed)
                     velocity.X = maxSpeed;
+
+                animator.StartAnimation("right");
             }
 
+            if (Math.Abs(velocity.Y) > 2)
+                animator.StopAnimation();
+
+            //if ((velocity.X > 1 || velocity.X < -1) && velocity.Y == 0)
+            //    animator.StartAnimation("playerAnim");
+            //    //DoAnimation(ElapsedTime);
+            //else if (velocity.X < 1 || velocity.Y > -1)
+            //    animator.StopAnimation();
+            //    //AnimateToFrame(KeyFrames.Idle, ElapsedTime);
         }
 
         private void CheckIfOnGround(List<Tile> collisionList)

@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 using MobileGame.FileManagement;
 
-namespace MobileGame
+namespace MobileGame.Tiles
 {
     class SimpleTile : Tile
     {
