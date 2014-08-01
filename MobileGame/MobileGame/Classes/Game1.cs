@@ -28,6 +28,7 @@ namespace MobileGame
         ScreenManager screenManager;
 
         public static bool Debugging;
+        public static bool Debugg2;
 
         public Game1(): base()
         {
@@ -45,6 +46,8 @@ namespace MobileGame
 
             IsMouseVisible = true;
             Debugging = false;
+            Debugg2 = false;
+
 
             base.Initialize();
         }
@@ -82,6 +85,8 @@ namespace MobileGame
             KeyMouseReader.Update();
             if (KeyMouseReader.KeyClick(Keys.I))
                 Debugging = !Debugging;
+            if (KeyMouseReader.KeyClick(Keys.T))
+                Debugg2 = !Debugg2;
 
             screenManager.Update(gameTime);
             

@@ -42,6 +42,7 @@
     <Compile Include="Classes\GUIStyles.cs" />
     <Compile Include="Classes\KeyMouseReader.cs" />
     <Compile Include="Classes\Managers\MapManager.cs" />
+    <Compile Include="Classes\Managers\TextureManager.cs" />
     <Compile Include="Classes\Screens\SaveMapScreen.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -58,6 +59,9 @@
     <Reference Include="Lidgren.Network">
       <HintPath>$(MSBuildExtensionsPath)\..\MonoGame\v3.0\Assemblies\WindowsGL\Lidgren.Network.dll</HintPath>
     </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="Tao.Sdl">
       <HintPath>$(MSBuildExtensionsPath)\..\MonoGame\v3.0\Assemblies\WindowsGL\Tao.Sdl.dll</HintPath>
     </Reference>
@@ -71,7 +75,6 @@
     </Content>
     <Content Include="Icon.ico" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\GUI System\GUI System.csproj">
       <Project>{53693ce3-569e-4ff2-b88b-5627f03f89a8}</Project>
@@ -151,52 +154,52 @@
     <None Include="Content\GameTextures\TeleportTile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\0Tile.xnb">
+    <None Include="Content\GameTextures\Tiles\Tile_00.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\10Tile.xnb">
+    <None Include="Content\GameTextures\Tiles\Tile_01.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\11Tile.xnb">
+    <None Include="Content\GameTextures\Tiles\Tile_02.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\12Tile.xnb">
+    <None Include="Content\GameTextures\Tiles\Tile_03.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\13Tile.xnb">
+    <None Include="Content\GameTextures\Tiles\Tile_04.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\14Tile.xnb">
+    <None Include="Content\GameTextures\Tiles\Tile_05.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\15Tile.xnb">
+    <None Include="Content\GameTextures\Tiles\Tile_06.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\1Tile.xnb">
+    <None Include="Content\GameTextures\Tiles\Tile_07.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\2Tile.xnb">
+    <None Include="Content\GameTextures\Tiles\Tile_08.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\3Tile.xnb">
+    <None Include="Content\GameTextures\Tiles\Tile_09.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\4Tile.xnb">
+    <None Include="Content\GameTextures\Tiles\Tile_10.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\5Tile.xnb">
+    <None Include="Content\GameTextures\Tiles\Tile_11.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\6Tile.xnb">
+    <None Include="Content\GameTextures\Tiles\Tile_12.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\7Tile.xnb">
+    <None Include="Content\GameTextures\Tiles\Tile_13.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\8Tile.xnb">
+    <None Include="Content\GameTextures\Tiles\Tile_14.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\GameTextures\Tiles\9Tile.xnb">
+    <None Include="Content\GameTextures\Tiles\Tile_15.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -103,7 +103,24 @@ namespace MobileGame.Animations
 
                 activeAnimation = null;
             }
-            
+        }
+
+        public void StopAnimation(String AnimationName)
+        {
+            if (activeAnimation != null)
+            {
+                if(activeAnimation.Name == AnimationName)
+                {
+                    animating = false; 
+                    currentCol = activeAnimation.StartCol;
+                    currentRow = activeAnimation.StartRow;
+                    currentTime = 0;
+
+                    UpdateSourceRect();
+
+                    activeAnimation = null;
+                }
+            }
         }
 
         public void AddAnimation(Animation NewAnimation)

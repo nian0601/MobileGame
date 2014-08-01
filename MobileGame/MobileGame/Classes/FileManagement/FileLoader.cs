@@ -54,7 +54,6 @@ namespace MobileGame.FileManagement
             LoadLevel(gameData.CurrentMap);
         }
 
-
         public static void LoadLevel(int LevelNumber)
         {
             //Get the path to the map we want to load
@@ -123,6 +122,41 @@ namespace MobileGame.FileManagement
             {
                 stream.Close();
             }
+        }
+
+        public static void ResetSaveFile()
+        {
+            //Instansiate a new GameData object that we later will serialize
+            GameData GameData = new GameData();
+
+            GameData.AllMapsDone = false;
+            GameData.CurrentMap = 1;
+
+            //Make sure that we transfer the MapList between GameData's
+            GameData.MapList = gameData.MapList;
+
+            //Make sure that the gameData variable that the game actually uses gets updated aswell!
+            gameData = GameData;
+
+            //
+            //After we have set the two values we simply do the serializing process
+            //
+
+            string savePath = SaveFilesDirectoryPath + @"\GameData";
+
+            FileStream stream = File.Open(savePath, FileMode.Create);
+
+            try
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(GameData));
+                serializer.Serialize(stream, GameData);
+            }
+            finally
+            {
+                stream.Close();
+            }
+
+            Console.WriteLine("Reset Save File! (CurrentMap = 1, AllMapsDone = false)");
         }
 
         //Because reasons you cant serialize a multidimentional-array ( [, , ] ), but you can serialize a jagged array ( [][][] )

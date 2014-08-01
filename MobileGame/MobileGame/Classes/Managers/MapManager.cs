@@ -148,13 +148,20 @@ namespace MobileGame.Managers
             //Then we get all the surrounding tiles, going xRange-num tiles to the left and right aswell as going yRange-num tiles up and down
             tempList = FindSurroundingTiles(index, xRange, yRange);
 
+            for (int i = tempList.Count - 1; i > 0; i--)
+            {
+                if (!tempList[i].collidable)
+                    tempList.RemoveAt(i);
+            }
+
             //If the game is in debugmode we simply color the tiles we have found red
             //(the tile-class makes sure that the tile gets their normal color if they arent in this list)
             if (Game1.Debugging)
             {
                 foreach (Tile t in tempList)
                 {
-                    t.Color = Color.Red;
+                    if(t.canJumpThrough)
+                        t.Color = Color.Red;
                 }
             }
             

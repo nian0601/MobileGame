@@ -104,16 +104,16 @@ namespace MobileGame.Units
             isOnGround = false;
 
             colorArray = new Color[playerTex.Width * playerTex.Height];
-            playerTex.GetData(colorArray);
+            TextureManager.PlayerColTex.GetData(colorArray);
 
-            colRange = 3;
+            colRange = 7;
 
-            FrameWidth = 30;
-            FrameHeight = 35;
+            FrameWidth = 22;
+            FrameHeight = 60;
 
             animator = new Animator(FrameWidth, FrameHeight);
-            animator.AddAnimation(new Animation("right", 100, 0, 0, 4, 0));
-            animator.AddAnimation(new Animation("left", 100, 0, 1, 4, 1));
+            animator.AddAnimation(new Animation("right", 100, 0, 0, 8, 0));
+            animator.AddAnimation(new Animation("left", 100, 0, 1, 8, 1));
         }
 
         public void Update(float ElapsedTime)
@@ -168,7 +168,8 @@ namespace MobileGame.Units
 
         public void SetStartPos(Vector2 Pos)
         {
-            startPos = Pos;
+            startPos.X = Pos.X + FrameWidth;
+            startPos.Y = Pos.Y;
             ResetPosition();
         }
 
@@ -181,7 +182,7 @@ namespace MobileGame.Units
 
         public Rectangle HitBox()
         {
-            return new Rectangle((int)Position.X, (int)Position.Y, FrameWidth+1, FrameHeight+1);
+            return new Rectangle((int)Position.X, (int)Position.Y, FrameWidth, FrameHeight);
         }
 
         private void ListenToInput(float ElapsedTime)
@@ -207,6 +208,7 @@ namespace MobileGame.Units
                 if (velocity.X > -maxSpeed)
                     velocity.X -= acceleration;
 
+                animator.StopAnimation("right");
                 animator.StartAnimation("left");
             }
 
@@ -216,24 +218,18 @@ namespace MobileGame.Units
                 if (velocity.X > maxSpeed)
                     velocity.X = maxSpeed;
 
+                animator.StopAnimation("left");
                 animator.StartAnimation("right");
             }
 
-            if (Math.Abs(velocity.Y) > 2)
+            if (Math.Abs(velocity.Y) > 1.5f)
                 animator.StopAnimation();
-
-            //if ((velocity.X > 1 || velocity.X < -1) && velocity.Y == 0)
-            //    animator.StartAnimation("playerAnim");
-            //    //DoAnimation(ElapsedTime);
-            //else if (velocity.X < 1 || velocity.Y > -1)
-            //    animator.StopAnimation();
-            //    //AnimateToFrame(KeyFrames.Idle, ElapsedTime);
         }
 
         private void CheckIfOnGround(List<Tile> collisionList)
         {
-            Point collisionPointLeft = new Point(HitBox().Left + 2, HitBox().Top + HitBox().Height);
-            Point collisionPointRight = new Point(HitBox().Right - 2, HitBox().Top + HitBox().Height);
+            Point collisionPointLeft = new Point(HitBox().Left + 4, HitBox().Top + HitBox().Height);
+            Point collisionPointRight = new Point(HitBox().Right - 4, HitBox().Top + HitBox().Height);
             Point collisionPointCenter = new Point(HitBox().Right - HitBox().Width / 2, HitBox().Top + HitBox().Height);
 
             isOnGround = false;
@@ -253,7 +249,7 @@ namespace MobileGame.Units
         {
             for (int i = 0; i < collisionList.Count; i++)
             {
-                if (collisionList[i].HitBox().Intersects(HitBox()))
+                if (collisionList[i].HitBox().Intersects(HitBox()) && !collisionList[i].canJumpThrough)
                 {
                     if (PixelCol(HitBox(), colorArray, collisionList[i].HitBox(), collisionList[i].ColorArray))
                     {
@@ -278,12 +274,25 @@ namespace MobileGame.Units
                 {
                     if (PixelCol(HitBox(), colorArray, collisionList[i].HitBox(), collisionList[i].ColorArray))
                     {
-                        if (velocity.Y >= 0)
+                        if (velocity.Y >= 0 && HitBox().Bottom > collisionList[i].HitBox().Top)
+                        {
                             position.Y = collisionList[i].HitBox().Top - HitBox().Height;
+                            Console.WriteLine("Falling collision");
+                            velocity.Y = 0;
+                        }
+                        else if (collisionList[i].canJumpThrough && HitBox().Bottom > collisionList[i].HitBox().Top-2)
+                        {
+                            Console.WriteLine("Special fancy collision");
+                        }
+                        //Jumping
                         else if (velocity.Y < 0)
+                        {
                             position.Y = collisionList[i].HitBox().Top + collisionList[i].HitBox().Height;
+                            velocity.Y = 0;
+                        }
+                            
 
-                        velocity.Y = 0;
+                        
                         break;
                     }
                 }

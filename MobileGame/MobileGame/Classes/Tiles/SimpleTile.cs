@@ -15,7 +15,11 @@ namespace MobileGame.Tiles
             : base(x, y)
         {
             if (tileType == 0)
+            {
                 shouldDraw = false;
+                collidable = false;
+            }
+                
 
             tileSize = FileLoader.LoadedLevelTileSize;
             pixelPos = new Vector2(index.X * tileSize, index.Y * tileSize);

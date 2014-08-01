@@ -41,6 +41,9 @@ namespace MobileGame.Screens
             if (levelSelectButton.LeftClick())
                 ScreenManager.AddScreen(new LevelSelectScreen());
 
+            if (KeyMouseReader.KeyClick(Microsoft.Xna.Framework.Input.Keys.R))
+                FileLoader.ResetSaveFile();
+
             base.HandleInput(gameTime);
         }
 

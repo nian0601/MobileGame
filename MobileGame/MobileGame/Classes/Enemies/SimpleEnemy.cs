@@ -18,6 +18,7 @@ namespace MobileGame.Enemies
         protected Vector2 position;
         protected Vector2 velocity;
         protected float gravity;
+        protected int colRange;
 
         protected bool isOnGround;
         protected bool canFall;
@@ -45,6 +46,8 @@ namespace MobileGame.Enemies
                 velocity = new Vector2(1, 0);
             else if (value == 2)
                 velocity = new Vector2(-1, 0);
+
+            colRange = 4;
         }
 
         public virtual void Update(float elapsedTime)
@@ -54,7 +57,7 @@ namespace MobileGame.Enemies
 
         public virtual void Update(float elapsedTime, Player player)
         {
-            List<Tile> CollisionList = MapManager.GenerateCollisionList((int)position.X, (int)position.Y, 3, 3);
+            List<Tile> CollisionList = MapManager.GenerateCollisionList((int)position.X, (int)position.Y, colRange, colRange);
 
             CheckIfOnGround(CollisionList);
 
@@ -140,25 +143,34 @@ namespace MobileGame.Enemies
             if (!canFall)
             {
                 //We use these points to check if the unit is on his way to falling of a tile
-                Point collisionPointLeft = new Point(HitBox().Left, HitBox().Bottom);
-                Point collisionPointRight = new Point(HitBox().Right, HitBox().Bottom);
+                Point firstLeftPoint = new Point(HitBox().Left-2, HitBox().Top + HitBox().Height);
+                Point secondLeftPoint = new Point(HitBox().Left + 2, HitBox().Top + HitBox().Height);
+                Point firstRightPoint = new Point(HitBox().Right + 2, HitBox().Top + HitBox().Height);
+                Point secondRightPoint = new Point(HitBox().Right - 2, HitBox().Top + HitBox().Height);
 
                 //By default we say that the unis is falling of both sides of some tile (which he isnt ofc, but we start this way)
                 bool SomethingContainsRightPoint = false;
                 bool SomethingContainsLeftPoint = false;
 
-                //Now we loop through all the tiles
                 foreach (Tile t in collisionList)
                 {
+                    if (t.HitBox().Contains(firstRightPoint) || t.HitBox().Contains(secondRightPoint))
+                    {
+                        SomethingContainsRightPoint = true;
+                        if (Game1.Debugg2)
+                            t.Color = Color.Green;
+                    }
+
+
+                    if (t.HitBox().Contains(firstLeftPoint) || t.HitBox().Contains(secondLeftPoint))
+                    {
+                        SomethingContainsLeftPoint = true;
+                        if (Game1.Debugg2)
+                            t.Color = Color.Black;
+                    }
                     //If any one of them contains the above collisionpoints that means the unit is NOT falling of that side
                     //So we set the corresponding bool to true
-                    if (t.HitBox().Contains(collisionPointRight))
-                        SomethingContainsRightPoint = true;
-
-                    if (t.HitBox().Contains(collisionPointLeft))
-                        SomethingContainsLeftPoint = true;
                 }
-
                 //if either of the boolens is still false after we have checked all the tiles that means the unit is falling of the tile soon
                 //so we simply revers its x-position, dosent matter which side its falling of, just make him turn around
                 if (!SomethingContainsRightPoint || !SomethingContainsLeftPoint)

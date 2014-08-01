@@ -26,6 +26,8 @@ namespace LevelEditor
 
         ScreenManager screenManager;
 
+        public static int EditMode;
+
         public Game1() : base()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -42,7 +44,7 @@ namespace LevelEditor
             graphics.ApplyChanges();
 
             IsMouseVisible = true;
-
+            
             base.Initialize();
         }
 
@@ -73,6 +75,22 @@ namespace LevelEditor
 
             KeyMouseReader.Update();
             screenManager.Update(gameTime);
+
+            if (KeyMouseReader.KeyClick(Keys.PageUp))
+            {
+                EditMode++;
+                if (EditMode > 3)
+                    EditMode = 3;
+                Console.WriteLine("EditMode: " + EditMode);
+            }
+
+            if (KeyMouseReader.KeyClick(Keys.PageDown))
+            {
+                EditMode--;
+                if (EditMode < 0)
+                    EditMode = 0;
+                Console.WriteLine("EditMode: " + EditMode);
+            }
 
             base.Update(gameTime);
         }

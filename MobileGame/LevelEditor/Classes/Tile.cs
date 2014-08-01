@@ -13,68 +13,93 @@ namespace LevelEditor
     class Tile
     {
         protected Texture2D Texture;
-        
-        protected bool ShouldDraw;
         protected int TileSize;
+        protected Vector2 TileDrawOffset;
 
         public Vector2 IndexPos;
+        public Color Color;
+        public bool ShouldDraw;
         public bool Collidable;
+        public bool CanJumpThrough;
 
-        public Tile(int X, int Y, Texture2D TileTexture, bool Draw, bool Collidable)
+        public Tile(int X, int Y, bool Draw)
         {
-            Texture = TileTexture;
             ShouldDraw = Draw;
             IndexPos = new Vector2(X, Y);
+            Color = Color.White;
+            TileDrawOffset = Vector2.Zero;
             
             this.TileSize = MapManager.TileSize;
-            this.Collidable = Collidable;
+
+            Collidable = false;
+            CanJumpThrough = false;
         }
 
         public void Draw(SpriteBatch spritebatch, int x, int y, Vector2 offset)
         {
             if (ShouldDraw)
             {
-                Vector2 DrawPos;
-                if(Collidable)
-                    DrawPos = new Vector2(x * TileSize, y * TileSize) + offset;
-                else
-                    DrawPos = new Vector2(x * TileSize, y * TileSize - Texture.Height/2) + offset;
+                Vector2 DrawPos = new Vector2(x * TileSize + TileDrawOffset.X, y * TileSize + TileDrawOffset.Y) + offset;
 
-                spritebatch.Draw(Texture, DrawPos, Color.White);
+                if (Game1.EditMode == 1 && Collidable)
+                    Color = Color.Red;
+                else if (Game1.EditMode == 2 && CanJumpThrough)
+                    Color = Color.Black;
+
+                spritebatch.Draw(Texture, DrawPos, Color);
+
+                Color = Color.White;
             }
         }
 
-        public void SetTexture(Texture2D NewTexture)
+        public void SetTileType(int TileValue)
         {
-            Texture = NewTexture;
+            Texture = TextureManager.TileTextures[TileValue];
         }
     }
 
     class PlayerTile : Tile
     {
-        public PlayerTile(int X, int Y, Texture2D TileTexture, bool Draw): base(X, Y, TileTexture, Draw, false)
+        public PlayerTile(int X, int Y, bool Draw): base(X, Y, Draw)
         {
+            Texture = TextureManager.PlayerTexture;
+            TileDrawOffset = new Vector2(0, -Texture.Height/2);
         }
     }
 
     class GoalTile : Tile
     {
-        public GoalTile(int X, int Y, Texture2D TileTexture, bool Draw): base(X, Y, TileTexture, Draw, false)
+        public GoalTile(int X, int Y, bool Draw): base(X, Y, Draw)
         {
+            Texture = TextureManager.GoalTexture;
+            TileDrawOffset = new Vector2(0, -Texture.Height / 2);
         }
     }
 
     class TeleportTile : Tile
     {
-        public TeleportTile(int X, int Y, Texture2D TileTexture, bool Draw): base(X, Y, TileTexture, Draw, false)
+        public TeleportTile(int X, int Y, bool Draw): base(X, Y, Draw)
         {
+            Texture = TextureManager.TeleportTileTexture;
+            TileDrawOffset = new Vector2(0, -Texture.Height / 2);
         }
     }
 
     class JumpTile : Tile
     {
-        public JumpTile(int X, int Y, Texture2D TileTexture, bool Draw): base(X, Y, TileTexture, Draw, false)
+        public JumpTile(int X, int Y, bool Draw): base(X, Y, Draw)
         {
+            Texture = TextureManager.JumpTileTexture;
+            TileDrawOffset = new Vector2(0, -Texture.Height / 2);
+        }
+    }
+
+    class EnemyTile : Tile
+    {
+        public EnemyTile(int X, int Y, bool Draw): base(X, Y, Draw)
+        {
+            Texture = TextureManager.EnemyTexture;
+            TileDrawOffset = new Vector2(0, -Texture.Height / 2);
         }
     }
 
