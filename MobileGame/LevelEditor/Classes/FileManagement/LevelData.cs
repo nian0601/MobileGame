@@ -10,7 +10,7 @@ namespace LevelEditor.FileManagement
         public int TileSize;
         public int MapWidth;
         public int MapHeight;
-        public int[][][] LevelArray;
+        public TileData[][][] LevelArray;
 
         public LevelData()
         {

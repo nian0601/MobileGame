@@ -45,7 +45,7 @@ namespace LevelEditor.Screens
 
             if (SaveButton.LeftClick() && NameInput.Text.Length > 0)
             {
-                FileManagement.FileLoader.SaveLevel(MapManager.CurrentMap, MapManager.mapHeight, MapManager.mapWidth, NameInput.Text);
+                FileManagement.FileLoader.SaveLevel(MapManager.TileArray, MapManager.mapHeight, MapManager.mapWidth, NameInput.Text);
                 
             }
                 

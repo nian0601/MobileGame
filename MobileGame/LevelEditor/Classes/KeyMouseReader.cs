@@ -9,9 +9,10 @@ namespace LevelEditor
 {
     static class KeyMouseReader
     {
-        public static KeyboardState keyState, oldKeyState = Keyboard.GetState();
-        public static MouseState mouseState, oldMouseState = Mouse.GetState();
-        public static Point mousePos;
+        private static KeyboardState keyState, oldKeyState = Keyboard.GetState();
+        private static MouseState mouseState, oldMouseState = Mouse.GetState();
+        private static Point mousePos;
+        private static int scrollValue, oldScrollValue = oldMouseState.ScrollWheelValue;
 
         public static bool KeyClick(Keys key)
         {
@@ -58,6 +59,16 @@ namespace LevelEditor
             return mousePos;
         }
 
+        public static bool ScrolledUp()
+        {
+            return scrollValue > oldScrollValue;
+        }
+
+        public static bool ScrolledDown()
+        {
+            return scrollValue < oldScrollValue;
+        }
+
         public static void Update()
         {
             oldKeyState = keyState;
@@ -66,6 +77,9 @@ namespace LevelEditor
             mouseState = Mouse.GetState();
             mousePos.X = mouseState.X;
             mousePos.Y = mouseState.Y;
+
+            oldScrollValue = scrollValue;
+            scrollValue = Mouse.GetState().ScrollWheelValue;
         }
     }
 }

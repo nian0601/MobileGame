@@ -21,6 +21,8 @@ namespace LevelEditor
         public bool ShouldDraw;
         public bool Collidable;
         public bool CanJumpThrough;
+        public int TileValue;
+        public int TileType;
 
         public Tile(int X, int Y, bool Draw)
         {
@@ -33,6 +35,12 @@ namespace LevelEditor
 
             Collidable = false;
             CanJumpThrough = false;
+            TileValue = 0;
+
+            if (ShouldDraw)
+                TileType = 1;
+            else
+                TileValue = 0;
         }
 
         public void Draw(SpriteBatch spritebatch, int x, int y, Vector2 offset)
@@ -55,6 +63,7 @@ namespace LevelEditor
         public void SetTileType(int TileValue)
         {
             Texture = TextureManager.TileTextures[TileValue];
+            this.TileValue = TileValue;
         }
     }
 
@@ -64,6 +73,7 @@ namespace LevelEditor
         {
             Texture = TextureManager.PlayerTexture;
             TileDrawOffset = new Vector2(0, -Texture.Height/2);
+            TileType = 0;
         }
     }
 
@@ -73,6 +83,7 @@ namespace LevelEditor
         {
             Texture = TextureManager.GoalTexture;
             TileDrawOffset = new Vector2(0, -Texture.Height / 2);
+            TileType = 3;
         }
     }
 
@@ -82,6 +93,7 @@ namespace LevelEditor
         {
             Texture = TextureManager.TeleportTileTexture;
             TileDrawOffset = new Vector2(0, -Texture.Height / 2);
+            TileType = 2;
         }
     }
 
@@ -91,6 +103,7 @@ namespace LevelEditor
         {
             Texture = TextureManager.JumpTileTexture;
             TileDrawOffset = new Vector2(0, -Texture.Height / 2);
+            TileType = 1;
         }
     }
 
@@ -100,6 +113,7 @@ namespace LevelEditor
         {
             Texture = TextureManager.EnemyTexture;
             TileDrawOffset = new Vector2(0, -Texture.Height / 2);
+            TileType = 4;
         }
     }
 

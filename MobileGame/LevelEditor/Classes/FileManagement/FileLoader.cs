@@ -20,7 +20,7 @@ namespace LevelEditor.FileManagement
         private static GameData gameData;
 
         #region Properties
-        public static int[, ,] LoadedLevelArray
+        public static TileData[, ,] LoadedLevelArray
         {
             get { return ConvertToMultiArray(LoadedLevel.LevelArray); }
         }
@@ -75,7 +75,7 @@ namespace LevelEditor.FileManagement
             }
         }
 
-        public static void SaveLevel(int[,,] LevelArray, int MapHeight, int MapWidth, string LevelName)
+        public static void SaveLevel(Tile[,,] LevelArray, int MapHeight, int MapWidth, string LevelName)
         {
             //First we read the GameData file so that we get access to the MapList
             //We will use that to propperly name the new map
@@ -96,10 +96,12 @@ namespace LevelEditor.FileManagement
             //Now we make sure that we have a Levels directory
             System.IO.Directory.CreateDirectory(LevelDirectoryPath);
 
+            TileData[, ,] ArrayToSave = ConvertToTileDataArray(LevelArray);
+
             //Get all the necessary LevelData
             LevelData LevelData = new LevelData();
-            LevelData.LevelArray = ConvertToJaggedArray(LevelArray);
             LevelData.TileSize = MapManager.TileSize;
+            LevelData.LevelArray = ConvertToJaggedArray(ArrayToSave);
             LevelData.MapHeight = MapHeight;
             LevelData.MapWidth = MapWidth;
 
@@ -251,6 +253,81 @@ namespace LevelEditor.FileManagement
             }
 
             return tempArray;
+        }
+
+
+        private static TileData[][][] ConvertToJaggedArray(TileData[, ,] multiArray)
+        {
+            int layers = multiArray.GetLength(0);
+            int mapHeight = multiArray.GetLength(1);
+            int mapWidth = multiArray.GetLength(2);
+
+            TileData[][][] tempJaggedArray = new TileData[layers][][];
+
+            for (int z = 0; z < layers; z++)
+            {
+                tempJaggedArray[z] = new TileData[mapHeight][];
+                for (int y = 0; y < mapHeight; y++)
+                {
+                    tempJaggedArray[z][y] = new TileData[mapWidth];
+                    for (int x = 0; x < mapWidth; x++)
+                    {
+                        tempJaggedArray[z][y][x] = multiArray[z, y, x];
+                    }
+                }
+            }
+
+            return tempJaggedArray;
+        }
+
+        private static TileData[, ,] ConvertToMultiArray(TileData[][][] jaggedArray)
+        {
+            int layers = jaggedArray.Length;
+            int mapHeight = jaggedArray[0].Length;
+            int mapWidth = jaggedArray[0][0].Length;
+
+            TileData[, ,] tempArray = new TileData[layers, mapHeight, mapWidth];
+
+            for (int z = 0; z < layers; z++)
+            {
+                for (int y = 0; y < mapHeight; y++)
+                {
+                    for (int x = 0; x < mapWidth; x++)
+                    {
+                        tempArray[z, y, x] = jaggedArray[z][y][x];
+                    }
+                }
+            }
+
+            return tempArray;
+        }
+
+        private static TileData[, ,] ConvertToTileDataArray(Tile[, ,] TileArray)
+        {
+            int layers = TileArray.GetLength(0);
+            int yTiles = TileArray.GetLength(1);
+            int xTiles = TileArray.GetLength(2);
+
+            TileData[, ,] TileDataArray = new TileData[layers, yTiles, xTiles];
+
+            for (int z = 0; z < layers; z++)
+            {
+                for (int y = 0; y < yTiles; y++)
+                {
+                    for (int x = 0; x < xTiles; x++)
+                    {
+                        TileData TempData = new TileData();
+                        TempData.TileType = TileArray[z, y, x].TileType;
+                        TempData.TileValue = TileArray[z, y, x].TileValue;
+                        TempData.Collidable = TileArray[z, y, x].Collidable;
+                        TempData.CanJumpThrough = TileArray[z, y, x].CanJumpThrough;
+
+                        TileDataArray[z, y, x] = TempData;
+                    }
+                }
+            }
+
+            return TileDataArray;
         }
     }
 }

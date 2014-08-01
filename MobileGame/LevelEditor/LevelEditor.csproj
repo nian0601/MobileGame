@@ -38,6 +38,7 @@
     <Compile Include="Classes\FileManagement\FileLoader.cs" />
     <Compile Include="Classes\FileManagement\GameData.cs" />
     <Compile Include="Classes\FileManagement\LevelData.cs" />
+    <Compile Include="Classes\FileManagement\TileData.cs" />
     <Compile Include="Classes\Game1.cs" />
     <Compile Include="Classes\GUIStyles.cs" />
     <Compile Include="Classes\KeyMouseReader.cs" />

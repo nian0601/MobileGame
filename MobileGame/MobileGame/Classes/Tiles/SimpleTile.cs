@@ -11,8 +11,7 @@ namespace MobileGame.Tiles
 {
     class SimpleTile : Tile
     {
-        public SimpleTile(int x, int y, int tileType)
-            : base(x, y)
+        public SimpleTile(int x, int y, int tileType): base(x, y)
         {
             if (tileType == 0)
             {

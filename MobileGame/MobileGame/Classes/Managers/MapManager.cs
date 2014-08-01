@@ -19,7 +19,6 @@ namespace MobileGame.Managers
 {
     class MapManager
     {
-        private static int[, ,] currentMap;
         private static Tile[, ,] tileArray;
         private static int tileSize;
         private static int mapWidth;
@@ -34,14 +33,6 @@ namespace MobileGame.Managers
         internal GraphicsDevice graphicsDevice;
 
         #region Properties
-
-        /// <summary>
-        /// This array is used in the loading and building of maps and contains the 1's and 0's that gets converted into tiles in the BuildMap-function
-        /// </summary>
-        public int[, ,] CurrentMap
-        {
-            get { return currentMap; }
-        }
 
         public List<SpecialTile> SpecialBlocksList
         {
@@ -75,7 +66,6 @@ namespace MobileGame.Managers
         public void Initialize()
         {
             tileSize = FileLoader.LoadedLevelTileSize;
-            currentMap = FileLoader.LoadedLevelArray;
             mapYTiles = FileLoader.LoadedLevelMapHeight;
             mapXTiles = FileLoader.LoadedLevelMapWidth;
 
@@ -85,7 +75,7 @@ namespace MobileGame.Managers
             platformList.Clear();
             specialBlockList.Clear();
 
-            BuildLevel(currentMap);
+            BuildLevel(FileLoader.LoadedLevelArray);
         }
 
         //This entire function should not be in the final game, we do not want the player to be able to draw on the map while playing
@@ -169,7 +159,7 @@ namespace MobileGame.Managers
             return tempList;
         }
 
-        private void BuildLevel(int[, ,] level)
+        private void BuildLevel(TileData[, ,] level)
         {
             tileArray = new Tile[2, mapXTiles, mapYTiles];
 
@@ -178,7 +168,7 @@ namespace MobileGame.Managers
             {
                 for (int y = 0; y < mapYTiles; y++)
                 {
-                    int tileType = level[0, x, y];
+                    int tileType = level[0, x, y].TileType;
 
                     //If the tiletype is 9 that means we found the place where the player should spawn
                     //So we do some stuff that we dont do with the normal tiles and then continue on with the loops
@@ -186,21 +176,16 @@ namespace MobileGame.Managers
                     {
                         playerStartPos = ConvertIndexToPixels(x, y);
                         tileArray[0, x, y] = new SimpleTile(x, y, 0);
+                        tileArray[0, x, y].ImportTileData(level[0, x, y]);
                         continue;
                     }
 
                     //We create an empty simpletile before we check tiletypes
                     //Then we define the simpleTile after the tileType checks
-                    SimpleTile tempTile;
+                    SimpleTile tempTile = new SimpleTile(x, y, tileType);
+                    tempTile.ImportTileData(level[0, x, y]);
                     if (tileType != 0)
-                    {
-                        tempTile = new SimpleTile(x, y, tileType);
                         platformList.Add(tempTile);
-                    }
-                    else
-                    {
-                        tempTile = new SimpleTile(x, y, tileType);
-                    }
                     
                     //And adds it to the levelarray
                     tileArray[0, x, y] = tempTile;
@@ -212,7 +197,7 @@ namespace MobileGame.Managers
             {
                 for (int y = 0; y < mapYTiles; y++)
                 {
-                    int tileType = level[1, x, y];
+                    int tileType = level[1, x, y].TileType;
 
                     if (tileType == 1)
                         specialBlockList.Add(new JumpTile(x, y));
@@ -356,8 +341,6 @@ namespace MobileGame.Managers
                 List<Tile> tempTileList = FindSurroundingTiles(tempTile.IndexPos, 1, 1);
                 foreach (Tile T in tempTileList)
                     T.SetTileBitType(CalculateTileValue((int)T.IndexPos.X, (int)T.IndexPos.Y));
-
-                currentMap[0, x, y] = 1;
             }
 
         }
@@ -368,7 +351,6 @@ namespace MobileGame.Managers
         private void RemoveSimpleTile(int x, int y)
         {
             tileArray[0, x, y] = new SimpleTile(x, y, 0);
-            currentMap[0, x, y] = 0;
 
             Vector2 tempVector = new Vector2(x, y);
 

@@ -41,6 +41,7 @@
     <Compile Include="Classes\ButtonStyles.cs" />
     <Compile Include="Classes\CameraManagement\IFocusable.cs" />
     <Compile Include="Classes\FileManagement\GameData.cs" />
+    <Compile Include="Classes\FileManagement\TileData.cs" />
     <Compile Include="Classes\Game1.cs" />
     <Compile Include="Classes\KeyMouseReader.cs" />
     <Compile Include="Classes\FileManagement\LevelData.cs" />
@@ -103,6 +104,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Content\DebugTextures\EmptyCircle.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

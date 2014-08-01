@@ -8,18 +8,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 
+using LevelEditor.FileManagement;
+
 namespace LevelEditor.Managers
 {
     class MapManager
     {
-        //This is used in the serializing process when we want to save the map
-        //To reduce filesize we save the map as int and then rebuild the map when we load it the next time
-        private static int[, ,] currentMap;
-        public static int[, ,] CurrentMap
-        {
-            get { return currentMap; }
-        }
-
         private Vector2 offset;
         public Vector2 Offset
         {
@@ -28,7 +22,11 @@ namespace LevelEditor.Managers
         }
 
         //This is used just to make it easier to display the map and wont be used in the serializing process
-        private Tile[, ,] TileArray;
+        private static Tile[, ,] tileArray;
+        public static Tile[, ,] TileArray
+        {
+            get { return tileArray; }
+        }
 
         private int Layers;
         public int layers { get { return Layers; } }
@@ -41,6 +39,9 @@ namespace LevelEditor.Managers
         private int xDisplayMin, xDisplayMax;
         private int yDisplayMin, yDisplayMax;
         private int xOffset, yOffset;
+        private int mouseX, mouseY;
+
+        private int selectedTileValue;
 
         #region ContentManager, SpriteBatch and Textures
         private ContentManager Content;
@@ -48,6 +49,7 @@ namespace LevelEditor.Managers
 
         private Texture2D GridTexture;
         private Texture2D Background;
+        private Texture2D CursorTexture;
 
         public static List<Texture2D> TileTextures;
 
@@ -123,8 +125,7 @@ namespace LevelEditor.Managers
             mapXTiles = 100;
             mapYTiles = 60;
 
-            currentMap = new int[Layers, mapXTiles, mapYTiles];
-            TileArray = new Tile[Layers, mapXTiles, mapYTiles];
+            tileArray = new Tile[Layers, mapXTiles, mapYTiles];
 
             editorXTiles = 40;
             editorYTiles = 30;
@@ -137,6 +138,8 @@ namespace LevelEditor.Managers
 
             xOffset = 0;
             yOffset = 0;
+
+            selectedTileValue = 0;
         }
 
         public void Initialize()
@@ -147,6 +150,7 @@ namespace LevelEditor.Managers
 
                 GridTexture = TextureManager.GridTexture;
                 Background = TextureManager.Background;
+                CursorTexture = TextureManager.TileTextures[selectedTileValue];
 
                 TileSize = TextureManager.TileSize;
                 ResetMap();
@@ -157,13 +161,33 @@ namespace LevelEditor.Managers
 
         public void Update()
         {
-            if (MapBounds().Contains(KeyMouseReader.mousePos))
+            if (MapBounds().Contains(KeyMouseReader.GetMousePos()))
             {
-                int mouseX = ConvertPixelsToIndex(KeyMouseReader.mousePos).X;
-                int mouseY = ConvertPixelsToIndex(KeyMouseReader.mousePos).Y;
+                mouseX = ConvertPixelsToIndex(KeyMouseReader.GetMousePos()).X;
+                mouseY = ConvertPixelsToIndex(KeyMouseReader.GetMousePos()).Y;
 
                 mouseX += xOffset;
                 mouseY += yOffset;
+
+                if (KeyMouseReader.ScrolledUp())
+                {
+                    selectedTileValue++;
+                    if (selectedTileValue > 15)
+                        selectedTileValue = 15;
+
+                    CursorTexture = TextureManager.TileTextures[selectedTileValue];
+                }
+                else if (KeyMouseReader.ScrolledDown())
+                {
+                    selectedTileValue--;
+                    if (selectedTileValue < 0)
+                        selectedTileValue = 0;
+
+                    CursorTexture = TextureManager.TileTextures[selectedTileValue];
+                }
+                    
+
+                Console.WriteLine(selectedTileValue);
 
                 #region EditMode 0 (Placing stuff)
                 if (Game1.EditMode == 0)
@@ -172,10 +196,10 @@ namespace LevelEditor.Managers
                         CreatePlatform(mouseX, mouseY);
                     else if (KeyMouseReader.RightMouseDown())
                     {
-                        if (TileArray[1, mouseX, mouseY] is GoalTile)
+                        if (tileArray[1, mouseX, mouseY] is GoalTile)
                             GoalPlaced = false;
 
-                        if (TileArray[0, mouseX, mouseY] is PlayerTile)
+                        if (tileArray[0, mouseX, mouseY] is PlayerTile)
                             PlayerPlaced = false;
 
                         CreateAir(mouseX, mouseY);
@@ -249,7 +273,7 @@ namespace LevelEditor.Managers
             {
                 for (int y = yDisplayMin; y < yDisplayMax; y++)
                 {
-                    TileArray[0, x, y].Draw(Spritebatch, x - xOffset, y - yOffset, Offset);
+                    tileArray[0, x, y].Draw(Spritebatch, x - xOffset, y - yOffset, Offset);
                 }
             }
 
@@ -258,11 +282,12 @@ namespace LevelEditor.Managers
             {
                 for (int y = yDisplayMin; y < yDisplayMax; y++)
                 {
-                    TileArray[1, x, y].Draw(Spritebatch, x - xOffset, y - yOffset, Offset);
+                    tileArray[1, x, y].Draw(Spritebatch, x - xOffset, y - yOffset, Offset);
                 }
             }
 
             Spritebatch.Draw(GridTexture, offset, Color.White);
+            Spritebatch.Draw(CursorTexture, new Vector2(mouseX*TileSize + Offset.X, mouseY*TileSize + Offset.Y), Color.White);
 
             Spritebatch.End();
         }
@@ -274,8 +299,7 @@ namespace LevelEditor.Managers
             {
                 for (int y = 0; y < mapYTiles; y++)
                 {
-                    currentMap[0, x, y] = 0;
-                    TileArray[0, x, y] = new Tile(x, y, false);
+                    tileArray[0, x, y] = new Tile(x, y, false);
                 }
             }
 
@@ -284,8 +308,7 @@ namespace LevelEditor.Managers
             {
                 for (int y = 0; y < mapYTiles; y++)
                 {
-                    currentMap[1, x, y] = 0;
-                    TileArray[1, x, y] = new Tile(x, y, false);
+                    tileArray[1, x, y] = new Tile(x, y, false);
                 }
             }
 
@@ -382,62 +405,49 @@ namespace LevelEditor.Managers
         #region Create-functions
         private void CreateAir(int X, int Y)
         {
-            TileArray[0, X, Y] = new Tile(X, Y, false);
-            TileArray[1, X, Y] = new Tile(X, Y, false);
+            tileArray[0, X, Y] = new Tile(X, Y, false);
+            tileArray[1, X, Y] = new Tile(X, Y, false);
 
-            CurrentMap[0, X, Y] = 0;
-            CurrentMap[1, X, Y] = 0;
-
-            List<Tile> tempTileList = FindConnectedTiles(TileArray[0, X, Y].IndexPos);
-            foreach (Tile T in tempTileList)
-                T.SetTileType(CalculateTileValue((int)T.IndexPos.X, (int)T.IndexPos.Y));
+            //List<Tile> tempTileList = FindConnectedTiles(tileArray[0, X, Y].IndexPos);
+            //foreach (Tile T in tempTileList)
+            //    T.SetTileType(CalculateTileValue((int)T.IndexPos.X, (int)T.IndexPos.Y));
         }
 
         private void CreatePlatform(int X, int Y)
         {
-            TileArray[0, X, Y] = new Tile(X, Y, true);
-            CurrentMap[0, X, Y] = 1;
+            tileArray[0, X, Y] = new Tile(X, Y, true);
 
-            TileArray[0, X, Y].SetTileType(CalculateTileValue(X, Y));
+            //tileArray[0, X, Y].SetTileType(CalculateTileValue(X, Y));
+            tileArray[0, X, Y].SetTileType(selectedTileValue);
 
-            List<Tile> tempTileList = FindConnectedTiles(TileArray[0, X, Y].IndexPos);
-            foreach (Tile T in tempTileList)
-                T.SetTileType(CalculateTileValue((int)T.IndexPos.X, (int)T.IndexPos.Y));
+            //List<Tile> tempTileList = FindConnectedTiles(tileArray[0, X, Y].IndexPos);
+            //foreach (Tile T in tempTileList)
+            //    T.SetTileType(CalculateTileValue((int)T.IndexPos.X, (int)T.IndexPos.Y));
         }
 
         private void CreateJumpTile(int X, int Y)
         {
-            TileArray[1, X, Y] = new JumpTile(X, Y, true);
-
-            CurrentMap[1, X, Y] = 1;
+            tileArray[1, X, Y] = new JumpTile(X, Y, true);
         }
 
         private void CreateTeleportTile(int X, int Y)
         {
-            TileArray[1, X, Y] = new TeleportTile(X, Y, true);
-
-            CurrentMap[1, X, Y] = 2;
+            tileArray[1, X, Y] = new TeleportTile(X, Y, true);
         }
 
         private void CreateGoalTile(int X, int Y)
         {
-            TileArray[1, X, Y] = new GoalTile(X, Y, true);
-
-            CurrentMap[1, X, Y] = 3;
+            tileArray[1, X, Y] = new GoalTile(X, Y, true);
         }
 
         private void CreatePlayerSpawn(int X, int Y)
         {
-            TileArray[0, X, Y] = new PlayerTile(X, Y, true);
-
-            CurrentMap[0, X, Y] = 9;
+            tileArray[0, X, Y] = new PlayerTile(X, Y, true);
         }
 
         private void CreateEnemy(int X, int Y)
         {
-            TileArray[1, X, Y] = new EnemyTile(X, Y, true);
-
-            CurrentMap[1, X, Y] = 4;
+            tileArray[1, X, Y] = new EnemyTile(X, Y, true);
         }
         #endregion
 
@@ -445,12 +455,12 @@ namespace LevelEditor.Managers
 
         private void MakeCollidable(int X, int Y)
         {
-            TileArray[0, X, Y].Collidable = true;
+            tileArray[0, X, Y].Collidable = true;
         }
 
         private void MakeNotCollidable(int X, int Y)
         {
-            TileArray[0, X, Y].Collidable = false;
+            tileArray[0, X, Y].Collidable = false;
         }
 
         #endregion
@@ -459,19 +469,19 @@ namespace LevelEditor.Managers
 
         private void MakeJumpthruable(int X, int Y)
         {
-            TileArray[0, X, Y].CanJumpThrough = true;
+            tileArray[0, X, Y].CanJumpThrough = true;
         }
 
         private void MakeNotJumpthruable(int X, int Y)
         {
-            TileArray[0, X, Y].CanJumpThrough = false;
+            tileArray[0, X, Y].CanJumpThrough = false;
         }
 
         #endregion
 
         private Tile FindTileAtIndex(int x, int y)
         {
-            return TileArray[0, x, y];
+            return tileArray[0, x, y];
         }
 
         private int CalculateTileValue(int x, int y)
@@ -536,10 +546,10 @@ namespace LevelEditor.Managers
                     currentY = (int)centerIndex.Y + y;
 
                     //Is the tile we are looking at inside the map-array?
-                    if (IsXInsideArray(currentX, CurrentMap) && IsYInsideArray(currentY, CurrentMap))
+                    if (IsXInsideArray(currentX, tileArray) && IsYInsideArray(currentY, tileArray))
                     {
                         //Is the tile a platform or not? (Add(1) = is a platform)
-                        if (CurrentMap[0, currentX, currentY] == 1)
+                        if (tileArray[0, currentX, currentY].TileType == 1)
                             tempList.Add(1);
                         else
                             tempList.Add(0);
@@ -577,11 +587,11 @@ namespace LevelEditor.Managers
                     currentY = (int)centerIndex.Y + y;
 
                     //Is the tile we are looking at inside the map-array?
-                    if (IsXInsideArray(currentX, CurrentMap) && IsYInsideArray(currentY, CurrentMap))
+                    if (IsXInsideArray(currentX, tileArray) && IsYInsideArray(currentY, tileArray))
                     {
                         //Console.WriteLine("Current Index is inside array");
-                        if (CurrentMap[0, currentX, currentY] == 1)
-                            tempList.Add(TileArray[0, currentX, currentY]);
+                        if (tileArray[0, currentX, currentY].TileType == 1)
+                            tempList.Add(tileArray[0, currentX, currentY]);
                     }
                     else //The tile we are currently looking at is NOT inside the map-array, i.e the tile does not exsit!
                     {
@@ -593,14 +603,14 @@ namespace LevelEditor.Managers
             return tempList;
         }
 
-        private bool IsYInsideArray(int y, int[, ,] array)
+        private bool IsYInsideArray(int y, Tile[, ,] array)
         {
             if (y < 0 || y > array.GetUpperBound(2))
                 return false;
             return true;
         }
 
-        private bool IsXInsideArray(int x, int[, ,] array)
+        private bool IsXInsideArray(int x, Tile[, ,] array)
         {
             if (x < 0 || x > array.GetUpperBound(1))
                 return false;

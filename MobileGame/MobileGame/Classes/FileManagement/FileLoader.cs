@@ -20,7 +20,7 @@ namespace MobileGame.FileManagement
         private static GameData gameData;
 
         #region Properties
-        public static int[, ,] LoadedLevelArray { get { return ConvertToMultiArray(LoadedLevel.LevelArray); } }
+        public static TileData[, ,] LoadedLevelArray { get { return ConvertToMultiArray(LoadedLevel.LevelArray); } }
 
         public static int LoadedLevelTileSize{ get { return LoadedLevel.TileSize; } }
 
@@ -193,6 +193,52 @@ namespace MobileGame.FileManagement
             int mapWidth = jaggedArray[0][0].Length;
 
             int[, ,] tempArray = new int[layers, mapHeight, mapWidth];
+
+            for (int z = 0; z < layers; z++)
+            {
+                for (int y = 0; y < mapHeight; y++)
+                {
+                    for (int x = 0; x < mapWidth; x++)
+                    {
+                        tempArray[z, y, x] = jaggedArray[z][y][x];
+                    }
+                }
+            }
+
+            return tempArray;
+        }
+
+        private static TileData[][][] ConvertToJaggedArray(TileData[, ,] multiArray)
+        {
+            int layers = multiArray.GetLength(0);
+            int mapHeight = multiArray.GetLength(1);
+            int mapWidth = multiArray.GetLength(2);
+
+            TileData[][][] tempJaggedArray = new TileData[layers][][];
+
+            for (int z = 0; z < layers; z++)
+            {
+                tempJaggedArray[z] = new TileData[mapHeight][];
+                for (int y = 0; y < mapHeight; y++)
+                {
+                    tempJaggedArray[z][y] = new TileData[mapWidth];
+                    for (int x = 0; x < mapWidth; x++)
+                    {
+                        tempJaggedArray[z][y][x] = multiArray[z, y, x];
+                    }
+                }
+            }
+
+            return tempJaggedArray;
+        }
+
+        private static TileData[, ,] ConvertToMultiArray(TileData[][][] jaggedArray)
+        {
+            int layers = jaggedArray.Length;
+            int mapHeight = jaggedArray[0].Length;
+            int mapWidth = jaggedArray[0][0].Length;
+
+            TileData[, ,] tempArray = new TileData[layers, mapHeight, mapWidth];
 
             for (int z = 0; z < layers; z++)
             {

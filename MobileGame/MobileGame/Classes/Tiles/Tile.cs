@@ -102,8 +102,7 @@ namespace MobileGame.Tiles
             {
                 spriteBatch.Draw(tileTexture, pixelPos, Color);
                 Color = Color.White;
-            }
-                
+            }     
         }
 
         public void SetTileBitType(int tileValue)
@@ -129,6 +128,16 @@ namespace MobileGame.Tiles
         public virtual Rectangle HitBox()
         {
             return new Rectangle((int)pixelPos.X+1, (int)pixelPos.Y+1, tileSize-1, tileSize-1);
+        }
+
+        public virtual void ImportTileData(TileData TileData)
+        {
+            SetTileBitType(TileData.TileValue);
+            collidable = TileData.Collidable;
+            canJumpThrough = TileData.CanJumpThrough;
+
+            if (TileData.TileType == 0)
+                shouldDraw = false;
         }
     }
 }
