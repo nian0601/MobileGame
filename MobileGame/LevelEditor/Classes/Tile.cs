@@ -21,6 +21,7 @@ namespace LevelEditor
         public bool ShouldDraw;
         public bool Collidable;
         public bool CanJumpThrough;
+        public bool Selected;
         public int TileValue;
         public int TileType;
 
@@ -35,24 +36,36 @@ namespace LevelEditor
 
             Collidable = false;
             CanJumpThrough = false;
+            Selected = false;
             TileValue = 0;
 
             if (ShouldDraw)
                 TileType = 1;
             else
-                TileValue = 0;
+                TileType = 0;
         }
 
         public void Draw(SpriteBatch spritebatch, int x, int y, Vector2 offset)
         {
-            if (ShouldDraw)
+            if (ShouldDraw || Selected)
             {
                 Vector2 DrawPos = new Vector2(x * TileSize + TileDrawOffset.X, y * TileSize + TileDrawOffset.Y) + offset;
 
                 if (Game1.EditMode == 1 && Collidable)
                     Color = Color.Red;
-                else if (Game1.EditMode == 2 && CanJumpThrough)
-                    Color = Color.Black;
+                else if (Game1.EditMode == 2)
+                {
+                    if (!Collidable)
+                        Color *= 0.25f;
+                    else if (CanJumpThrough)
+                        Color = Color.Red;
+                }
+
+                if (Selected)
+                    Color = Color.LightBlue;
+
+                if (Texture == null)
+                    Texture = TextureManager.TileTextures[15];
 
                 spritebatch.Draw(Texture, DrawPos, Color);
 
@@ -73,7 +86,7 @@ namespace LevelEditor
         {
             Texture = TextureManager.PlayerTexture;
             TileDrawOffset = new Vector2(0, -Texture.Height/2);
-            TileType = 0;
+            TileType = 9;
         }
     }
 

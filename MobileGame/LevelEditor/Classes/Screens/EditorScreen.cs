@@ -16,6 +16,9 @@ namespace LevelEditor.Screens
     {
         private MenuButton LoadButton, SaveButton, ExitButton;
 
+        private List<MenuButton> TileButtons;
+        private List<MenuButton> TileButtonsDisplayList;
+
         private MapManager mapManager;
 
         public EditorScreen(): base("Editor Screen")
@@ -30,6 +33,42 @@ namespace LevelEditor.Screens
             MenuEntries.Add(LoadButton);
             MenuEntries.Add(SaveButton);
             MenuEntries.Add(ExitButton);
+
+            TileButtons = new List<MenuButton>();
+            TileButtons.Add(new MenuButton(new Tile0(ScreenManager.Game.Content)));
+            TileButtons.Add(new MenuButton(new Tile1(ScreenManager.Game.Content)));
+            TileButtons.Add(new MenuButton(new Tile2(ScreenManager.Game.Content)));
+            TileButtons.Add(new MenuButton(new Tile3(ScreenManager.Game.Content)));
+            TileButtons.Add(new MenuButton(new Tile4(ScreenManager.Game.Content)));
+            TileButtons.Add(new MenuButton(new Tile5(ScreenManager.Game.Content)));
+            TileButtons.Add(new MenuButton(new Tile6(ScreenManager.Game.Content)));
+            TileButtons.Add(new MenuButton(new Tile7(ScreenManager.Game.Content)));
+            TileButtons.Add(new MenuButton(new Tile8(ScreenManager.Game.Content)));
+            TileButtons.Add(new MenuButton(new Tile9(ScreenManager.Game.Content)));
+            TileButtons.Add(new MenuButton(new Tile10(ScreenManager.Game.Content)));
+            TileButtons.Add(new MenuButton(new Tile11(ScreenManager.Game.Content)));
+            TileButtons.Add(new MenuButton(new Tile12(ScreenManager.Game.Content)));
+            TileButtons.Add(new MenuButton(new Tile13(ScreenManager.Game.Content)));
+            TileButtons.Add(new MenuButton(new Tile14(ScreenManager.Game.Content)));
+            TileButtons.Add(new MenuButton(new Tile15(ScreenManager.Game.Content)));
+
+            TileButtonsDisplayList = new List<MenuButton>();
+            TileButtonsDisplayList.Add(TileButtons[6]);
+            TileButtonsDisplayList.Add(TileButtons[14]);
+            TileButtonsDisplayList.Add(TileButtons[12]);
+            TileButtonsDisplayList.Add(TileButtons[4]);
+            TileButtonsDisplayList.Add(TileButtons[7]);
+            TileButtonsDisplayList.Add(TileButtons[15]);
+            TileButtonsDisplayList.Add(TileButtons[13]);
+            TileButtonsDisplayList.Add(TileButtons[5]);
+            TileButtonsDisplayList.Add(TileButtons[3]);
+            TileButtonsDisplayList.Add(TileButtons[11]);
+            TileButtonsDisplayList.Add(TileButtons[9]);
+            TileButtonsDisplayList.Add(TileButtons[1]);
+            TileButtonsDisplayList.Add(TileButtons[2]);
+            TileButtonsDisplayList.Add(TileButtons[10]);
+            TileButtonsDisplayList.Add(TileButtons[8]);
+            TileButtonsDisplayList.Add(TileButtons[0]);
         }
 
         public override void Activate()
@@ -40,7 +79,7 @@ namespace LevelEditor.Screens
                 mapManager = new MapManager(ScreenManager.Game.Content, ScreenManager.SpriteBatch);
 
             mapManager.Initialize();
-            mapManager.Offset = new Vector2(218, 22);
+            MapManager.Offset = new Vector2(218, 22);
         }
 
         public override void HandleInput(GameTime gameTime)
@@ -49,6 +88,14 @@ namespace LevelEditor.Screens
 
             if (SaveButton.LeftClick())
                 ScreenManager.AddScreen(new SaveMapScreen(mapManager));
+
+            for (int i = 0; i < TileButtons.Count; i++)
+            {
+                TileButtons[i].Update(this, gameTime);
+
+                if (TileButtons[i].LeftClick())
+                    MapManager.SetCursorTexture(i);
+            }
 
             base.HandleInput(gameTime);
         }
@@ -74,6 +121,30 @@ namespace LevelEditor.Screens
 
                 menuEntry.Position = position;
             }
+
+            int startX = 30;
+            int startY = 50;
+            int padding = 2;
+            int counter = 0;
+
+            position.X = startX;
+            position.Y = startY;
+
+            for (int i = 0; i < TileButtonsDisplayList.Count; i++)
+            {
+                GUIObject button = TileButtonsDisplayList[i];
+
+                position.X = startX + (button.GetWidth(this) + padding) * counter;
+
+                button.Position = position;
+
+                counter++;
+                if (counter >= 4)
+                {
+                    position.Y += button.GetHeight(this) + padding;
+                    counter = 0;
+                }
+            }
         }
 
         public override void Draw(GameTime gameTime)
@@ -94,6 +165,11 @@ namespace LevelEditor.Screens
             {
                 GUIObject menuEntry = MenuEntries[i];
                 menuEntry.Draw(this, gameTime);
+            }
+
+            foreach (GUIObject Object in TileButtonsDisplayList)
+            {
+                Object.Draw(this, gameTime);
             }
 
             spriteBatch.End();

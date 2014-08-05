@@ -36,9 +36,9 @@ namespace MobileGame.Managers
                 Player = new Player();
 
             Player.SetStartPos(mapManager.PlayerStartPos);
-
-            Camera.Position = Player.Position;
+            Camera.ResetValues(mapManager.PlayerStartPos);
             Camera.DefaultFocus = Player;
+            Camera.Position = mapManager.PlayerStartPos;
             Camera.Limits = new Rectangle(0, 0, MapManager.MapWidth, MapManager.MapHeight); 
         }
 
@@ -67,7 +67,7 @@ namespace MobileGame.Managers
             //The player handles collision against the generic platforms itself inside the update.
             Player.Update(elapsedTime);
 
-            Console.WriteLine("FPS: " + (1000 / elapsedTime));
+            //Console.WriteLine("FPS: " + (1000 / elapsedTime));
         }
 
         public void Draw(SpriteBatch spriteBatch)

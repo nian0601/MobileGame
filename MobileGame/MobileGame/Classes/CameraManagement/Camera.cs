@@ -106,14 +106,21 @@ namespace MobileGame.CameraManagement
 
             activeList = new List<IFocusable>();
             allFocusPoints = new List<IFocusable>();
-            target = Vector2.Zero;
+        }
+
+        public static void ResetValues(Vector2 StartPos)
+        {
+            activeList.Clear();
+            allFocusPoints.Clear();
+            
             rotation = 0f;
             zoom = 0.9f;
             moveSpeed = 1.5f;
             targetChangeSpeed = 2.5f;
             setFocusSpeed = 2.5f;
-            position = Vector2.Zero;
-            pastDefaultFocusPos = Vector2.Zero;
+            position = StartPos;
+            target = StartPos;
+            pastDefaultFocusPos = StartPos;
 
             defaultFocus = null;
             currentFocus = null;

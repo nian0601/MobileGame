@@ -104,7 +104,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
     <None Include="Content\DebugTextures\EmptyCircle.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

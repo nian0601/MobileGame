@@ -76,6 +76,7 @@ namespace MobileGame.Managers
             specialBlockList.Clear();
 
             BuildLevel(FileLoader.LoadedLevelArray);
+            
         }
 
         //This entire function should not be in the final game, we do not want the player to be able to draw on the map while playing
@@ -175,6 +176,7 @@ namespace MobileGame.Managers
                     if (tileType == 9)
                     {
                         playerStartPos = ConvertIndexToPixels(x, y);
+                        playerStartPos.Y -= 10;
                         tileArray[0, x, y] = new SimpleTile(x, y, 0);
                         tileArray[0, x, y].ImportTileData(level[0, x, y]);
                         continue;
@@ -214,11 +216,6 @@ namespace MobileGame.Managers
                         EnemyManager.AddEnemy(new SimpleEnemy(x, y, false));
                 }
             }
-
-            //To make sure that all the tiles get their correct texture we have to wait until all the tiles have been added
-            //and then loop through them all and set TileTextures
-            foreach (SimpleTile Tile in platformList)
-                Tile.SetTileBitType(CalculateTileValue((int)Tile.IndexPos.X, (int)Tile.IndexPos.Y));
 
             #region Performance Check Code
             //PERFORMANCE CHECK!!

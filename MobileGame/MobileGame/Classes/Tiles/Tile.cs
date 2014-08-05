@@ -100,7 +100,8 @@ namespace MobileGame.Tiles
         {
             if (shouldDraw)
             {
-                spriteBatch.Draw(tileTexture, pixelPos, Color);
+                //spriteBatch.Draw(tileTexture, pixelPos, Color);
+                spriteBatch.Draw(tileTexture, pixelPos, null, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f); 
                 Color = Color.White;
             }     
         }

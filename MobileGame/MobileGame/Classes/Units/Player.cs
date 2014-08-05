@@ -154,7 +154,7 @@ namespace MobileGame.Units
         public void Draw(SpriteBatch spriteBatch)
         {
             //spriteBatch.Draw(playerTex, Position, SourceRect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(playerTex, Position, animator.SourceRectangle, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(playerTex, Position, animator.SourceRectangle, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
         }
 
         public void Jump(float jumpMultiplier)
@@ -169,7 +169,7 @@ namespace MobileGame.Units
         public void SetStartPos(Vector2 Pos)
         {
             startPos.X = Pos.X + FrameWidth;
-            startPos.Y = Pos.Y;
+            startPos.Y = Pos.Y - FrameHeight;
             ResetPosition();
         }
 
@@ -277,12 +277,11 @@ namespace MobileGame.Units
                         if (velocity.Y >= 0 && HitBox().Bottom > collisionList[i].HitBox().Top)
                         {
                             position.Y = collisionList[i].HitBox().Top - HitBox().Height;
-                            Console.WriteLine("Falling collision");
                             velocity.Y = 0;
                         }
                         else if (collisionList[i].canJumpThrough && HitBox().Bottom > collisionList[i].HitBox().Top-2)
                         {
-                            Console.WriteLine("Special fancy collision");
+
                         }
                         //Jumping
                         else if (velocity.Y < 0)
@@ -290,8 +289,6 @@ namespace MobileGame.Units
                             position.Y = collisionList[i].HitBox().Top + collisionList[i].HitBox().Height;
                             velocity.Y = 0;
                         }
-                            
-
                         
                         break;
                     }

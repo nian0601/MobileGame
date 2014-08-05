@@ -44,7 +44,13 @@
     <Compile Include="Classes\KeyMouseReader.cs" />
     <Compile Include="Classes\Managers\MapManager.cs" />
     <Compile Include="Classes\Managers\TextureManager.cs" />
+    <Compile Include="Classes\Managers\ToolManager.cs" />
     <Compile Include="Classes\Screens\SaveMapScreen.cs" />
+    <Compile Include="Classes\Tools\ColliderMaker.cs" />
+    <Compile Include="Classes\Tools\CopyPaster.cs" />
+    <Compile Include="Classes\Tools\JumpThroughMaker.cs" />
+    <Compile Include="Classes\Tools\Selector.cs" />
+    <Compile Include="Classes\Tools\TileCreator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Classes\Screens\EditorScreen.cs" />
@@ -126,6 +132,102 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Editor\SaveMap\InputLabel.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Hoover\Tile0Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Hoover\Tile10Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Hoover\Tile11Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Hoover\Tile12Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Hoover\Tile13Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Hoover\Tile14Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Hoover\Tile15Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Hoover\Tile1Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Hoover\Tile2Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Hoover\Tile3Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Hoover\Tile4Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Hoover\Tile5Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Hoover\Tile6Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Hoover\Tile7Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Hoover\Tile8Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Hoover\Tile9Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Normal\Tile0.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Normal\Tile1.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Normal\Tile10.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Normal\Tile11.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Normal\Tile12.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Normal\Tile13.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Normal\Tile14.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Normal\Tile15.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Normal\Tile2.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Normal\Tile3.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Normal\Tile4.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Normal\Tile5.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Normal\Tile6.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Normal\Tile7.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Normal\Tile8.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\TileButtons\Normal\Tile9.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Fonts\DejaVuSans_20.xnb">
