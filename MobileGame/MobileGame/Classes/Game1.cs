@@ -98,7 +98,7 @@ namespace MobileGame
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.SaddleBrown);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
 
             screenManager.Draw(gameTime);
 

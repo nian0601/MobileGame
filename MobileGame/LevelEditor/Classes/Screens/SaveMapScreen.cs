@@ -18,6 +18,7 @@ namespace LevelEditor.Screens
     {
         private MenuButton SaveButton, CancelButton;
         private TextInputField NameInput;
+
         private MapManager mapManager;
 
         public SaveMapScreen(MapManager MapManager) : base("")
@@ -45,13 +46,20 @@ namespace LevelEditor.Screens
 
             if (SaveButton.LeftClick() && NameInput.Text.Length > 0)
             {
-                FileManagement.FileLoader.SaveLevel(MapManager.TileArray, MapManager.mapHeight, MapManager.mapWidth, NameInput.Text);
+                ConfirmationPopUp confirmSaveBox = new ConfirmationPopUp();
+                confirmSaveBox.Accepted += ConfirmSaveBoxAccepted;
+                ScreenManager.AddScreen(confirmSaveBox);  
             }
-                
-
-            NameInput.Update(this, gameTime);
 
             base.HandleInput(gameTime);
+        }
+
+        public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
+        {
+            if(!coveredByOtherScreen)
+                NameInput.Update(this, gameTime);
+
+            base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
         }
 
         protected override void UpdateMenyEntryLocations()
@@ -109,10 +117,13 @@ namespace LevelEditor.Screens
                 menuEntry.Draw(this, gameTime);
             }
 
-
-            
-
             spriteBatch.End();
+        }
+
+        private void ConfirmSaveBoxAccepted(object sender, EventArgs e)
+        {
+            FileManagement.FileLoader.SaveLevel(MapManager.TileArray, MapManager.mapHeight, MapManager.mapWidth, NameInput.Text);
+            ExitScreen();
         }
     }
 }

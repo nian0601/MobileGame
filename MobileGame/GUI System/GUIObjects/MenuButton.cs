@@ -42,7 +42,15 @@ namespace GUI_System.GUIObjects
             buttonStyle.NormalTexture();
 
             if (HitBox().Contains(mousePos))
+            {
                 buttonStyle.HooverTexture();
+                if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.LeftMouseDown())
+                {
+                    Vector2 newPos = new Vector2(KeyMouseReader.GetMousePos().X, KeyMouseReader.GetMousePos().Y);
+                    Position = newPos;
+                }
+            }
+                
         }
 
         public void Draw(MenuScreen screen, GameTime gameTime)

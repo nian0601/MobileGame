@@ -15,9 +15,9 @@ namespace LevelEditor.Screens
     class EditorScreen : MenuScreen
     {
         private MenuButton LoadButton, SaveButton, ExitButton;
+        private MenuButton LayerUpButton, LayerDownButton;
 
         private List<MenuButton> TileButtons;
-        private List<MenuButton> TileButtonsDisplayList;
 
         private MapManager mapManager;
 
@@ -26,14 +26,18 @@ namespace LevelEditor.Screens
             TransitionOnTime = TimeSpan.FromSeconds(0.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
 
-            LoadButton = new MenuButton(new LoadMapButtonStyle(ScreenManager.Game.Content));
-            SaveButton = new MenuButton(new SaveMapButtonStyle(ScreenManager.Game.Content));
             ExitButton = new MenuButton(new ExitButtonStyle(ScreenManager.Game.Content));
+            SaveButton = new MenuButton(new SaveMapButtonStyle(ScreenManager.Game.Content));
+            LoadButton = new MenuButton(new LoadMapButtonStyle(ScreenManager.Game.Content));
 
-            MenuEntries.Add(LoadButton);
-            MenuEntries.Add(SaveButton);
+            LayerDownButton = new MenuButton(new LayerDownButtonStyle(ScreenManager.Game.Content));
+            LayerUpButton = new MenuButton(new LayerUpButtonStyle(ScreenManager.Game.Content));
+
             MenuEntries.Add(ExitButton);
+            MenuEntries.Add(SaveButton);
+            MenuEntries.Add(LoadButton);
 
+            #region TileButtons
             TileButtons = new List<MenuButton>();
             TileButtons.Add(new MenuButton(new Tile0(ScreenManager.Game.Content)));
             TileButtons.Add(new MenuButton(new Tile1(ScreenManager.Game.Content)));
@@ -51,35 +55,25 @@ namespace LevelEditor.Screens
             TileButtons.Add(new MenuButton(new Tile13(ScreenManager.Game.Content)));
             TileButtons.Add(new MenuButton(new Tile14(ScreenManager.Game.Content)));
             TileButtons.Add(new MenuButton(new Tile15(ScreenManager.Game.Content)));
-
-            TileButtonsDisplayList = new List<MenuButton>();
-            TileButtonsDisplayList.Add(TileButtons[6]);
-            TileButtonsDisplayList.Add(TileButtons[14]);
-            TileButtonsDisplayList.Add(TileButtons[12]);
-            TileButtonsDisplayList.Add(TileButtons[4]);
-            TileButtonsDisplayList.Add(TileButtons[7]);
-            TileButtonsDisplayList.Add(TileButtons[15]);
-            TileButtonsDisplayList.Add(TileButtons[13]);
-            TileButtonsDisplayList.Add(TileButtons[5]);
-            TileButtonsDisplayList.Add(TileButtons[3]);
-            TileButtonsDisplayList.Add(TileButtons[11]);
-            TileButtonsDisplayList.Add(TileButtons[9]);
-            TileButtonsDisplayList.Add(TileButtons[1]);
-            TileButtonsDisplayList.Add(TileButtons[2]);
-            TileButtonsDisplayList.Add(TileButtons[10]);
-            TileButtonsDisplayList.Add(TileButtons[8]);
-            TileButtonsDisplayList.Add(TileButtons[0]);
+            #endregion
         }
 
         public override void Activate()
         {
             FileManagement.FileLoader.Initialize();
+            ToolPositionsManager.LoadData();
 
             if(mapManager == null)
                 mapManager = new MapManager(ScreenManager.Game.Content, ScreenManager.SpriteBatch);
 
             mapManager.Initialize();
             MapManager.Offset = new Vector2(218, 22);
+
+            for (int i = 0; i < TileButtons.Count; i++)
+            {
+                GUIObject button = TileButtons[i];
+                button.Position = ToolPositionsManager.GetPosition("PlatformButton" + i);
+            }
         }
 
         public override void HandleInput(GameTime gameTime)
@@ -87,7 +81,37 @@ namespace LevelEditor.Screens
             mapManager.Update();
 
             if (SaveButton.LeftClick())
-                ScreenManager.AddScreen(new SaveMapScreen(mapManager));
+            {
+                ConfirmationPopUp ProccedToSaveScreenBox = new ConfirmationPopUp();
+
+                if (!MapManager.PlayerPlaced)
+                    ProccedToSaveScreenBox = new ConfirmationPopUp("You have not placed the Player");
+                else if (!MapManager.GoalPlaced)
+                    ProccedToSaveScreenBox = new ConfirmationPopUp("You have not place the Goal");
+                else if (!MapManager.HasSufficentCollisionFlags)
+                    ProccedToSaveScreenBox = new ConfirmationPopUp("There is no or very few collisionflags");
+                else
+                {
+                    ScreenManager.AddScreen(new SaveMapScreen(mapManager));
+                    return;
+                }
+
+                ProccedToSaveScreenBox.Accepted = ProccedToSaveScreenAccepted;
+                ScreenManager.AddScreen(ProccedToSaveScreenBox);
+            }
+
+
+            else if (LoadButton.LeftClick())
+                ScreenManager.AddScreen(new LoadMapScreen(mapManager));
+
+            else if (ExitButton.LeftClick())
+                ScreenManager.Game.Exit();
+
+            else if (LayerUpButton.LeftClick())
+                Game1.ChangeEditMode(1);
+
+            else if (LayerDownButton.LeftClick())
+                Game1.ChangeEditMode(-1);
 
             for (int i = 0; i < TileButtons.Count; i++)
             {
@@ -100,19 +124,32 @@ namespace LevelEditor.Screens
             base.HandleInput(gameTime);
         }
 
+        public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
+        {
+            LayerUpButton.Update(this, gameTime);
+            LayerDownButton.Update(this, gameTime);
+
+            base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+        }
+
         protected override void UpdateMenyEntryLocations()
         {
             float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
 
-            Vector2 position = new Vector2(13 + MenuEntries[0].GetWidth(this)/2, 0);
+            #region Exit/Save/Load Buttons
+
             int spaceBetweenEntries = 10;
-            int yStartPos = 480;
+            int yStartPos = ScreenManager.Game.GraphicsDevice.Viewport.Height - MenuEntries[0].GetHeight(this);
+            int xStartPos = MenuEntries[0].GetWidth(this) / 2 + 15;
+
+            Vector2 position = new Vector2();
+            position.Y = yStartPos;
 
             for (int i = 0; i < MenuEntries.Count; i++)
             {
                 GUIObject menuEntry = MenuEntries[i];
 
-                position.Y = yStartPos + (menuEntry.GetHeight(this) + spaceBetweenEntries) * i;
+                position.X = xStartPos + (menuEntry.GetWidth(this) + spaceBetweenEntries) * i;
 
                 if (CurrentScreenState == ScreenState.TransitionOn)
                     position.Y -= transitionOffset * 256;
@@ -122,27 +159,23 @@ namespace LevelEditor.Screens
                 menuEntry.Position = position;
             }
 
-            int startX = 30;
-            int startY = 50;
-            int padding = 2;
-            int counter = 0;
+            #endregion
 
-            position.X = startX;
-            position.Y = startY;
+            xStartPos = LayerUpButton.GetWidth(this) / 2 + 15;
+            yStartPos = yStartPos - LayerUpButton.GetHeight(this) - 10;
 
-            for (int i = 0; i < TileButtonsDisplayList.Count; i++)
+            position = new Vector2(xStartPos, yStartPos);
+            LayerUpButton.Position = position;
+
+            position.X += LayerDownButton.GetWidth(this) + spaceBetweenEntries;
+            LayerDownButton.Position = position;
+
+            if (KeyMouseReader.KeyClick(Microsoft.Xna.Framework.Input.Keys.M))
             {
-                GUIObject button = TileButtonsDisplayList[i];
-
-                position.X = startX + (button.GetWidth(this) + padding) * counter;
-
-                button.Position = position;
-
-                counter++;
-                if (counter >= 4)
+                for (int i = 0; i < TileButtons.Count; i++)
                 {
-                    position.Y += button.GetHeight(this) + padding;
-                    counter = 0;
+                    GUIObject button = TileButtons[i];
+                    ToolPositionsManager.AddPosition("PlatformButton" + i, button.Position);
                 }
             }
         }
@@ -167,7 +200,10 @@ namespace LevelEditor.Screens
                 menuEntry.Draw(this, gameTime);
             }
 
-            foreach (GUIObject Object in TileButtonsDisplayList)
+            LayerDownButton.Draw(this, gameTime);
+            LayerUpButton.Draw(this, gameTime);
+
+            foreach (GUIObject Object in TileButtons)
             {
                 Object.Draw(this, gameTime);
             }
@@ -175,6 +211,11 @@ namespace LevelEditor.Screens
             spriteBatch.End();
 
             
+        }
+
+        private void ProccedToSaveScreenAccepted(object sender, EventArgs e)
+        {
+            ScreenManager.AddScreen(new SaveMapScreen(mapManager));
         }
     }
 }

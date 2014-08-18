@@ -25,6 +25,7 @@ namespace MobileGame.Managers
         public static Texture2D PlayerColTex { get; private set; }
 
         public static List<Texture2D> TileTextures { get; private set; }
+        public static List<Texture2D> SpikeTextures { get; private set; }
 
         public static void LoadContents(ContentManager Content)
         {
@@ -58,6 +59,11 @@ namespace MobileGame.Managers
             TileTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/Tile_13"));    // 13
             TileTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/Tile_14"));    // 14
             TileTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/Tile_15"));    // 15
+
+            SpikeTextures = new List<Texture2D>();
+            SpikeTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/Spike_00"));
+            SpikeTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/Spike_01"));
+            SpikeTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/Spike_02"));
 
             #region OldTiles
             //TileTextures.Add(Content.Load<Texture2D>("Tiles/Tiles/0Tile"));     // 0

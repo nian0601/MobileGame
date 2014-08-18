@@ -26,7 +26,11 @@ namespace LevelEditor
 
         ScreenManager screenManager;
 
-        public static int EditMode;
+        private static int editMode;
+        public static int EditMode
+        {
+            get { return editMode; }
+        }
 
         public Game1() : base()
         {
@@ -70,27 +74,8 @@ namespace LevelEditor
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
             KeyMouseReader.Update();
             screenManager.Update(gameTime);
-
-            if (KeyMouseReader.KeyClick(Keys.PageUp))
-            {
-                EditMode++;
-                if (EditMode > 3)
-                    EditMode = 3;
-                Console.WriteLine("EditMode: " + EditMode);
-            }
-
-            if (KeyMouseReader.KeyClick(Keys.PageDown))
-            {
-                EditMode--;
-                if (EditMode < 0)
-                    EditMode = 0;
-                Console.WriteLine("EditMode: " + EditMode);
-            }
 
             base.Update(gameTime);
         }
@@ -102,6 +87,19 @@ namespace LevelEditor
             screenManager.Draw(gameTime);
 
             base.Draw(gameTime);
+        }
+
+
+        public static void ChangeEditMode(int value)
+        {
+            editMode += value;
+            if (editMode > 3)
+                editMode = 3;
+
+            else if (editMode < 0)
+                editMode = 0;
+
+            Console.WriteLine("EditMode: " + editMode);
         }
     }
 }

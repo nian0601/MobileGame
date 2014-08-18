@@ -58,6 +58,7 @@
     <Compile Include="Classes\Screens\WinScreen.cs" />
     <Compile Include="Classes\Tiles\GoalTile.cs" />
     <Compile Include="Classes\Tiles\JumpTile.cs" />
+    <Compile Include="Classes\Tiles\SpikeTile.cs" />
     <Compile Include="Classes\Tiles\TeleportTile.cs" />
     <Compile Include="Classes\Managers\EnemyManager.cs" />
     <Compile Include="Classes\Enemies\IEnemy.cs" />
@@ -183,6 +184,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Tiles\JumpTile.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Tiles\NewTiles\Spike_00.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Tiles\NewTiles\Spike_01.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Tiles\NewTiles\Spike_02.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Tiles\NewTiles\Tile_00.xnb">

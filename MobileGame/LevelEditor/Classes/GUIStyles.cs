@@ -15,10 +15,10 @@ namespace LevelEditor
     {
         public ExitButtonStyle(ContentManager content) : base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/Buttons/ExitButton");
+            normalTexture = content.Load<Texture2D>("Editor/Buttons/NewButtons/Close");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/Buttons/ExitButtonHoover");
+            hooverTexture = content.Load<Texture2D>("Editor/Buttons/NewButtons/CloseHoover");
         }
     }
 
@@ -26,10 +26,10 @@ namespace LevelEditor
     {
         public LoadMapButtonStyle(ContentManager content) : base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/Buttons/LoadMapButton");
+            normalTexture = content.Load<Texture2D>("Editor/Buttons/NewButtons/Load");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/Buttons/LoadMapButtonHoover");
+            hooverTexture = content.Load<Texture2D>("Editor/Buttons/NewButtons/LoadHoover");
         }
     }
 
@@ -37,10 +37,34 @@ namespace LevelEditor
     {
         public SaveMapButtonStyle(ContentManager content) : base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/Buttons/SaveMapButton");
+            normalTexture = content.Load<Texture2D>("Editor/Buttons/NewButtons/Save");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/Buttons/SaveMapButtonHoover");
+            hooverTexture = content.Load<Texture2D>("Editor/Buttons/NewButtons/SaveHoover");
+        }
+    }
+
+    public class LayerUpButtonStyle : ButtonStyle
+    {
+        public LayerUpButtonStyle(ContentManager content)
+            : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/Buttons/NewButtons/LayerUp");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/Buttons/NewButtons/LayerUpHoover");
+        }
+    }
+
+    public class LayerDownButtonStyle : ButtonStyle
+    {
+        public LayerDownButtonStyle(ContentManager content)
+            : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/Buttons/NewButtons/LayerDown");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/Buttons/NewButtons/LayerDownHoover");
         }
     }
 
@@ -81,6 +105,76 @@ namespace LevelEditor
             Font = content.Load<SpriteFont>("Fonts/DejaVuSans_20");
         }
     }
+
+    public class LoadButtonStyle : ButtonStyle
+    {
+        public LoadButtonStyle(ContentManager content): base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/LoadMap/LoadNormal");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/LoadMap/LoadHoover");
+        }
+    }
+
+    public class DeleteButtonStyle : ButtonStyle
+    {
+        public DeleteButtonStyle(ContentManager content) : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/LoadMap/DeleteNormal");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/LoadMap/DeleteHoover");
+        }
+    }
+
+    public class LoadMapListStyle : ListStyle
+    {
+        public LoadMapListStyle(ContentManager content) : base(content)
+        {
+            Texture = content.Load<Texture2D>("Editor/LoadMap/ListBackground");
+            Width = Texture.Width;
+            Height = Texture.Height;
+
+            Position = new Vector2(200, 200);
+            ItemOffset = new Vector2(10, 10);
+        }
+    }
+
+    public class LoadMapListItemStyle : ListItemStyle
+    {
+        public LoadMapListItemStyle(ContentManager content): base(content)
+        {
+            Font = content.Load<SpriteFont>("Editor/LoadMap/MapListFont");
+            DefaultColor = Color.Black;
+        }
+    }
+
+    public class NoButtonStyle : ButtonStyle
+    {
+        public NoButtonStyle(ContentManager content): base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/ConfirmationBox/NoNormal");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/ConfirmationBox/NoHoover");
+        }
+    }
+
+    public class YesButtonStyle : ButtonStyle
+    {
+        public YesButtonStyle(ContentManager content): base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/ConfirmationBox/YesNormal");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/ConfirmationBox/YesHoover");
+        }
+    }
+
+    #region Editor Tool Buttons
+
+    #region Styles for all tilebuttons
 
     public class Tile0 : ButtonStyle
     {
@@ -258,4 +352,64 @@ namespace LevelEditor
         }
     }
 
+    #endregion
+
+    public class Spike0 : ButtonStyle
+    {
+        public Spike0(ContentManager content): base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/Spike00");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/Spike0Hoover");
+        }
+    }
+
+    public class Spike1 : ButtonStyle
+    {
+        public Spike1(ContentManager content) : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/Spike01");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/Spike01Hoover");
+        }
+    }
+
+    public class Spike2 : ButtonStyle
+    {
+        public Spike2(ContentManager content): base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/Spike02");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/Spike02Hoover");
+        }
+    }
+
+    public class GoalTileButton : ButtonStyle
+    {
+        public GoalTileButton(ContentManager content)
+            : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/GoalTile");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/GoalTileHoover");
+        }
+    }
+
+    public class JumpTileButton : ButtonStyle
+    {
+        public JumpTileButton(ContentManager content)
+            : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/JumpTile");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/JumpTileHoover");
+        }
+    }
+
+    #endregion
 }

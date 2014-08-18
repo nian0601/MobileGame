@@ -44,7 +44,8 @@ namespace MobileGame.CameraManagement
         private static GraphicsDevice graphicsDevice;
 
         private static Vector2 pastDefaultFocusPos;
-
+        private static bool justChangedTarget;
+        private static Vector2 targetOffset;
         /// <summary>
         /// The speed of the acctual camera
         /// </summary>
@@ -110,11 +111,8 @@ namespace MobileGame.CameraManagement
 
         public static void ResetValues(Vector2 StartPos)
         {
-            activeList.Clear();
-            allFocusPoints.Clear();
-            
             rotation = 0f;
-            zoom = 0.9f;
+            zoom = 1f;
             moveSpeed = 1.5f;
             targetChangeSpeed = 2.5f;
             setFocusSpeed = 2.5f;
@@ -124,6 +122,8 @@ namespace MobileGame.CameraManagement
 
             defaultFocus = null;
             currentFocus = null;
+            justChangedTarget = true;
+            targetOffset = Vector2.Zero;
         }
 
         public static void LoadStuff(ContentManager content)
@@ -137,12 +137,13 @@ namespace MobileGame.CameraManagement
             var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
             Vector2 finalTarget;
             float finalChangeSpeed;
+            
             CheckRanges();
 
             if (KeyMouseReader.KeyClick(Keys.Z))
-                zoom -= 0.1f;
+                Zoom -= 0.1f;
             else if (KeyMouseReader.KeyClick(Keys.X))
-                zoom += 0.1f;
+                Zoom += 0.1f;
 
             #region Target-Follow-And-Select-Code
             if (currentFocus != null) //If we have a currentFocus we wnat to focus soley on that
@@ -154,6 +155,8 @@ namespace MobileGame.CameraManagement
 
                 //Check if the player have moved out of currentFocus's control-range
                 CheckCurrentVsDefaultRange();
+
+                justChangedTarget = true;
             }
             else if (activeList.Count > 0) //If we have focuspoints in range we want to let them influence the camera
             {
@@ -164,39 +167,68 @@ namespace MobileGame.CameraManagement
 
                 //Check if the player have moved out of any interest-ranges
                 CheckRanges();
+
+                justChangedTarget = true;
             }
             else //If we dont have any focuspoints in range we want to follow the defaultFocus
             {
+                Vector2 targetMaxOffset = new Vector2(300, 300);
+
+                if (justChangedTarget)
+                {
+                    targetOffset = Vector2.Zero;
+                    justChangedTarget = false;
+                    Console.WriteLine("Just changed to default target");
+                }
+
+                #region Calculate and set TargetOffset
                 //This gets the differencial of current and past focus-positions
                 //This is used to determine in what direction we want to push the camera
                 Vector2 currentPos = defaultFocus.Position;
                 float xValue = currentPos.X - pastDefaultFocusPos.X;
                 float yValue = currentPos.Y - pastDefaultFocusPos.Y;
 
-                //Create a new vector to hold the distance that we want to push the camnera
-                Vector2 targetOffset = Vector2.Zero;
-
                 //If the xValue is negative that means we are moving to the left
                 if (xValue < -1)
                     //So we push the camera infront of us to the left
-                    targetOffset.X = -200;
+                    targetOffset.X -= 20;
                 //if the xValue is positive it means we are moving to the right
                 else if (xValue > 1)
                     //So we push the camera infront of us to the right
-                    targetOffset.X = 200;
+                    targetOffset.X += 20;
+                //if the xValue is close to 0, that means we are almost standing still
+                else if (xValue < 1 && xValue > -1)
+                    //So we set the camera on us
+                    targetOffset.X = 0;
 
                 //If the yValue is negative that means we are going upwards (jumping)
                 if (yValue < -1)
                     //So we push the camera above us a lil bit
-                    targetOffset.Y = -200;
+                    targetOffset.Y -= 20;
                 //If the yValue is greater than 10 that means we are falling rather quickly (like when jumping of a ledge)
                 else if (yValue > 10)
                     //So we push the camera quite far below us
-                    targetOffset.Y = 600;
+                    targetOffset.Y += 30;
                 //If the yValue is positive but less than 10 that means we are falling, but not very quickly (a short drop)
                 else if (yValue > 1)
                     //So we push the camera just a lil bit below us
-                    targetOffset.Y = 200;
+                    targetOffset.Y += 10;
+                //If the yValue is close to 0, that means we are almost standing still
+                else if (yValue < 1 && yValue > -1)
+                    //So we set the camera on us
+                    targetOffset.Y = 0;
+
+                //Keep targetOffset within the bounds of targetMaxOffset
+                if (targetOffset.X > targetMaxOffset.X)
+                    targetOffset.X = targetMaxOffset.X;
+                else if (targetOffset.X < -targetMaxOffset.X)
+                    targetOffset.X = -targetMaxOffset.X;
+
+                if (targetOffset.Y > targetMaxOffset.Y)
+                    targetOffset.Y = targetMaxOffset.Y;
+                else if (targetOffset.Y < -targetMaxOffset.Y)
+                    targetOffset.Y = -targetMaxOffset.Y;
+                #endregion
 
                 //Set our desired target to the defaultFocus
                 finalTarget = defaultFocus.Position + targetOffset;
@@ -225,11 +257,14 @@ namespace MobileGame.CameraManagement
                 //Draw debugtextures for all focuspoints
                 foreach (IFocusable Object in allFocusPoints)
                 {
-                    Vector2 InterestPos = new Vector2(Object.Position.X - Object.InterestRadius, Object.Position.Y - Object.InterestRadius);
-                    Vector2 ControlPos = new Vector2(Object.Position.X - Object.ControlRadius, Object.Position.Y - Object.ControlRadius);
+                    Vector2 InterestPos = new Vector2(Object.Position.X + Object.InterestRadius/2, Object.Position.Y - Object.InterestRadius);
+                    Vector2 ControlPos = new Vector2(Object.Position.X + Object.ControlRadius/2, Object.Position.Y - Object.ControlRadius);
 
-                    sb.Draw(Object.InterestCircle, InterestPos, Color.Pink);
-                    sb.Draw(Object.ControlCircle, ControlPos, Color.Black);
+                    //sb.Draw(Object.InterestCircle, InterestPos, Color.Pink);
+                    //sb.Draw(Object.ControlCircle, ControlPos, Color.Black);
+                    sb.Draw(Object.InterestCircle, InterestPos, null, Color.Pink, 1f, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
+                    sb.Draw(Object.ControlCircle, ControlPos, null, Color.Black, 1f, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
+
                 }
 
                 //Draw debugtexture for cameratarget
@@ -238,14 +273,10 @@ namespace MobileGame.CameraManagement
 
                 //Draw debugtexture for cameraposition
                 Rectangle cameraPos = new Rectangle((int)position.X, (int)position.Y, 10, 10);
-                sb.Draw(filledCircle, cameraPos, null, Color.Green, 1f, Vector2.Zero, SpriteEffects.None, 1f); 
+                sb.Draw(filledCircle, cameraPos, null, Color.Green, 1f, Vector2.Zero, SpriteEffects.None, 1f);
 
-                //Draw debugtexture for defaultfocus
-                //Vector2 defInterestPos = new Vector2(defaultFocus.Position.X - defaultFocus.InterestRadius, defaultFocus.Position.Y - defaultFocus.InterestRadius);
-                //Vector2 defControlPos = new Vector2(defaultFocus.Position.X - defaultFocus.ControlRadius, defaultFocus.Position.Y - defaultFocus.ControlRadius);
-                
-                //sb.Draw(defaultFocus.InterestCircle, defInterestPos, Color.Pink);
-                //sb.Draw(defaultFocus.ControlCircle, defControlPos, Color.Black);
+                Vector2 defPos = new Vector2(defaultFocus.Position.X + defaultFocus.ControlRadius / 2, defaultFocus.Position.Y -defaultFocus.ControlRadius);
+                sb.Draw(defaultFocus.ControlCircle, defPos, null, Color.Blue, 1f, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
             }  
         }
 
@@ -254,6 +285,8 @@ namespace MobileGame.CameraManagement
             Object.InterestCircle = CreateCircle(Object.InterestRadius);
             Object.ControlCircle = CreateCircle(Object.ControlRadius);
             allFocusPoints.Add(Object);
+
+            Console.WriteLine("Added a focus object, " + allFocusPoints.Count + " number of points now");
         }
 
         public static void RemoveFocusObject(IFocusable Object)
@@ -262,12 +295,16 @@ namespace MobileGame.CameraManagement
             //Make sure that we try to remove the object from the activelist aswell, so we dont get left with ghostpoints
             //(RemoveActivePoint() does its own checks to see if the point exists, so will only remove the point if it acctualy exists inside activelist)
             RemoveActivePoint(Object);
+
+            Console.WriteLine("Removed Focus Point");
         }
 
         public static void ClearFocusList()
         {
             allFocusPoints.Clear();
             activeList.Clear();
+
+            Console.WriteLine("Cleared Camera's FocusList");
         }
 
         public static Matrix Get_Transformation()
@@ -370,6 +407,9 @@ namespace MobileGame.CameraManagement
             }
 
             texture.SetData(data);
+
+            Console.WriteLine("Created new circle");
+
             return texture;
         }
 

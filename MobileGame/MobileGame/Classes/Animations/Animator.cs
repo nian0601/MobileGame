@@ -127,13 +127,11 @@ namespace MobileGame.Animations
         {
             if (animationList.Count == 0)
             {
-                Console.WriteLine("This is the first animation added, so do fancy stuff");
                 currentCol = NewAnimation.StartCol;
                 currentRow = NewAnimation.StartRow;
                 currentTime = 0;
             }
 
-            Console.WriteLine("Adding animation: " + NewAnimation.Name);
             if (!animationList.Contains(NewAnimation))
                 animationList.Add(NewAnimation);
         }

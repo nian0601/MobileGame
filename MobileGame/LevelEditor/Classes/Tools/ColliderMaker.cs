@@ -38,6 +38,9 @@ namespace LevelEditor.Tools
 
         private void MakeCollidable(int X, int Y)
         {
+            if(!TileArray[0, X, Y].Collidable && TileArray[0, X, Y].ShouldDraw)
+                MapManager.NumCollisionFlags++;
+
             TileArray[0, X, Y].Collidable = true;
         }
 
@@ -47,6 +50,9 @@ namespace LevelEditor.Tools
             {
                 for (int y = startY; y < endY; y++)
                 {
+                    if (!TileArray[0, x, y].Collidable && TileArray[0, x, y].ShouldDraw)
+                        MapManager.NumCollisionFlags++;
+
                     TileArray[0, x, y].Collidable = true;
                 }
             }
@@ -54,6 +60,9 @@ namespace LevelEditor.Tools
 
         private void MakeUnCollidable(int X, int Y)
         {
+            if (TileArray[0, X, Y].Collidable && TileArray[0, X, Y].ShouldDraw)
+                MapManager.NumCollisionFlags--;
+
             TileArray[0, X, Y].Collidable = false;
         }
 
@@ -63,6 +72,9 @@ namespace LevelEditor.Tools
             {
                 for (int y = startY; y < endY; y++)
                 {
+                    if (TileArray[0, x, y].Collidable && TileArray[0, x, y].ShouldDraw)
+                        MapManager.NumCollisionFlags--;
+
                     TileArray[0, x, y].Collidable = false;
                 }
             }

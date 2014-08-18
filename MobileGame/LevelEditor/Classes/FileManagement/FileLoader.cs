@@ -57,10 +57,9 @@ namespace LevelEditor.FileManagement
             }
         }
 
-        public static void LoadLevel(int LevelNumber)
+        public static void LoadLevel(string MapName)
         {
-            //string LoadPath = LevelDirectoryPath + @"\Level" + LevelNumber.ToString();
-            string LoadPath = LevelDirectoryPath + @"\" + gameData.MapList[LevelNumber];
+            string LoadPath = LevelDirectoryPath + @"\" + MapName;
 
             FileStream stream = File.Open(LoadPath, FileMode.Open);
 
@@ -73,6 +72,8 @@ namespace LevelEditor.FileManagement
             {
                 stream.Close();
             }
+
+            MapManager.BuildMap(LoadedLevelArray);
         }
 
         public static void SaveLevel(Tile[,,] LevelArray, int MapHeight, int MapWidth, string LevelName)
@@ -141,50 +142,27 @@ namespace LevelEditor.FileManagement
             gameData = TempGameData;
         }
 
+        public static void DeleteLevel(string MapName)
+        {
+            string GameDataPath = SaveFilesDirectoryPath + @"\GameData";
+
+            gameData.MapList.Remove(MapName);
+
+            UpdateGameData();
+
+            string MapPath = LevelDirectoryPath + @"\" + MapName;
+            File.Delete(MapPath);
+        }
+
         public static void UpdateGameData()
         {
-            //We get the filePath to the nextlevel (if there is one)
-            //string levelPath = LevelDirectoryPath + @"\Level" + (gameData.CurrentMap + 1).ToString();
-            //string levelPath = LevelDirectoryPath + @"\" + gameData.MapList[gameData.CurrentMap];
-
             //Instansiate a new GameData object that we later will serialize
             GameData GameData = new GameData();
 
-            if (gameData.MapList.Count < gameData.CurrentMap)
-            {
-                //So we set AllMapsDone to FALSE
-                GameData.AllMapsDone = false;
-                //And set LastMapPlayed to the next level (increment it with one)
-                GameData.CurrentMap = gameData.CurrentMap + 1;
-            }
-            else
-            {
-                //So we set AllMapsDone to true
-                GameData.AllMapsDone = true;
-                //And keep the last level as the lastMapPlayed
-                GameData.CurrentMap = gameData.CurrentMap;
-            }
+            GameData.AllMapsDone = gameData.AllMapsDone;
+            GameData.CurrentMap = gameData.CurrentMap;
 
-            ////Instansiate a new GameData object that we later will serialize
-            //GameData GameData = new GameData();
-            
-            ////If the file for the next level does not exist that means we have ran out of levels
-            //if (!File.Exists(levelPath))
-            //{
-            //    //So we set AllMapsDone to true
-            //    GameData.AllMapsDone = true;
-            //    //And keep the last level as the lastMapPlayed
-            //    GameData.CurrentMap = gameData.CurrentMap;
-            //}
-            ////If the file for the next level DOES exist that means we have more levels to play
-            //else
-            //{
-            //    //So we set AllMapsDone to FALSE
-            //    GameData.AllMapsDone = false;
-            //    //And set LastMapPlayed to the next level (increment it with one)
-            //    GameData.CurrentMap = gameData.CurrentMap + 1;
-            //}
-
+            //Make sure that we transfer the MapList between GameData's
             GameData.MapList = gameData.MapList;
 
             //Make sure that the gameData variable that the game actually uses gets updated aswell!
@@ -208,6 +186,7 @@ namespace LevelEditor.FileManagement
                 stream.Close();
             }
         }
+
 
         private static int[][][] ConvertToJaggedArray(int[, ,] multiArray)
         {
@@ -254,7 +233,6 @@ namespace LevelEditor.FileManagement
 
             return tempArray;
         }
-
 
         private static TileData[][][] ConvertToJaggedArray(TileData[, ,] multiArray)
         {

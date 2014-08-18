@@ -59,7 +59,6 @@ namespace LevelEditor.Managers
         //We get that by getting the difference between these two variables
         private Point mousePos, prevMousePos;
 
-        private bool HasActiveSelection;
         private Point selectionTopLeft, selectionBottomRight;
 
         #region ContentManager, SpriteBatch and Textures
@@ -128,6 +127,18 @@ namespace LevelEditor.Managers
         private bool Initialized;
         public static bool PlayerPlaced;
         public static bool GoalPlaced;
+        public static bool HasSufficentCollisionFlags
+        {
+            get
+            {
+                if (NumCollisionFlags > 10)
+                    return true;
+                else
+                    return false;
+            }
+        }
+
+        public static int NumCollisionFlags { get; set; }
 
         public MapManager(ContentManager Content, SpriteBatch spriteBatch)
         {
@@ -160,7 +171,6 @@ namespace LevelEditor.Managers
 
             SelectedTileValue = 0;
 
-            HasActiveSelection = false;
             selectionTopLeft = new Point(0, 0);
             selectionBottomRight = new Point(0, 0);
         }
@@ -226,7 +236,9 @@ namespace LevelEditor.Managers
                     ToolManager.Update();
             }
 
-            if (KeyMouseReader.KeyClick(Keys.R))
+            if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.isKeyDown(Keys.LeftAlt) && KeyMouseReader.KeyClick(Keys.R))
+                ToolPositionsManager.SaveData();
+            else if (KeyMouseReader.KeyClick(Keys.R))
                 ResetMap();
 
             if (KeyMouseReader.isKeyDown(Keys.Up))
@@ -241,7 +253,7 @@ namespace LevelEditor.Managers
 
         public void Draw()
         {
-            Spritebatch.Begin();
+            Spritebatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
 
             Spritebatch.Draw(Background, Vector2.Zero, Color.White);
             //Platforms
@@ -262,10 +274,10 @@ namespace LevelEditor.Managers
                 }
             }
 
-            Spritebatch.Draw(GridTexture, offset, Color.White);
+            Spritebatch.Draw(GridTexture, offset, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.1f);
 
             if(Game1.EditMode == 0)
-                Spritebatch.Draw(CursorTexture, new Vector2((mouseX - xOffset) * TileSize + Offset.X, (mouseY - yOffset) * TileSize + Offset.Y), Color.White);
+                Spritebatch.Draw(CursorTexture, new Vector2((mouseX - xOffset) * TileSize + Offset.X, (mouseY - yOffset) * TileSize + Offset.Y), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.1f);
 
             ToolManager.Draw(Spritebatch);
 
@@ -278,7 +290,68 @@ namespace LevelEditor.Managers
             SelectedTileValue = TileValue;
         }
 
-        private void ResetMap()
+        public static void BuildMap(TileData[, ,] TileData)
+        {
+            ResetMap();
+
+            //Platform-layer
+            for (int x = 0; x < mapXTiles; x++)
+            {
+                for (int y = 0; y < mapYTiles; y++)
+                {
+                    tileArray[0, x, y] = new Tile(x, y, true);
+                    tileArray[0, x, y].ImportTileData(TileData[0, x, y]);
+                }
+            }
+
+            //Special-layer
+            for (int x = 0; x < mapXTiles; x++)
+            {
+                for (int y = 0; y < mapYTiles; y++)
+                {
+                    int TileType = TileData[1, x, y].TileType;
+
+                    if (TileType == 1)
+                    {
+                        tileArray[1, x, y] = new JumpTile(x, y, true);
+                    }
+                    else if (TileType == 2)
+                    {
+                        tileArray[1, x, y] = new TeleportTile(x, y, true);
+                    }
+                    else if (TileType == 3)
+                    {
+                        tileArray[1, x, y] = new GoalTile(x, y, true);
+                        GoalPlaced = true;
+                    }
+                    else if (TileType == 4)
+                    {
+                        tileArray[1, x, y] = new EnemyTile(x, y, true);
+                    }
+                    else if (TileType == 9)
+                    {
+                        tileArray[1, x, y] = new PlayerTile(x, y, true);
+                        PlayerPlaced = true;
+                    }
+                        
+                }
+            }
+
+        }
+
+        private static void FadeLayer(int layer)
+        {
+            //Platform-layer
+            for (int x = 0; x < mapXTiles; x++)
+            {
+                for (int y = 0; y < mapYTiles; y++)
+                {
+                    tileArray[layer, x, y].Color *= 0.5f;
+                }
+            }
+        }
+
+        private static void ResetMap()
         {
             //Platform-layer
             for (int x = 0; x < mapXTiles; x++)
@@ -286,6 +359,7 @@ namespace LevelEditor.Managers
                 for (int y = 0; y < mapYTiles; y++)
                 {
                     tileArray[0, x, y] = new Tile(x, y, false);
+                    tileArray[0, x, y].DrawDepth = 0.5f;
                 }
             }
 
@@ -295,6 +369,7 @@ namespace LevelEditor.Managers
                 for (int y = 0; y < mapYTiles; y++)
                 {
                     tileArray[1, x, y] = new Tile(x, y, false);
+                    tileArray[1, x, y].DrawDepth = 0.75f;
                 }
             }
 

@@ -90,7 +90,7 @@ namespace MobileGame.Tiles
             collidable = false;
             canJumpThrough = false;
 
-            interestRadius = 400;
+            interestRadius = 200;
             controlRadius = 50;
 
             Color = Color.White;
@@ -100,7 +100,6 @@ namespace MobileGame.Tiles
         {
             if (shouldDraw)
             {
-                //spriteBatch.Draw(tileTexture, pixelPos, Color);
                 spriteBatch.Draw(tileTexture, pixelPos, null, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f); 
                 Color = Color.White;
             }     

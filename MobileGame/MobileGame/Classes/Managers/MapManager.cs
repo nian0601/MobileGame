@@ -87,21 +87,22 @@ namespace MobileGame.Managers
             int mouseX = (int)ConvertPixelsToIndex(mousePos).X;
             int mouseY = (int)ConvertPixelsToIndex(mousePos).Y;
 
-            if (KeyMouseReader.isKeyDown(Keys.LeftAlt) && KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.LeftClick())
+            if (KeyMouseReader.isKeyDown(Keys.LeftAlt) && KeyMouseReader.isKeyDown(Keys.LeftControl) && KeyMouseReader.LeftClick())
                 EnemyManager.AddEnemy(new SimpleEnemy(mouseX, mouseY, true));
-            else if (KeyMouseReader.isKeyDown(Keys.LeftShift) &&  KeyMouseReader.LeftClick())
-                EnemyManager.AddEnemy(new SimpleEnemy(mouseX, mouseY, false));
-
-            if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.MouseWheelDown())
+            else if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.isKeyDown(Keys.LeftAlt) && KeyMouseReader.LeftClick())
+                CreateSpikeTile(mouseX, mouseY, 0);
+            else if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.MouseWheelDown())
                 RemoveSimpleTile(mouseX, mouseY);
-
             else if (KeyMouseReader.MouseWheelDown())
                 CreateSimpleTile(mouseX, mouseY);
-
+            
             if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.KeyClick(Keys.F))
                 Camera.RemoveFocusObject(FindTileAtIndex(mouseX, mouseY));
             else if (KeyMouseReader.KeyClick(Keys.F))
                 Camera.AddFocusObject(FindTileAtIndex(mouseX, mouseY));
+
+            //if(KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.isKeyDown(Keys.LeftControl) && KeyMouseReader.KeyClick(Keys.R))
+                
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -364,6 +365,27 @@ namespace MobileGame.Managers
                     break;
                 }
             }
+        }
+
+        private void CreateSpikeTile(int x, int y, int type)
+        {
+            SpikeTile spikeTile = new SpikeTile(x, y, type);
+
+            bool newTile = true;
+            Vector2 tempVector = new Vector2(x, y);
+
+            //This is to make sure that we only add ONE tile to the colliderList
+            //Is needed if we want it to be possible to "draw" the map, i.e not having to click each tile
+            for (int i = 0; i < specialBlockList.Count; i++)
+                if (specialBlockList[i].IndexPos == tempVector)
+                    newTile = false;
+
+            if (newTile)
+            {
+                tileArray[1, x, y] = spikeTile;
+                specialBlockList.Add(spikeTile);
+            }
+
         }
 
         /// <summary>

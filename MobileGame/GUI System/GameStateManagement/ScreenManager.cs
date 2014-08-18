@@ -52,6 +52,8 @@ namespace GUI_System.GameStateManagement
 
         public void Update(GameTime gameTime)
         {
+            KeyMouseReader.Update();
+
             //We create a copy of the screens-list to make sure that the adding and removing
             //of screens doesent interfere with the updating
             tempScreensList.Clear();

@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using LevelEditor.Managers;
+using LevelEditor.FileManagement;
 
 namespace LevelEditor
 {
@@ -24,6 +25,7 @@ namespace LevelEditor
         public bool Selected;
         public int TileValue;
         public int TileType;
+        public float DrawDepth;
 
         public Tile(int X, int Y, bool Draw)
         {
@@ -43,6 +45,8 @@ namespace LevelEditor
                 TileType = 1;
             else
                 TileType = 0;
+
+            DrawDepth = 0;
         }
 
         public void Draw(SpriteBatch spritebatch, int x, int y, Vector2 offset)
@@ -67,7 +71,8 @@ namespace LevelEditor
                 if (Texture == null)
                     Texture = TextureManager.TileTextures[15];
 
-                spritebatch.Draw(Texture, DrawPos, Color);
+                //spritebatch.Draw(Texture, DrawPos, Color);
+                spritebatch.Draw(Texture, DrawPos, null, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
 
                 Color = Color.White;
             }
@@ -77,6 +82,16 @@ namespace LevelEditor
         {
             Texture = TextureManager.TileTextures[TileValue];
             this.TileValue = TileValue;
+        }
+
+        public void ImportTileData(TileData TileData)
+        {
+            SetTileType(TileData.TileValue);
+            Collidable = TileData.Collidable;
+            CanJumpThrough = TileData.CanJumpThrough;
+
+            if (TileData.TileType == 0)
+                ShouldDraw = false;
         }
     }
 
