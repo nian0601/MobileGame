@@ -10,6 +10,8 @@ using GUI_System.GUIObjects;
 
 using MobileGame.FileManagement;
 
+using LevelEditor.Screens;
+
 namespace MobileGame.Screens
 {
     public class MainMenuScreen : MenuScreen
@@ -33,8 +35,22 @@ namespace MobileGame.Screens
             FileLoader.Initialize();
         }
 
+        public override void Activate()
+        {
+            Game1.SetScreenSize(800, 600);
+            base.Activate();
+        }
+
         public override void HandleInput(GameTime gameTime)
         {
+            //This will only ever be true when we leave the editor
+            if (Game1.ScreenHeight != 600 && Game1.ScreenWidth != 800)
+            {
+                Game1.SetScreenSize(800, 600);
+                FileLoader.Initialize();
+            }
+                
+
             if (playButton.LeftClick())
                 LoadingScreen.Load(ScreenManager, true, new GamePlayScreen());
 
@@ -43,6 +59,13 @@ namespace MobileGame.Screens
 
             if (KeyMouseReader.KeyClick(Microsoft.Xna.Framework.Input.Keys.R))
                 FileLoader.ResetSaveFile();
+
+            if (KeyMouseReader.KeyClick(Microsoft.Xna.Framework.Input.Keys.E))
+            {
+                Game1.SetScreenSize(1100, 800);
+                ScreenManager.AddScreen(new EditorScreen());
+            }
+                
 
             base.HandleInput(gameTime);
         }

@@ -97,6 +97,25 @@ namespace MobileGame.CameraManagement
         private static Rectangle? limits;
         public static Rectangle? Limits { set { limits = value; ValidateZoom(); ValidatePosition(); } }
 
+        public static Rectangle VisibleArea
+        {
+            get
+            {
+                var inverseViewMatrix = Matrix.Invert(transform);
+                var tl = Vector2.Transform(Vector2.Zero, inverseViewMatrix);
+                var tr = Vector2.Transform(new Vector2(viewPort.X, 0), inverseViewMatrix);
+                var bl = Vector2.Transform(new Vector2(0, viewPort.Y), inverseViewMatrix);
+                var br = Vector2.Transform(new Vector2(viewPort.X, viewPort.Y), inverseViewMatrix);
+                var min = new Vector2(
+                    MathHelper.Min(tl.X, MathHelper.Min(tr.X, MathHelper.Min(bl.X, br.X))),
+                    MathHelper.Min(tl.Y, MathHelper.Min(tr.Y, MathHelper.Min(bl.Y, br.Y))));
+                var max = new Vector2(
+                    MathHelper.Max(tl.X, MathHelper.Max(tr.X, MathHelper.Max(bl.X, br.X))),
+                    MathHelper.Max(tl.Y, MathHelper.Max(tr.Y, MathHelper.Max(bl.Y, br.Y))));
+                return new Rectangle((int)min.X, (int)min.Y, (int)(max.X - min.X), (int)(max.Y - min.Y));
+            }
+        }
+
         #endregion
 
         public static void Initialize(GraphicsDevice GraphicsDevice)
@@ -260,8 +279,6 @@ namespace MobileGame.CameraManagement
                     Vector2 InterestPos = new Vector2(Object.Position.X + Object.InterestRadius/2, Object.Position.Y - Object.InterestRadius);
                     Vector2 ControlPos = new Vector2(Object.Position.X + Object.ControlRadius/2, Object.Position.Y - Object.ControlRadius);
 
-                    //sb.Draw(Object.InterestCircle, InterestPos, Color.Pink);
-                    //sb.Draw(Object.ControlCircle, ControlPos, Color.Black);
                     sb.Draw(Object.InterestCircle, InterestPos, null, Color.Pink, 1f, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
                     sb.Draw(Object.ControlCircle, ControlPos, null, Color.Black, 1f, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
 
@@ -285,8 +302,6 @@ namespace MobileGame.CameraManagement
             Object.InterestCircle = CreateCircle(Object.InterestRadius);
             Object.ControlCircle = CreateCircle(Object.ControlRadius);
             allFocusPoints.Add(Object);
-
-            Console.WriteLine("Added a focus object, " + allFocusPoints.Count + " number of points now");
         }
 
         public static void RemoveFocusObject(IFocusable Object)
@@ -407,9 +422,6 @@ namespace MobileGame.CameraManagement
             }
 
             texture.SetData(data);
-
-            Console.WriteLine("Created new circle");
-
             return texture;
         }
 

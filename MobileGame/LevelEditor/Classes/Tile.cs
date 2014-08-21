@@ -69,7 +69,7 @@ namespace LevelEditor
                     Color = Color.LightBlue;
 
                 if (Texture == null)
-                    Texture = TextureManager.TileTextures[15];
+                    Texture = TextureManager.GameTextures[15];
 
                 //spritebatch.Draw(Texture, DrawPos, Color);
                 spritebatch.Draw(Texture, DrawPos, null, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
@@ -80,7 +80,7 @@ namespace LevelEditor
 
         public void SetTileType(int TileValue)
         {
-            Texture = TextureManager.TileTextures[TileValue];
+            Texture = TextureManager.GameTextures[TileValue];
             this.TileValue = TileValue;
         }
 
@@ -99,7 +99,7 @@ namespace LevelEditor
     {
         public PlayerTile(int X, int Y, bool Draw): base(X, Y, Draw)
         {
-            Texture = TextureManager.PlayerTexture;
+            Texture = TextureManager.GameTextures[19];
             TileDrawOffset = new Vector2(0, -Texture.Height/2);
             TileType = 9;
         }
@@ -109,7 +109,7 @@ namespace LevelEditor
     {
         public GoalTile(int X, int Y, bool Draw): base(X, Y, Draw)
         {
-            Texture = TextureManager.GoalTexture;
+            Texture = TextureManager.GameTextures[18];
             TileDrawOffset = new Vector2(0, -Texture.Height / 2);
             TileType = 3;
         }
@@ -119,7 +119,7 @@ namespace LevelEditor
     {
         public TeleportTile(int X, int Y, bool Draw): base(X, Y, Draw)
         {
-            Texture = TextureManager.TeleportTileTexture;
+            Texture = TextureManager.GameTextures[17];
             TileDrawOffset = new Vector2(0, -Texture.Height / 2);
             TileType = 2;
         }
@@ -129,7 +129,7 @@ namespace LevelEditor
     {
         public JumpTile(int X, int Y, bool Draw): base(X, Y, Draw)
         {
-            Texture = TextureManager.JumpTileTexture;
+            Texture = TextureManager.GameTextures[16];
             TileDrawOffset = new Vector2(0, -Texture.Height / 2);
             TileType = 1;
         }
@@ -139,7 +139,7 @@ namespace LevelEditor
     {
         public EnemyTile(int X, int Y, bool Draw): base(X, Y, Draw)
         {
-            Texture = TextureManager.EnemyTexture;
+            Texture = TextureManager.GameTextures[20];
             TileDrawOffset = new Vector2(0, -Texture.Height / 2);
             TileType = 4;
         }

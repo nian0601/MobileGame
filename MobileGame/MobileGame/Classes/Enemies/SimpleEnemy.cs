@@ -57,7 +57,7 @@ namespace MobileGame.Enemies
 
         public virtual void Update(float elapsedTime, Player player)
         {
-            List<Tile> CollisionList = MapManager.GenerateCollisionList((int)position.X, (int)position.Y, colRange, colRange);
+            List<Rectangle> CollisionList = MapManager.GenerateCollisionList((int)position.X, (int)position.Y, colRange, colRange);
 
             CheckIfOnGround(CollisionList);
 
@@ -96,7 +96,7 @@ namespace MobileGame.Enemies
             }
         }
 
-        private void CheckIfOnGround(List<Tile> collisionList)
+        private void CheckIfOnGround(List<Rectangle> collisionList)
         {
             Point collisionPointLeft = new Point(HitBox().Left + 1, HitBox().Top + HitBox().Height);
             Point collisionPointRight = new Point(HitBox().Right - 1, HitBox().Top + HitBox().Height);
@@ -105,7 +105,7 @@ namespace MobileGame.Enemies
 
             for (int i = 0; i < collisionList.Count; i++)
             {
-                if (collisionList[i].HitBox().Contains(collisionPointLeft) || collisionList[i].HitBox().Contains(collisionPointRight))
+                if (collisionList[i].Contains(collisionPointLeft) || collisionList[i].Contains(collisionPointRight))
                 {
                     isOnGround = true;
                     break;
@@ -114,31 +114,33 @@ namespace MobileGame.Enemies
         }
 
         //Collision in the X-Axis
-        private void HorizontalCollision(List<Tile> collisionList)
+        private void HorizontalCollision(List<Rectangle> collisionList)
         {
             Point collisionPointLeft = new Point(HitBox().Left - 2, HitBox().Top + HitBox().Height / 2);
             Point collisionPointRight = new Point(HitBox().Right + 2, HitBox().Top + HitBox().Height / 2);
 
             for (int i = 0; i < collisionList.Count; i++)
             {
-                if (collisionList[i].HitBox().Intersects(HitBox()))
+                if (collisionList[i].Intersects(HitBox()))
                 {
-                    if (PixelCol(HitBox(), colorArray, collisionList[i].HitBox(), collisionList[i].ColorArray))
-                    {
-                        if (velocity.X >= 0)
-                            position.X = collisionList[i].HitBox().Left - HitBox().Width;
-                        else if (velocity.X < 0)
-                            position.X = collisionList[i].HitBox().Left + collisionList[i].HitBox().Width;
+                    //if (PixelCol(HitBox(), colorArray, collisionList[i], collisionList[i].ColorArray))
+                    //{
+                        
+                    //}
 
-                        velocity.X *= -1;
-                        break;
-                    }                    
+                    if (velocity.X >= 0)
+                        position.X = collisionList[i].Left - HitBox().Width;
+                    else if (velocity.X < 0)
+                        position.X = collisionList[i].Left + collisionList[i].Width;
+
+                    velocity.X *= -1;
+                    break;
                 }
             }
         }
 
         //Collision in the Y-Axis
-        private void VerticalCollision(List<Tile> collisionList)
+        private void VerticalCollision(List<Rectangle> collisionList)
         {
             if (!canFall)
             {
@@ -152,21 +154,17 @@ namespace MobileGame.Enemies
                 bool SomethingContainsRightPoint = false;
                 bool SomethingContainsLeftPoint = false;
 
-                foreach (Tile t in collisionList)
+                foreach (Rectangle t in collisionList)
                 {
-                    if (t.HitBox().Contains(firstRightPoint) || t.HitBox().Contains(secondRightPoint))
+                    if (t.Contains(firstRightPoint) || t.Contains(secondRightPoint))
                     {
                         SomethingContainsRightPoint = true;
-                        if (Game1.Debugg2)
-                            t.Color = Color.Green;
                     }
 
 
-                    if (t.HitBox().Contains(firstLeftPoint) || t.HitBox().Contains(secondLeftPoint))
+                    if (t.Contains(firstLeftPoint) || t.Contains(secondLeftPoint))
                     {
                         SomethingContainsLeftPoint = true;
-                        if (Game1.Debugg2)
-                            t.Color = Color.Black;
                     }
                     //If any one of them contains the above collisionpoints that means the unit is NOT falling of that side
                     //So we set the corresponding bool to true
@@ -180,18 +178,20 @@ namespace MobileGame.Enemies
             //and after that we do the normal collisiondetection and handling
             for (int i = 0; i < collisionList.Count; i++)
             {
-                if (collisionList[i].HitBox().Intersects(HitBox()))
+                if (collisionList[i].Intersects(HitBox()))
                 {
-                    if (PixelCol(HitBox(), colorArray, collisionList[i].HitBox(), collisionList[i].ColorArray))
-                    {
-                        if (velocity.Y >= 0)
-                            position.Y = collisionList[i].HitBox().Top - HitBox().Height;
-                        else if (velocity.Y < 0)
-                            position.Y = collisionList[i].HitBox().Top + collisionList[i].HitBox().Height;
+                    //if (PixelCol(HitBox(), colorArray, collisionList[i], collisionList[i].ColorArray))
+                    //{
+                        
+                    //}
 
-                        velocity.Y = 0;
-                        break;
-                    } 
+                    if (velocity.Y >= 0)
+                        position.Y = collisionList[i].Top - HitBox().Height;
+                    else if (velocity.Y < 0)
+                        position.Y = collisionList[i].Top + collisionList[i].Height;
+
+                    velocity.Y = 0;
+                    break;
                 }
             }
         }

@@ -12,11 +12,8 @@ namespace LevelEditor.Tools
 {
     class TileCreator
     {
-        private Tile[, ,] TileArray;
-
-        public TileCreator(Tile[, ,] tileArray)
+        public TileCreator()
         {
-            TileArray = tileArray;
         }
 
         public void Update(int mouseX, int mouseY)
@@ -49,13 +46,12 @@ namespace LevelEditor.Tools
 
         private void CreateAir(int X, int Y)
         {
-            if (TileArray[1, X, Y] is GoalTile)
+            if (MapManager.SelectedLayer[X, Y] == 17)
                 MapManager.GoalPlaced = false;
-            if (TileArray[1, X, Y] is PlayerTile)
+            if (MapManager.SelectedLayer[X, Y] == 29)
                 MapManager.PlayerPlaced = false;
 
-            TileArray[0, X, Y] = new Tile(X, Y, false);
-            TileArray[1, X, Y] = new Tile(X, Y, false);
+            MapManager.SelectedLayer[X, Y] = 255;
         }
 
         private void CreateAirs(int startX, int startY, int endX, int endY, int layer, int TileValue)
@@ -71,41 +67,48 @@ namespace LevelEditor.Tools
 
         private void CreatePlatform(int X, int Y, int TileValue)
         {
-            Tile temp = new Tile(X, Y, true);
-            temp.SetTileType(TileValue);
-
-            TileArray[0, X, Y] = temp;
+            if (TileValue == 17)
+            {
+                CreateGoalTile(X, Y);
+            }
+            else if (TileValue == 29)
+            {
+                CreatePlayerSpawn(X, Y);
+            }
+            else
+                MapManager.SelectedLayer[X, Y] = (byte)TileValue;
         }
 
         private void CreatePlatforms(int startX, int startY, int endX, int endY, int layer, int TileValue)
         {
-            for (int x = startX; x < endX; x++)
+            if (TileValue != 17 && TileValue != 29)
             {
-                for (int y = startY; y < endY; y++)
+                for (int x = startX; x < endX; x++)
                 {
-                    Tile temp = new Tile(x, y, true);
-                    temp.SetTileType(TileValue);
-
-                    TileArray[layer, x, y] = temp;
+                    for (int y = startY; y < endY; y++)
+                    {
+                        MapManager.SelectedLayer[x, y] = (byte)TileValue;
+                    }
                 }
             }
+            
         }
 
         private void CreateJumpTile(int X, int Y)
         {
-            TileArray[1, X, Y] = new JumpTile(X, Y, true);
+            MapManager.SelectedLayer[X, Y] = 16;
         }
 
         private void CreateTeleportTile(int X, int Y)
         {
-            TileArray[1, X, Y] = new TeleportTile(X, Y, true);
+            MapManager.SelectedLayer[X, Y] = 31;
         }
 
         private void CreateGoalTile(int X, int Y)
         {
             if (!MapManager.GoalPlaced)
             {
-                TileArray[1, X, Y] = new GoalTile(X, Y, true);
+                MapManager.SelectedLayer[X, Y] = 17;
                 MapManager.GoalPlaced = true;
             }
                 
@@ -115,7 +118,7 @@ namespace LevelEditor.Tools
         {
             if (!MapManager.PlayerPlaced)
             {
-                TileArray[1, X, Y] = new PlayerTile(X, Y, true);
+                MapManager.SelectedLayer[X, Y] = 29;
                 MapManager.PlayerPlaced = true;
             }
                 
@@ -123,7 +126,7 @@ namespace LevelEditor.Tools
 
         private void CreateEnemy(int X, int Y)
         {
-            TileArray[1, X, Y] = new EnemyTile(X, Y, true);
+            MapManager.SelectedLayer[X, Y] = 30;
         }
     }
 }

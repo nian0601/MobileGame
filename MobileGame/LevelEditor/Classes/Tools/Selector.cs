@@ -21,11 +21,8 @@ namespace LevelEditor.Tools
 
         private bool pointTwoPlaced;
 
-        private Tile[, ,] TileArray;
-
-        public Selector(Tile[, ,] tileArray)
+        public Selector()
         {
-            TileArray = tileArray;
             Reset();
         }
 
@@ -54,32 +51,56 @@ namespace LevelEditor.Tools
                 pointTwoPlaced = true;
             }
 
+            if (pointOnePlaced && pointTwoPlaced)
+            {
+                ToolManager.HasActiveSelection = true;
+                ToolManager.SelectionTopLeft = ToolManager.ConvertPixelsToIndex(new Point(GetSelectionRect().Left, GetSelectionRect().Top));
+                ToolManager.SelectionBottomRight = ToolManager.ConvertPixelsToIndex(new Point(GetSelectionRect().Right, GetSelectionRect().Bottom));
+                Reset();
+            }
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
             if (pointOnePlaced)
             {
                 Point topLeft = ToolManager.ConvertPixelsToIndex(new Point(GetSelectionRect().Left, GetSelectionRect().Top));
                 Point bottomRight = ToolManager.ConvertPixelsToIndex(new Point(GetSelectionRect().Right, GetSelectionRect().Bottom));
 
-                ToolManager.ClearSelection();
+                for (int x = topLeft.X; x < bottomRight.X; x++)
+                {
+                    for (int y = topLeft.Y; y < bottomRight.Y; y++)
+                    {
+                        Texture2D Texture = TextureManager.SelectionTexture;
+                        Vector2 Pos = new Vector2((x - MapManager.xOffset) * MapManager.TileSize, (y - MapManager.yOffset) * MapManager.TileSize) + MapManager.Offset;
+                        Rectangle Source = new Rectangle((int)Pos.X, (int)Pos.Y, MapManager.TileSize, MapManager.TileSize);
+                        Color color = Color.Red * 0.25f;
+
+                        spriteBatch.Draw(Texture, Source, null, color, 0f, Vector2.Zero, SpriteEffects.None, 1f);
+                    }
+                }
+            }
+            else if (ToolManager.HasActiveSelection)
+            {
+                Point topLeft = ToolManager.SelectionTopLeft;
+                Point bottomRight = ToolManager.SelectionBottomRight;
 
                 for (int x = topLeft.X; x < bottomRight.X; x++)
                 {
                     for (int y = topLeft.Y; y < bottomRight.Y; y++)
                     {
-                        TileArray[0, x, y].Selected = true;
-                    }
-                }
+                        Texture2D Texture = TextureManager.SelectionTexture;
+                        Vector2 Pos = new Vector2((x - MapManager.xOffset) * MapManager.TileSize, (y - MapManager.yOffset) * MapManager.TileSize) + MapManager.Offset;
+                        Rectangle Source = new Rectangle((int)Pos.X, (int)Pos.Y, MapManager.TileSize, MapManager.TileSize);
+                        Color color = Color.Red * 0.25f;
 
-                if (pointTwoPlaced)
-                {
-                    ToolManager.HasActiveSelection = true;
-                    ToolManager.SelectionTopLeft = ToolManager.ConvertPixelsToIndex(new Point(GetSelectionRect().Left, GetSelectionRect().Top));
-                    ToolManager.SelectionBottomRight = ToolManager.ConvertPixelsToIndex(new Point(GetSelectionRect().Right, GetSelectionRect().Bottom));
-                    Reset();
+                        spriteBatch.Draw(Texture, Source, null, color, 0f, Vector2.Zero, SpriteEffects.None, 1f);
+                    }
                 }
             }
         }
 
-        private void Reset()
+        public void Reset()
         {
             firstPoint = new Point(0, 0);
             secondPoint = new Point(0, 0);

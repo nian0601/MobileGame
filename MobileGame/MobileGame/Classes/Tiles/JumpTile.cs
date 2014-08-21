@@ -16,7 +16,7 @@ namespace MobileGame.Tiles
         {
             tileTexture = TextureManager.JumpTile;
 
-            pixelPos = new Vector2(index.X * tileSize, index.Y * tileSize - tileTexture.Height/2);
+            pixelPos = new Vector2(index.X * tileSize, index.Y * tileSize);
         }
 
         public override void CollideWithUnit(Player Unit)
@@ -32,7 +32,7 @@ namespace MobileGame.Tiles
 
         public override Rectangle HitBox()
         {
-            return new Rectangle((int)pixelPos.X, (int)pixelPos.Y, tileTexture.Width, tileTexture.Height);
+            return new Rectangle((int)pixelPos.X, (int)pixelPos.Y, tileSize*2, tileSize*2);
         }
     }
 }

@@ -103,6 +103,10 @@
       <Project>{53693ce3-569e-4ff2-b88b-5627f03f89a8}</Project>
       <Name>GUI System</Name>
     </ProjectReference>
+    <ProjectReference Include="..\LevelEditor\LevelEditor.csproj">
+      <Project>{0efa2880-ebd5-4fe0-b5b2-0ac20c441737}</Project>
+      <Name>LevelEditor</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\DebugTextures\EmptyCircle.xnb">
@@ -184,6 +188,33 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Tiles\JumpTile.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Tiles\NewTiles\BGTile0.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Tiles\NewTiles\BGTile1.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Tiles\NewTiles\BGTile2.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Tiles\NewTiles\BGTile3.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Tiles\NewTiles\BGTile4.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Tiles\NewTiles\BGTile5.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Tiles\NewTiles\BGTile6.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Tiles\NewTiles\BGTile7.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Tiles\NewTiles\BGTile8.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Tiles\NewTiles\Spike_00.xnb">
@@ -301,6 +332,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Units\Enemy.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Units\OneFramePlayer.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Units\PlayerHitData.xnb">

@@ -38,7 +38,8 @@ namespace MobileGame.Units
         private Animator animator;
         private int FrameWidth, FrameHeight;
 
-        int colRange;
+        private List<Rectangle> CollisionList;
+        private int colRange;
 
         #region Properties
 
@@ -107,6 +108,7 @@ namespace MobileGame.Units
             TextureManager.PlayerColTex.GetData(colorArray);
 
             colRange = 7;
+            CollisionList = new List<Rectangle>();
 
             FrameWidth = 22;
             FrameHeight = 60;
@@ -121,7 +123,7 @@ namespace MobileGame.Units
             animator.Update(ElapsedTime);
 
             //Generate the CollisionList
-            List<Tile> CollisionList = MapManager.GenerateCollisionList((int)Position.X, (int)Position.Y, colRange, colRange);
+            CollisionList = MapManager.GenerateCollisionList((int)Position.X, (int)Position.Y, colRange, colRange);
 
             ListenToInput(ElapsedTime);
             CheckIfOnGround(CollisionList);
@@ -154,7 +156,15 @@ namespace MobileGame.Units
         public void Draw(SpriteBatch spriteBatch)
         {
             //spriteBatch.Draw(playerTex, Position, SourceRect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(playerTex, Position, animator.SourceRectangle, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
+            spriteBatch.Draw(playerTex, Position, animator.SourceRectangle, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.40f);
+
+            if (Game1.Debugging)
+            {
+                foreach (Rectangle Rect in CollisionList)
+                {
+                    spriteBatch.Draw(TextureManager.FilledSquare, Rect, null, Color.Red, 0f, Vector2.Zero, SpriteEffects.None, 1f);
+                }
+            }  
         }
 
         public void Jump(float jumpMultiplier)
@@ -169,7 +179,7 @@ namespace MobileGame.Units
         public void SetStartPos(Vector2 Pos)
         {
             startPos.X = Pos.X + FrameWidth;
-            startPos.Y = Pos.Y - FrameHeight;
+            startPos.Y = Pos.Y + FrameHeight;
             ResetPosition();
         }
 
@@ -226,7 +236,7 @@ namespace MobileGame.Units
                 animator.StopAnimation();
         }
 
-        private void CheckIfOnGround(List<Tile> collisionList)
+        private void CheckIfOnGround(List<Rectangle> collisionList)
         {
             Point collisionPointLeft = new Point(HitBox().Left + 4, HitBox().Top + HitBox().Height);
             Point collisionPointRight = new Point(HitBox().Right - 4, HitBox().Top + HitBox().Height);
@@ -236,7 +246,7 @@ namespace MobileGame.Units
 
             for (int i = 0; i < collisionList.Count; i++)
             {
-                if (collisionList[i].HitBox().Contains(collisionPointLeft) || collisionList[i].HitBox().Contains(collisionPointRight) || collisionList[i].HitBox().Contains(collisionPointCenter))
+                if (collisionList[i].Contains(collisionPointLeft) || collisionList[i].Contains(collisionPointRight) || collisionList[i].Contains(collisionPointCenter))
                 {
                     isOnGround = true;
                     break;
@@ -245,53 +255,62 @@ namespace MobileGame.Units
         }
 
         //Collision in the X-Axis
-        private void HorizontalCollision(List<Tile> collisionList)
+        private void HorizontalCollision(List<Rectangle> collisionList)
         {
             for (int i = 0; i < collisionList.Count; i++)
             {
-                if (collisionList[i].HitBox().Intersects(HitBox()) && !collisionList[i].canJumpThrough)
+                Point index = new Point(collisionList[i].X / MapManager.TileSize, collisionList[i].Y / MapManager.TileSize);
+                byte value = MapManager.CollisionLayer[index.X, index.Y];
+                if (collisionList[i].Intersects(HitBox()) && value != 2)
                 {
-                    if (PixelCol(HitBox(), colorArray, collisionList[i].HitBox(), collisionList[i].ColorArray))
-                    {
-                        if (velocity.X >= 0)
-                            position.X = collisionList[i].HitBox().Left - HitBox().Width;
-                        else if (velocity.X < 0)
-                            position.X = collisionList[i].HitBox().Left + collisionList[i].HitBox().Width;
+                    //if (PixelCol(HitBox(), colorArray, collisionList[i], collisionList[i].ColorArray))
+                    //{
+                        
+                    //}
 
-                        velocity.X = 0;
-                        break;
-                    }
+                    if (velocity.X >= 0)
+                        position.X = collisionList[i].Left - HitBox().Width;
+                    else if (velocity.X < 0)
+                        position.X = collisionList[i].Left + collisionList[i].Width;
+
+                    velocity.X = 0;
+                    break;
                 }
             }
         }
 
         //Collision in the Y-Axis
-        private void VerticalCollision(List<Tile> collisionList)
+        private void VerticalCollision(List<Rectangle> collisionList)
         {
             for (int i = 0; i < collisionList.Count; i++)
             {
-                if (collisionList[i].HitBox().Intersects(HitBox()))
+                if (collisionList[i].Intersects(HitBox()))
                 {
-                    if (PixelCol(HitBox(), colorArray, collisionList[i].HitBox(), collisionList[i].ColorArray))
-                    {
-                        if (velocity.Y >= 0 && HitBox().Bottom > collisionList[i].HitBox().Top)
-                        {
-                            position.Y = collisionList[i].HitBox().Top - HitBox().Height;
-                            velocity.Y = 0;
-                        }
-                        else if (collisionList[i].canJumpThrough && HitBox().Bottom > collisionList[i].HitBox().Top-2)
-                        {
-
-                        }
-                        //Jumping
-                        else if (velocity.Y < 0)
-                        {
-                            position.Y = collisionList[i].HitBox().Top + collisionList[i].HitBox().Height;
-                            velocity.Y = 0;
-                        }
+                    //if (PixelCol(HitBox(), colorArray, collisionList[i], collisionList[i].ColorArray))
+                    //{
                         
-                        break;
+                    //}
+
+                    Point index = new Point(collisionList[i].X / MapManager.TileSize, collisionList[i].Y / MapManager.TileSize);
+                    byte value = MapManager.CollisionLayer[index.X, index.Y];
+
+                    if (velocity.Y >= 0 && HitBox().Bottom > collisionList[i].Top)
+                    {
+                        position.Y = collisionList[i].Top - HitBox().Height;
+                        velocity.Y = 0;
                     }
+                    else if (value == 2 && HitBox().Bottom > collisionList[i].Top - 2)
+                    {
+
+                    }
+                    //Jumping
+                    else if (velocity.Y < 0)
+                    {
+                        position.Y = collisionList[i].Top + collisionList[i].Height;
+                        velocity.Y = 0;
+                    }
+
+                    break;
                 }
             }
         }

@@ -30,6 +30,9 @@ namespace MobileGame
         public static bool Debugging;
         public static bool Debugg2;
 
+        public static int ScreenWidth { get; private set; }
+        public static int ScreenHeight { get; private set; }
+
         public Game1(): base()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -43,6 +46,9 @@ namespace MobileGame
             graphics.PreferredBackBufferHeight = 600;
             
             graphics.ApplyChanges();
+
+            ScreenWidth = 800;
+            ScreenHeight = 600;
 
             IsMouseVisible = true;
             Debugging = false;
@@ -103,6 +109,17 @@ namespace MobileGame
             screenManager.Draw(gameTime);
 
             base.Draw(gameTime);
+        }
+
+        public static void SetScreenSize(int Width, int Height)
+        {
+            graphics.PreferredBackBufferWidth = Width;
+            graphics.PreferredBackBufferHeight = Height;
+
+            graphics.ApplyChanges();
+
+            ScreenWidth = Width;
+            ScreenHeight = Height;
         }
     }
 }

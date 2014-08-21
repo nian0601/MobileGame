@@ -19,12 +19,15 @@ namespace MobileGame.Managers
 {
     class MapManager
     {
-        private static Tile[, ,] tileArray;
+        private static byte[,] collisionLayer;
+        private static byte[,] backgroundLayer;
+        private static byte[,] platformLayer;
+        private static byte[,] specialsLayer;
+
         private static int tileSize;
         private static int mapWidth;
         private static int mapHeight;
 
-        private List<SimpleTile> platformList;
         private List<SpecialTile> specialBlockList;
         private int mapYTiles;
         private int mapXTiles;
@@ -54,11 +57,14 @@ namespace MobileGame.Managers
             get { return mapHeight; }
         }
 
+        public static int TileSize { get { return tileSize; } }
+
+        public static byte[,] CollisionLayer { get { return collisionLayer; } }
+
         #endregion
 
         public MapManager()
         {
-            platformList = new List<SimpleTile>();
             specialBlockList = new List<SpecialTile>();
             playerStartPos = new Vector2(200, 200);
         }
@@ -72,37 +78,9 @@ namespace MobileGame.Managers
             mapHeight = mapYTiles * tileSize;
             mapWidth = mapXTiles * tileSize;
 
-            platformList.Clear();
-            specialBlockList.Clear();
+            //PerformanceCheck();
 
-            BuildLevel(FileLoader.LoadedLevelArray);
-            
-        }
-
-        //This entire function should not be in the final game, we do not want the player to be able to draw on the map while playing
-        public void Update()
-        {
-            Vector2 mousePos = Camera.ScreenToWorldCoordinates(new Vector2(KeyMouseReader.mousePos.X, KeyMouseReader.mousePos.Y));
-
-            int mouseX = (int)ConvertPixelsToIndex(mousePos).X;
-            int mouseY = (int)ConvertPixelsToIndex(mousePos).Y;
-
-            if (KeyMouseReader.isKeyDown(Keys.LeftAlt) && KeyMouseReader.isKeyDown(Keys.LeftControl) && KeyMouseReader.LeftClick())
-                EnemyManager.AddEnemy(new SimpleEnemy(mouseX, mouseY, true));
-            else if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.isKeyDown(Keys.LeftAlt) && KeyMouseReader.LeftClick())
-                CreateSpikeTile(mouseX, mouseY, 0);
-            else if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.MouseWheelDown())
-                RemoveSimpleTile(mouseX, mouseY);
-            else if (KeyMouseReader.MouseWheelDown())
-                CreateSimpleTile(mouseX, mouseY);
-            
-            if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.KeyClick(Keys.F))
-                Camera.RemoveFocusObject(FindTileAtIndex(mouseX, mouseY));
-            else if (KeyMouseReader.KeyClick(Keys.F))
-                Camera.AddFocusObject(FindTileAtIndex(mouseX, mouseY));
-
-            //if(KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.isKeyDown(Keys.LeftControl) && KeyMouseReader.KeyClick(Keys.R))
-                
+            BuildLevel();
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -111,26 +89,57 @@ namespace MobileGame.Managers
             {
                 for (int y = 0; y < mapYTiles; y++)
                 {
-                    tileArray[0, x, y].Draw(spriteBatch);
+                    Point pixelIndex = ConvertIndexToPixels(x, y);
+                    Color Color = Color.White;
+
+                    if (Game1.Debugging)
+                    {
+                        if (collisionLayer[x, y] == 1)
+                            Color = Color.PaleVioletRed;
+                    }
+
+                    Vector2 Pos = new Vector2(x * tileSize, y * tileSize);
+                    Texture2D Texture;
+
+                    byte value = backgroundLayer[x, y];
+                    if (value != 255)
+                    {
+                        Texture = TextureManager.GameTextures[value];
+                        spriteBatch.Draw(Texture, Pos, null, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
+                    }
+
+                    value = platformLayer[x, y];
+                    if (value != 255)
+                    {
+                        Texture = TextureManager.GameTextures[value];
+                        spriteBatch.Draw(Texture, Pos, null, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
+                    }
+
+                    value = specialsLayer[x, y];
+                    if (value != 255)
+                    {
+                        Texture = TextureManager.GameTextures[value];
+                        spriteBatch.Draw(Texture, Pos, null, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f);
+                    }
                 }
             }
-
-            foreach (Tile T in specialBlockList)
-                T.Draw(spriteBatch);
         }
 
         /// <summary>
-        /// Use this to generate a list with all the tiles surrounding a certain pixelpos (playerpos, enemypos etc)
+        /// Use this to generate rectangles for all collisionflags within a certain range of a point in the game
         /// </summary>
         /// <param name="x">The x-value</param>
         /// <param name="y">The y-value</param>
         /// <param name="xRange">The amount of tiles on the x-axis we want to include</param>
         /// <param name="yRange">The amount of tiles on the y-axis we want to include</param>
         /// <returns></returns>
-        public static List<Tile> GenerateCollisionList(int x, int y, int xRange, int yRange)
+        public static List<Rectangle> GenerateCollisionList(int x, int y, int xRange, int yRange)
         {
-            //Create a tempList which will hold the tiles we wanna send back
-            List<Tile> tempList = new List<Tile>();
+            //Create a temp list which will hold all the indices that we want to build rects for
+            List<Vector2> tempList = new List<Vector2>();
+
+            //Create a list that will hold all the rects we wanna send back
+            List<Rectangle> RectList = new List<Rectangle>();
 
             //Convert the given x and y values into a vector for convinence
             Vector2 originPoint = new Vector2(x, y);
@@ -138,115 +147,155 @@ namespace MobileGame.Managers
             Vector2 index = ConvertPixelsToIndex(originPoint);
 
             //Then we get all the surrounding tiles, going xRange-num tiles to the left and right aswell as going yRange-num tiles up and down
-            tempList = FindSurroundingTiles(index, xRange, yRange);
+            tempList = FindSurroundingCollisionFlags(index, xRange, yRange);
 
-            for (int i = tempList.Count - 1; i > 0; i--)
+            foreach (Vector2 Index in tempList)
             {
-                if (!tempList[i].collidable)
-                    tempList.RemoveAt(i);
+                Rectangle temp = new Rectangle((int)Index.X * tileSize, (int)Index.Y * tileSize, tileSize, tileSize);
+                RectList.Add(temp);
             }
 
-            //If the game is in debugmode we simply color the tiles we have found red
-            //(the tile-class makes sure that the tile gets their normal color if they arent in this list)
-            if (Game1.Debugging)
-            {
-                foreach (Tile t in tempList)
-                {
-                    if(t.canJumpThrough)
-                        t.Color = Color.Red;
-                }
-            }
-            
-
-            return tempList;
+            return RectList;
         }
 
-        private void BuildLevel(TileData[, ,] level)
+        /// <summary>
+        /// The function which takes the loaded level and builds it
+        /// </summary>
+        private void BuildLevel()
         {
-            tileArray = new Tile[2, mapXTiles, mapYTiles];
+            collisionLayer = new byte[mapXTiles, mapYTiles];
+            backgroundLayer = new byte[mapXTiles, mapYTiles];
+            platformLayer = new byte[mapXTiles, mapYTiles];
+            specialsLayer = new byte[mapXTiles, mapYTiles];
+
+            specialBlockList.Clear();
+
+            byte backgroundValue, platformValue, specialsValue;
 
             //LOOPS THROUGH THE PLATFORM LAYER
             for (int x = 0; x < mapXTiles; x++)
             {
                 for (int y = 0; y < mapYTiles; y++)
                 {
-                    int tileType = level[0, x, y].TileType;
+                    collisionLayer[x, y] = FileLoader.LoadedCollisionLayer[x, y];
 
-                    //If the tiletype is 9 that means we found the place where the player should spawn
-                    //So we do some stuff that we dont do with the normal tiles and then continue on with the loops
-                    if (tileType == 9)
+                    backgroundValue = FileLoader.LoadedBackgroundLayer[x, y];
+                    platformValue = FileLoader.LoadedPlatformLayer[x, y];
+                    specialsValue = FileLoader.LoadedSpecialsLayer[x, y];
+
+                    #region BackgroundLayer
+                    if (backgroundValue == 16)
                     {
-                        playerStartPos = ConvertIndexToPixels(x, y);
-                        playerStartPos.Y -= 10;
-                        tileArray[0, x, y] = new SimpleTile(x, y, 0);
-                        tileArray[0, x, y].ImportTileData(level[0, x, y]);
-                        continue;
-                    }
-
-                    //We create an empty simpletile before we check tiletypes
-                    //Then we define the simpleTile after the tileType checks
-                    SimpleTile tempTile = new SimpleTile(x, y, tileType);
-                    tempTile.ImportTileData(level[0, x, y]);
-                    if (tileType != 0)
-                        platformList.Add(tempTile);
-                    
-                    //And adds it to the levelarray
-                    tileArray[0, x, y] = tempTile;
-                }
-            }
-
-            //LOOPS THROUGH THE SPECIAL BLOCK'S LAYER
-            for (int x = 0; x < mapXTiles; x++)
-            {
-                for (int y = 0; y < mapYTiles; y++)
-                {
-                    int tileType = level[1, x, y].TileType;
-
-                    if (tileType == 1)
                         specialBlockList.Add(new JumpTile(x, y));
-                    else if (tileType == 2)
-                        specialBlockList.Add(new TeleportTile(x, y));
-                    else if (tileType == 3)
+                        backgroundLayer[x, y] = backgroundValue;
+                    }
+                    
+                    else if (backgroundValue == 17)
                     {
                         GoalTile temp = new GoalTile(x, y);
-                        specialBlockList.Add(temp);
                         Camera.AddFocusObject(temp);
+                        specialBlockList.Add(temp);
+                        backgroundLayer[x, y] = backgroundValue;
+                        
                     }
-
-                    else if (tileType == 4)
+                    else if (backgroundValue == 29)
+                    {
+                        playerStartPos = new Vector2(x * tileSize, y * tileSize);
+                        backgroundLayer[x, y] = 255;
+                    }
+                    else if (backgroundValue == 30)
+                    {
                         EnemyManager.AddEnemy(new SimpleEnemy(x, y, false));
+                        backgroundLayer[x, y] = 255;
+                    }
+                    else if (backgroundValue == 31)
+                    {
+                        specialBlockList.Add(new TeleportTile(x, y));
+                        backgroundLayer[x, y] = backgroundValue;
+                    }
+                    else
+                        backgroundLayer[x, y] = backgroundValue;
+                    #endregion
+
+                    #region PlatformLayer
+                    if (platformValue == 16)
+                    {
+                        specialBlockList.Add(new JumpTile(x, y));
+                        platformLayer[x, y] = platformValue;
+                    }
+                    else if (platformValue == 31)
+                    {
+                        specialBlockList.Add(new TeleportTile(x, y));
+                        platformLayer[x, y] = platformValue;
+                    }
+                    else if (platformValue == 17)
+                    {
+                        GoalTile temp = new GoalTile(x, y);
+                        Camera.AddFocusObject(temp);
+                        specialBlockList.Add(temp);
+                        platformLayer[x, y] = platformValue;
+                    }
+                    else if (platformValue == 29)
+                    {
+                        playerStartPos = new Vector2(x * tileSize, y * tileSize);
+                        platformLayer[x, y] = 255;
+                    }
+                    else if (platformValue == 30)
+                    {
+                        EnemyManager.AddEnemy(new SimpleEnemy(x, y, false));
+                        platformLayer[x, y] = 255;
+                    }
+                    else
+                        platformLayer[x, y] = platformValue;
+                    #endregion
+
+                    #region SpecialsLayer
+                    if (specialsValue == 16)
+                    {
+                        specialBlockList.Add(new JumpTile(x, y));
+                        specialsLayer[x, y] = specialsValue;
+                    }
+                    else if (specialsValue == 31)
+                    {
+                        specialBlockList.Add(new TeleportTile(x, y));
+                        specialsLayer[x, y] = specialsValue;
+                    }
+                    else if (specialsValue == 17)
+                    {
+                        GoalTile temp = new GoalTile(x, y);
+                        Camera.AddFocusObject(temp);
+                        specialBlockList.Add(temp);
+                        specialsLayer[x, y] = specialsValue;
+                    }
+                    else if (specialsValue == 29)
+                    {
+                        playerStartPos = new Vector2(x * tileSize, y * tileSize);
+                        specialsLayer[x, y] = 255;
+                    }
+                    else if (specialsValue == 30)
+                    {
+                        EnemyManager.AddEnemy(new SimpleEnemy(x, y, false));
+                        specialsLayer[x, y] = 255;
+                    }
+                    else
+                        specialsLayer[x, y] = specialsValue;
+                    #endregion
+
                 }
             }
 
-            #region Performance Check Code
-            //PERFORMANCE CHECK!!
-            //for (int i = 0; i < 1000; i++)
-            //{
-            //    TimeSpan begin = Process.GetCurrentProcess().TotalProcessorTime;
-            //    Stopwatch watch = new Stopwatch();
-            //    watch.Start();
-
-            //    foreach (SimpleTile Tile in colliderList)
-            //        AssignTileType(Tile);
-
-            //    watch.Stop();
-            //    TimeSpan end = Process.GetCurrentProcess().TotalProcessorTime;
-
-            //    //Console.WriteLine("Measured time: " + watch.ElapsedMilliseconds + " ms.");
-            //    Console.WriteLine("Measured time: " + (end - begin).TotalMilliseconds + " ms.");
-            //}
-            #endregion
+            
         }
 
         /// <summary>
         /// Simple Helperfunction that takes an index and converts it into pixels
         /// </summary>
-        public Vector2 ConvertIndexToPixels(int X, int Y)
+        public Point ConvertIndexToPixels(int X, int Y)
         {
             int x = X * tileSize;
             int y = Y * tileSize;
 
-            return new Vector2(x, y);
+            return new Point(x, y);
         }
 
         /// <summary>
@@ -261,140 +310,12 @@ namespace MobileGame.Managers
         }
 
         /// <summary>
-        /// Simple helperfunction that finds the tile at an given index
-        /// </summary>
-        private Tile FindTileAtIndex(int x, int y)
-        {
-            return tileArray[0, x, y];
-        }
-
-        /// <summary>
-        /// This function takes the index of a tile and calulates its value based on its neighbours, used to set the tiletextures
-        /// </summary>
-        private int CalculateTileValue(int x, int y)
-        {
-            int TileValue = 0;
-
-            //NORTH
-            if (y - 1 >= 0)
-            {
-                Tile northTile = FindTileAtIndex(x, y - 1);
-
-                if (platformList.Contains(northTile))
-                    TileValue += 1;
-            }
-
-            //EAST
-            if (x + 1 <= mapXTiles - 1)
-            {
-                Tile eastTile = FindTileAtIndex(x + 1, y);
-
-                if (platformList.Contains(eastTile))
-                    TileValue += 2;
-            }
-
-            //SOUTH
-            if (y + 1 <= mapYTiles - 1)
-            {
-                Tile southTile = FindTileAtIndex(x, y + 1);
-
-                if (platformList.Contains(southTile))
-                    TileValue += 4;
-            }
-
-            //WEST
-            if (x - 1 >= 0)
-            {
-                Tile westTile = FindTileAtIndex(x - 1, y);
-
-                if (platformList.Contains(westTile))
-                    TileValue += 8;
-            }
-            return TileValue;
-        }
-
-        /// <summary>
-        /// Simple helperfunction that creates a simpletile (a platform) at a given index
-        /// </summary>
-        private void CreateSimpleTile(int x, int y)
-        {
-            SimpleTile tempTile = new SimpleTile(x, y, 1);
-
-            bool newTile = true;
-            Vector2 tempVector = new Vector2(x, y);
-
-            //This is to make sure that we only add ONE tile to the colliderList
-            //Is needed if we want it to be possible to "draw" the map, i.e not having to click each tile
-            for (int i = 0; i < platformList.Count; i++)
-                if (platformList[i].IndexPos == tempVector)
-                    newTile = false;
-
-            if (newTile)
-            {
-                tileArray[0, x, y] = tempTile;
-                platformList.Add(tempTile);
-
-                tempTile.SetTileBitType(CalculateTileValue((int)tempTile.IndexPos.X, (int)tempTile.IndexPos.Y));
-
-                List<Tile> tempTileList = FindSurroundingTiles(tempTile.IndexPos, 1, 1);
-                foreach (Tile T in tempTileList)
-                    T.SetTileBitType(CalculateTileValue((int)T.IndexPos.X, (int)T.IndexPos.Y));
-            }
-
-        }
-
-        /// <summary>
-        /// A simple helperfunction that removes a simpletile (platform) at a given index
-        /// </summary>
-        private void RemoveSimpleTile(int x, int y)
-        {
-            tileArray[0, x, y] = new SimpleTile(x, y, 0);
-
-            Vector2 tempVector = new Vector2(x, y);
-
-            for (int i = 0; i < platformList.Count; i++)
-            {
-                if (platformList[i].IndexPos == tempVector)
-                {
-                    List<Tile> tempTileList = FindSurroundingTiles(platformList[i].IndexPos, 1, 1);
-                    foreach (Tile T in tempTileList)
-                        T.SetTileBitType(CalculateTileValue((int)T.IndexPos.X, (int)T.IndexPos.Y));
-
-
-                    platformList.RemoveAt(i);
-                    break;
-                }
-            }
-        }
-
-        private void CreateSpikeTile(int x, int y, int type)
-        {
-            SpikeTile spikeTile = new SpikeTile(x, y, type);
-
-            bool newTile = true;
-            Vector2 tempVector = new Vector2(x, y);
-
-            //This is to make sure that we only add ONE tile to the colliderList
-            //Is needed if we want it to be possible to "draw" the map, i.e not having to click each tile
-            for (int i = 0; i < specialBlockList.Count; i++)
-                if (specialBlockList[i].IndexPos == tempVector)
-                    newTile = false;
-
-            if (newTile)
-            {
-                tileArray[1, x, y] = spikeTile;
-                specialBlockList.Add(spikeTile);
-            }
-
-        }
-
-        /// <summary>
-        /// A function that takes a index and then returns all the surrounding simpletiles(platforms) within the defined ranges
+        /// A function that takes a index and then returns all the surrounding indices which are flagged for collision
         /// </summary>
         /// <param name="centerIndex"></param>
-        private static List<Tile> FindSurroundingTiles(Vector2 centerIndex, int xRange, int yRange)
+        private static List<Vector2> FindSurroundingCollisionFlags(Vector2 centerIndex, int xRange, int yRange)
         {
-            List<Tile> tempList = new List<Tile>();
+            List<Vector2> tempList = new List<Vector2>();
 
             int currentY = 0;
             int currentX = 0;
@@ -420,10 +341,10 @@ namespace MobileGame.Managers
                     currentY = (int)centerIndex.Y + y;
 
                     //Is the tile we are looking at inside the map-array?
-                    if (IsXInsideArray(currentX, tileArray) && IsYInsideArray(currentY, tileArray))
+                    if (IsXInsideArray(currentX, collisionLayer) && IsYInsideArray(currentY, collisionLayer))
                     {
-                        if (tileArray[0, currentX, currentY].shouldDraw)
-                            tempList.Add(tileArray[0, currentX, currentY]);      
+                        if (collisionLayer[currentX, currentY] != 0)
+                            tempList.Add(new Vector2(currentX, currentY));  
                     }
                 }
             }
@@ -435,9 +356,9 @@ namespace MobileGame.Managers
         /// <summary>
         /// A simple helperfunction that checks if a given value is inside the y-bounds of the given array
         /// </summary>
-        private static bool IsYInsideArray(int y, Tile[, ,] array)
+        private static bool IsYInsideArray(int y, byte[,] array)
         {
-            if (y < 0 || y > array.GetUpperBound(2))
+            if (y < 0 || y > array.GetUpperBound(1))
                 return false;
             return true;
         }
@@ -445,11 +366,35 @@ namespace MobileGame.Managers
         /// <summary>
         /// A simple helperfunction that checks if a given value is inside the x-bounds of the given array
         /// </summary>
-        private static bool IsXInsideArray(int x, Tile[, ,] array)
+        private static bool IsXInsideArray(int x, byte[,] array)
         {
-            if (x < 0 || x > array.GetUpperBound(1))
+            if (x < 0 || x > array.GetUpperBound(0))
                 return false;
             return true;
+        }
+
+
+
+        private void PerformanceCheck()
+        {
+            for (int i = 0; i < 1000; i++)
+            {
+                TimeSpan begin = Process.GetCurrentProcess().TotalProcessorTime;
+                Stopwatch watch = new Stopwatch();
+                watch.Start();
+
+                //PASTE WHAT EVER CODE YOU WANNA TEST HERE
+
+                BuildLevel();
+
+                //AND STOP HERE
+
+                watch.Stop();
+                TimeSpan end = Process.GetCurrentProcess().TotalProcessorTime;
+
+                //Console.WriteLine("Measured time: " + watch.ElapsedMilliseconds + " ms.");
+                Console.WriteLine("Measured time: " + (end - begin).TotalMilliseconds + " ms.");
+            }
         }
     }
 }

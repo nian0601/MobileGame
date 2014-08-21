@@ -105,39 +105,10 @@ namespace MobileGame.Tiles
             }     
         }
 
-        public void SetTileBitType(int tileValue)
-        {
-            tileTexture = TextureManager.TileTextures[tileValue];
-            colorArray = new Color[tileTexture.Width * tileTexture.Height];
-            tileTexture.GetData(colorArray);
-
-            collidable = false;
-            canJumpThrough = false;
-
-            if (tileValue == 0 || tileValue == 2 || tileValue == 4 || tileValue == 5 || tileValue == 6 || tileValue == 7 || tileValue == 8
-                || tileValue == 10 || tileValue == 12 || tileValue == 14)
-                collidable = true;
-
-            if (tileValue == 0 || tileValue == 2 || tileValue == 4 || tileValue == 6 || tileValue == 8 || tileValue == 10 || tileValue == 12 || tileValue == 14)
-            {
-                canJumpThrough = true;
-            }
-                
-        }
 
         public virtual Rectangle HitBox()
         {
             return new Rectangle((int)pixelPos.X+1, (int)pixelPos.Y+1, tileSize-1, tileSize-1);
-        }
-
-        public virtual void ImportTileData(TileData TileData)
-        {
-            SetTileBitType(TileData.TileValue);
-            collidable = TileData.Collidable;
-            canJumpThrough = TileData.CanJumpThrough;
-
-            if (TileData.TileType == 0)
-                shouldDraw = false;
         }
     }
 }

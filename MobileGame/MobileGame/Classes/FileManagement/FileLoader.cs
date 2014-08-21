@@ -20,7 +20,25 @@ namespace MobileGame.FileManagement
         private static GameData gameData;
 
         #region Properties
-        public static TileData[, ,] LoadedLevelArray { get { return ConvertToMultiArray(LoadedLevel.LevelArray); } }
+        public static byte[,] LoadedCollisionLayer
+        {
+            get { return ConvertToMultiArray(LoadedLevel.CollisionLayer); }
+        }
+
+        public static byte[,] LoadedBackgroundLayer
+        {
+            get { return ConvertToMultiArray(LoadedLevel.BackgroundLayer); }
+        }
+
+        public static byte[,] LoadedPlatformLayer
+        {
+            get { return ConvertToMultiArray(LoadedLevel.PlatformLayer); }
+        }
+
+        public static byte[,] LoadedSpecialsLayer
+        {
+            get { return ConvertToMultiArray(LoadedLevel.SpecialsLayer); }
+        }
 
         public static int LoadedLevelTileSize{ get { return LoadedLevel.TileSize; } }
 
@@ -37,7 +55,7 @@ namespace MobileGame.FileManagement
         {
             gameData = new GameData();
 
-            string savePath = SaveFilesDirectoryPath + @"\GameData";
+            string savePath = SaveFilesDirectoryPath + @"\GameData.xml";
 
             FileStream stream = File.Open(savePath, FileMode.Open);
 
@@ -57,7 +75,7 @@ namespace MobileGame.FileManagement
         public static void LoadLevel(int LevelNumber)
         {
             //Get the path to the map we want to load
-            string LoadPath = LevelDirectoryPath + @"\" + gameData.MapList[LevelNumber-1];
+            string LoadPath = LevelDirectoryPath + @"\" + gameData.MapList[LevelNumber-1] + ".xml";
             //Open the stream
             FileStream stream = File.Open(LoadPath, FileMode.Open);
 
@@ -109,7 +127,7 @@ namespace MobileGame.FileManagement
             //After we have set the two values we simply do the serializing process
             //
 
-            string savePath = SaveFilesDirectoryPath + @"\GameData";
+            string savePath = SaveFilesDirectoryPath + @"\GameData.xml";
 
             FileStream stream = File.Open(savePath, FileMode.Create);
 
@@ -142,7 +160,7 @@ namespace MobileGame.FileManagement
             //After we have set the two values we simply do the serializing process
             //
 
-            string savePath = SaveFilesDirectoryPath + @"\GameData";
+            string savePath = SaveFilesDirectoryPath + @"\GameData.xml";
 
             FileStream stream = File.Open(savePath, FileMode.Create);
 
@@ -248,6 +266,43 @@ namespace MobileGame.FileManagement
                     {
                         tempArray[z, y, x] = jaggedArray[z][y][x];
                     }
+                }
+            }
+
+            return tempArray;
+        }
+
+        private static byte[][] ConvertToJaggedArray(byte[,] multiArray)
+        {
+            int mapHeight = multiArray.GetLength(0);
+            int mapWidth = multiArray.GetLength(1);
+
+            byte[][] tempJaggedArray = new byte[mapHeight][];
+
+            for (int y = 0; y < mapHeight; y++)
+            {
+                tempJaggedArray[y] = new byte[mapWidth];
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    tempJaggedArray[y][x] = multiArray[y, x];
+                }
+            }
+
+            return tempJaggedArray;
+        }
+
+        private static byte[,] ConvertToMultiArray(byte[][] jaggedArray)
+        {
+            int mapHeight = jaggedArray.Length;
+            int mapWidth = jaggedArray[0].Length;
+
+            byte[,] tempArray = new byte[mapHeight, mapWidth];
+
+            for (int y = 0; y < mapHeight; y++)
+            {
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    tempArray[y, x] = jaggedArray[y][x];
                 }
             }
 

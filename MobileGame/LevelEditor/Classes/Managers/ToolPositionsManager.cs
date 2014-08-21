@@ -18,6 +18,7 @@ namespace LevelEditor.Managers
     {
         private static Dictionary<string, Vector2> ToolPositions = new Dictionary<string, Vector2>();
         private static string SavePath = @"C:\Users\" + Environment.UserName + @"\MobileGame\EditorSettings.xml";
+        private static int notFoundValues = 0;
 
         public static void AddPosition(string Key, Vector2 Position)
         {
@@ -47,7 +48,10 @@ namespace LevelEditor.Managers
             if (ToolPositions.ContainsKey(Key))
                 return ToolPositions[Key];
 
-            return Vector2.Zero;
+            Vector2 newPos = new Vector2(50 * notFoundValues, 0);
+            notFoundValues++;
+
+            return newPos;
         }
 
         public static void SaveData()

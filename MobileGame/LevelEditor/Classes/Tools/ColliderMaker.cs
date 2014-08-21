@@ -11,11 +11,9 @@ namespace LevelEditor.Tools
 {
     class ColliderMaker
     {
-        private Tile[, ,] TileArray;
 
-        public ColliderMaker(Tile[, ,] tileArray)
+        public ColliderMaker()
         {
-            TileArray = tileArray;
         }
 
         public void Update(int mouseX, int mouseY)
@@ -38,10 +36,10 @@ namespace LevelEditor.Tools
 
         private void MakeCollidable(int X, int Y)
         {
-            if(!TileArray[0, X, Y].Collidable && TileArray[0, X, Y].ShouldDraw)
+            if(MapManager.CollisionLayer[X, Y] != 1)
                 MapManager.NumCollisionFlags++;
 
-            TileArray[0, X, Y].Collidable = true;
+            MapManager.CollisionLayer[X, Y] = 1;
         }
 
         private void MakeSeveralCollidable(int startX, int startY, int endX, int endY)
@@ -50,20 +48,20 @@ namespace LevelEditor.Tools
             {
                 for (int y = startY; y < endY; y++)
                 {
-                    if (!TileArray[0, x, y].Collidable && TileArray[0, x, y].ShouldDraw)
+                    if (MapManager.CollisionLayer[x, y] != 1)
                         MapManager.NumCollisionFlags++;
 
-                    TileArray[0, x, y].Collidable = true;
+                    MapManager.CollisionLayer[x, y] = 1;
                 }
             }
         }
 
         private void MakeUnCollidable(int X, int Y)
         {
-            if (TileArray[0, X, Y].Collidable && TileArray[0, X, Y].ShouldDraw)
+            if (MapManager.CollisionLayer[X, Y] != 0)
                 MapManager.NumCollisionFlags--;
 
-            TileArray[0, X, Y].Collidable = false;
+            MapManager.CollisionLayer[X, Y] = 0;
         }
 
         private void MakeSeveralUnCollidable(int startX, int startY, int endX, int endY)
@@ -72,10 +70,10 @@ namespace LevelEditor.Tools
             {
                 for (int y = startY; y < endY; y++)
                 {
-                    if (TileArray[0, x, y].Collidable && TileArray[0, x, y].ShouldDraw)
+                    if (MapManager.CollisionLayer[x, y] != 0)
                         MapManager.NumCollisionFlags--;
 
-                    TileArray[0, x, y].Collidable = false;
+                    MapManager.CollisionLayer[x, y] = 0;
                 }
             }
         }

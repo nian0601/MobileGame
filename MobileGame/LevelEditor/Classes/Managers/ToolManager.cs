@@ -13,7 +13,6 @@ namespace LevelEditor.Managers
 {
     class ToolManager
     {
-        internal static Tile[, ,] TileArray;
         internal static int mouseX, mouseY;
 
         #region Selection-Variables
@@ -30,20 +29,19 @@ namespace LevelEditor.Managers
         private static ColliderMaker ColliderMaker;
         private static JumpThroughMaker JumpThroughMaker;
 
-        public static void Initialize(Tile[, ,] tileArray)
+        public static void Initialize()
         {
-            TileArray = tileArray;
             HasActiveSelection = false;
             SelectionTopLeft = new Point(0, 0);
             SelectionBottomRight = new Point(0, 0);
 
             ShowPasteTarget = false;
 
-            Selector = new Tools.Selector(tileArray);
-            TileCreator = new Tools.TileCreator(tileArray);
-            CopyPaster = new Tools.CopyPaster(tileArray);
-            ColliderMaker = new Tools.ColliderMaker(tileArray);
-            JumpThroughMaker = new JumpThroughMaker(tileArray);
+            Selector = new Tools.Selector();
+            TileCreator = new Tools.TileCreator();
+            CopyPaster = new Tools.CopyPaster();
+            ColliderMaker = new Tools.ColliderMaker();
+            JumpThroughMaker = new JumpThroughMaker();
         }
 
         public static void Update()
@@ -56,7 +54,7 @@ namespace LevelEditor.Managers
 
             if (KeyMouseReader.isKeyDown(Keys.LeftAlt) && KeyMouseReader.LeftClick())
             {
-                MapManager.SetCursorTexture(TileArray[0, mouseX, mouseY].TileValue);
+                MapManager.SetCursorTexture(MapManager.SelectedLayer[mouseX, mouseY]);
             }
 
             #region Selection
@@ -100,28 +98,14 @@ namespace LevelEditor.Managers
         public static void Draw(SpriteBatch SpriteBatch)
         {
             if(CopyPaster.DisplayPasteTarget)
-                CopyPaster.ShowPasteTarget(mouseX, mouseY, 0, MapManager.Spritebatch);
+                CopyPaster.ShowPasteTarget(mouseX, mouseY, 0, SpriteBatch);
+
+            Selector.Draw(SpriteBatch);
         }
 
         public static void ClearSelection()
         {
-            //Platform-layer
-            for (int x = 0; x < TileArray.GetUpperBound(1); x++)
-            {
-                for (int y = 0; y < TileArray.GetUpperBound(2); y++)
-                {
-                    TileArray[0, x, y].Selected = false;
-                }
-            }
-
-            //Special-layer
-            for (int x = 0; x < TileArray.GetUpperBound(1); x++)
-            {
-                for (int y = 0; y < TileArray.GetUpperBound(2); y++)
-                {
-                    TileArray[1, x, y].Selected = false;
-                }
-            }
+            Selector.Reset();
 
             HasActiveSelection = false;
             SelectionTopLeft = new Point(0, 0);

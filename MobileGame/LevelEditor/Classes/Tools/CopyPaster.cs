@@ -16,18 +16,15 @@ namespace LevelEditor.Tools
         private bool active;
         public bool Active { get { return active; } }
 
-        private Tile[, ,] TileArray;
-
-        private Tile[,] CopiedArraySegment;
+        private byte[,] CopiedLayerSegment;
         private int CopyWidth, CopyHeight;
 
         private bool showPasteTarget;
         public bool DisplayPasteTarget { get { return showPasteTarget; } }
 
-        public CopyPaster(Tile[, ,] tileArray)
+        public CopyPaster()
         {
             active = false;
-            TileArray = tileArray;
             CopyWidth = 0;
             CopyHeight = 0;
         }
@@ -82,7 +79,17 @@ namespace LevelEditor.Tools
                 {
                     if (IsXInsideArray(x) && IsYInsideArray(y))
                     {
-                        CopiedArraySegment[xCounter, yCounter].Draw(spritebatch, x - MapManager.xOffset, y - MapManager.yOffset, MapManager.Offset);
+                        //CopiedArraySegment[xCounter, yCounter].Draw(spritebatch, x - MapManager.xOffset, y - MapManager.yOffset, MapManager.Offset);
+
+                        Vector2 Pos = new Vector2((x - MapManager.xOffset) * MapManager.TileSize, (y - MapManager.yOffset) * MapManager.TileSize) + MapManager.Offset;
+                        byte value = CopiedLayerSegment[xCounter, yCounter];
+
+                        if (value != 255)
+                        {
+                            Texture2D Texture = TextureManager.GameTextures[value];
+
+                            spritebatch.Draw(Texture, Pos, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
+                        }
                     }
 
                     yCounter++;
@@ -103,30 +110,13 @@ namespace LevelEditor.Tools
             CopyWidth = bottomRight.X - topLeft.X;
             CopyHeight = bottomRight.Y - topLeft.Y;
 
-            CopiedArraySegment = new Tile[CopyWidth, CopyHeight];
+            CopiedLayerSegment = new byte[CopyWidth, CopyHeight];
 
             for (int x = topLeft.X; x < bottomRight.X; x++)
             {
                 for (int y = topLeft.Y; y < bottomRight.Y; y++)
                 {
-                    Tile TempTile = new Tile(x, y, false);
-                    
-                    TempTile.Collidable = TileArray[layer, x, y].Collidable;
-                    TempTile.CanJumpThrough = TileArray[layer, x, y].CanJumpThrough;
-                    TempTile.TileType = TileArray[layer, x, y].TileType;
-                    TempTile.Selected = false;
-
-                    if (TempTile.TileType != 0)
-                    {
-                        TempTile.SetTileType(TileArray[layer, x, y].TileValue);
-                        TempTile.ShouldDraw = true;
-                    }
-                    else if (TempTile.TileType == 0)
-                    {
-                        TempTile.SetTileType(15);
-                    }
-
-                    CopiedArraySegment[xCounter, yCounter] = TempTile;
+                    CopiedLayerSegment[xCounter, yCounter] = MapManager.SelectedLayer[x, y];
 
                     yCounter++;
                 }
@@ -151,25 +141,7 @@ namespace LevelEditor.Tools
                 {
                     if (IsXInsideArray(x) && IsYInsideArray(y))
                     {
-                        Tile TempTile = new Tile(x, y, false);
-
-                        TempTile.Collidable = CopiedArraySegment[xCounter, yCounter].Collidable;
-                        TempTile.CanJumpThrough = CopiedArraySegment[xCounter, yCounter].CanJumpThrough;
-                        TempTile.TileType = CopiedArraySegment[xCounter, yCounter].TileType;
-                        TempTile.Selected = false;
-
-                        if (TempTile.TileType != 0)
-                        {
-                            TempTile.SetTileType(CopiedArraySegment[xCounter, yCounter].TileValue);
-                            TempTile.ShouldDraw = true;
-                        }
-                        else if (TempTile.TileType == 0)
-                        {
-                            TempTile.SetTileType(15);
-                        }
-
-                        TileArray[layer, x, y] = TempTile;
-
+                        MapManager.SelectedLayer[x, y] = CopiedLayerSegment[xCounter, yCounter];
                     }
                     
                     yCounter++;
@@ -183,7 +155,7 @@ namespace LevelEditor.Tools
 
         private bool IsXInsideArray(int X)
         {
-            if (X < TileArray.GetLowerBound(1) || X > TileArray.GetUpperBound(1))
+            if (X < MapManager.SelectedLayer.GetLowerBound(0) || X > MapManager.SelectedLayer.GetUpperBound(0))
                 return false;
 
             return true;
@@ -191,7 +163,7 @@ namespace LevelEditor.Tools
 
         private bool IsYInsideArray(int Y)
         {
-            if (Y < TileArray.GetLowerBound(2) || Y > TileArray.GetUpperBound(2))
+            if (Y < MapManager.SelectedLayer.GetLowerBound(1) || Y > MapManager.SelectedLayer.GetUpperBound(1))
                 return false;
 
             return true;

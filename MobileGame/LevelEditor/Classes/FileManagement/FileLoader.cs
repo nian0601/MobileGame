@@ -20,9 +20,24 @@ namespace LevelEditor.FileManagement
         private static GameData gameData;
 
         #region Properties
-        public static TileData[, ,] LoadedLevelArray
+        public static byte[,] LoadedCollisionLayer
         {
-            get { return ConvertToMultiArray(LoadedLevel.LevelArray); }
+            get { return ConvertToMultiArray(LoadedLevel.CollisionLayer); }
+        }
+
+        public static byte[,] LoadedBackgroundLayer
+        {
+            get { return ConvertToMultiArray(LoadedLevel.BackgroundLayer); }
+        }
+
+        public static byte[,] LoadedPlatformLayer
+        {
+            get { return ConvertToMultiArray(LoadedLevel.PlatformLayer); }
+        }
+
+        public static byte[,] LoadedSpecialsLayer
+        {
+            get { return ConvertToMultiArray(LoadedLevel.SpecialsLayer); }
         }
 
         public static int LoadedLevelTileSize
@@ -42,7 +57,7 @@ namespace LevelEditor.FileManagement
         {
             gameData = new GameData();
 
-            string savePath = SaveFilesDirectoryPath + @"\GameData";
+            string savePath = SaveFilesDirectoryPath + @"\GameData.xml";
 
             FileStream stream = File.Open(savePath, FileMode.Open);
 
@@ -59,7 +74,7 @@ namespace LevelEditor.FileManagement
 
         public static void LoadLevel(string MapName)
         {
-            string LoadPath = LevelDirectoryPath + @"\" + MapName;
+            string LoadPath = LevelDirectoryPath + @"\" + MapName + ".xml";
 
             FileStream stream = File.Open(LoadPath, FileMode.Open);
 
@@ -73,14 +88,23 @@ namespace LevelEditor.FileManagement
                 stream.Close();
             }
 
-            MapManager.BuildMap(LoadedLevelArray);
+            MapManager.BuildMap();
         }
 
-        public static void SaveLevel(Tile[,,] LevelArray, int MapHeight, int MapWidth, string LevelName)
+        public static void SaveLevel(string LevelName)
         {
+            int MapHeight = MapManager.mapHeight;
+            int MapWidth = MapManager.mapWidth;
+
+            byte[,] CollisionLayer = MapManager.CollisionLayer;
+            byte[,] BackgroundLayer = MapManager.BackgroundLayer;
+            byte[,] PlatformLayer = MapManager.PlatformLayer;
+            byte[,] SpecialsLayer = MapManager.SpecialsLayer;
+
+
             //First we read the GameData file so that we get access to the MapList
             //We will use that to propperly name the new map
-            string GameDataPath = SaveFilesDirectoryPath + @"\GameData";
+            string GameDataPath = SaveFilesDirectoryPath + @"\GameData.xml";
             GameData TempGameData;
             FileStream GameDataStream = File.Open(GameDataPath, FileMode.Open);
 
@@ -97,21 +121,22 @@ namespace LevelEditor.FileManagement
             //Now we make sure that we have a Levels directory
             System.IO.Directory.CreateDirectory(LevelDirectoryPath);
 
-            TileData[, ,] ArrayToSave = ConvertToTileDataArray(LevelArray);
-
             //Get all the necessary LevelData
             LevelData LevelData = new LevelData();
             LevelData.TileSize = MapManager.TileSize;
-            LevelData.LevelArray = ConvertToJaggedArray(ArrayToSave);
             LevelData.MapHeight = MapHeight;
             LevelData.MapWidth = MapWidth;
+            LevelData.CollisionLayer = ConvertToJaggedArray(CollisionLayer);
+            LevelData.BackgroundLayer = ConvertToJaggedArray(BackgroundLayer);
+            LevelData.PlatformLayer = ConvertToJaggedArray(PlatformLayer);
+            LevelData.SpecialsLayer = ConvertToJaggedArray(SpecialsLayer);
 
             //And now its time to build the SavePath
             //The new level we want to save should get number "MapList.Count + 1"
             //So if the MapList is empty, that is we have no maps, 
             //then the new map we save will get number "0 + 1 = 1"
             //If there are 8 maps in the list then the new map will get number "8 + 1 = 9"
-            string savePath = LevelDirectoryPath + @"\" + LevelName;
+            string savePath = LevelDirectoryPath + @"\" + LevelName + ".xml";
             FileStream stream = File.Open(savePath, FileMode.Create);
 
             try
@@ -126,7 +151,9 @@ namespace LevelEditor.FileManagement
 
             //After we have saved the new level we need to update the GameData file (update the MapList)
             TempGameData.MapList = gameData.MapList;
-            TempGameData.MapList.Add(LevelName);
+            if(!TempGameData.MapList.Contains(LevelName))
+                TempGameData.MapList.Add(LevelName);
+
             GameDataStream = File.Open(GameDataPath, FileMode.Create);
 
             try
@@ -306,6 +333,43 @@ namespace LevelEditor.FileManagement
             }
 
             return TileDataArray;
+        }
+
+        private static byte[][] ConvertToJaggedArray(byte[,] multiArray)
+        {
+            int mapHeight = multiArray.GetLength(0);
+            int mapWidth = multiArray.GetLength(1);
+
+            byte[][] tempJaggedArray = new byte[mapHeight][];
+
+            for (int y = 0; y < mapHeight; y++)
+            {
+                tempJaggedArray[y] = new byte[mapWidth];
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    tempJaggedArray[y][x] = multiArray[y, x];
+                }
+            }
+
+            return tempJaggedArray;
+        }
+
+        private static byte[,] ConvertToMultiArray(byte[][] jaggedArray)
+        {
+            int mapHeight = jaggedArray.Length;
+            int mapWidth = jaggedArray[0].Length;
+
+            byte[,] tempArray = new byte[mapHeight, mapWidth];
+
+            for (int y = 0; y < mapHeight; y++)
+            {
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    tempArray[y, x] = jaggedArray[y][x];
+                }
+            }
+
+            return tempArray;
         }
     }
 }

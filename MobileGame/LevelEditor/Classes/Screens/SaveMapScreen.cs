@@ -122,7 +122,7 @@ namespace LevelEditor.Screens
 
         private void ConfirmSaveBoxAccepted(object sender, EventArgs e)
         {
-            FileManagement.FileLoader.SaveLevel(MapManager.TileArray, MapManager.mapHeight, MapManager.mapWidth, NameInput.Text);
+            FileManagement.FileLoader.SaveLevel(NameInput.Text);
             ExitScreen();
         }
     }

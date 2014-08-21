@@ -10,7 +10,10 @@ namespace MobileGame.FileManagement
         public int TileSize;
         public int MapWidth;
         public int MapHeight;
-        public TileData[][][] LevelArray;
+        public byte[][] CollisionLayer;
+        public byte[][] BackgroundLayer;
+        public byte[][] PlatformLayer;
+        public byte[][] SpecialsLayer;
 
         public LevelData()
         {

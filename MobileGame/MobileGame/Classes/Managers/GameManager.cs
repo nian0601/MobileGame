@@ -44,8 +44,6 @@ namespace MobileGame.Managers
 
         public void Update(float elapsedTime)
         {
-            mapManager.Update();
-
             //Collision against specialblocks is handled outside the player class
             for (int i = 0; i < mapManager.SpecialBlocksList.Count; i++)
             {
@@ -67,7 +65,7 @@ namespace MobileGame.Managers
             //The player handles collision against the generic platforms itself inside the update.
             Player.Update(elapsedTime);
 
-            //Console.WriteLine("FPS: " + (1000 / elapsedTime));
+            Console.WriteLine("FPS: " + (1000 / elapsedTime));
         }
 
         public void Draw(SpriteBatch spriteBatch)

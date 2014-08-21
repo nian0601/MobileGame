@@ -172,18 +172,89 @@ namespace LevelEditor
         }
     }
 
-    #region Editor Tool Buttons
+    public class BGLayerButton : ButtonStyle
+    {
+        public BGLayerButton(ContentManager content)
+            : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/Buttons/LayerButtons/Normal/Background");
+            TextureToDraw = normalTexture;
 
-    #region Styles for all tilebuttons
+            hooverTexture = content.Load<Texture2D>("Editor/Buttons/LayerButtons/Hoover/BackgroundHoover");
+        }
+    }
+
+    public class MiddleLayerBytton : ButtonStyle
+    {
+        public MiddleLayerBytton(ContentManager content)
+            : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/Buttons/LayerButtons/Normal/Middle");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/Buttons/LayerButtons/Hoover/MiddleHoover");
+            
+        }
+    }
+
+    public class FGLayerButton : ButtonStyle
+    {
+        public FGLayerButton(ContentManager content)
+            : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/Buttons/LayerButtons/Normal/Foreground");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/Buttons/LayerButtons/Hoover/ForegroundHoover");
+        }
+    }
+
+    public class TileLayerButton : ButtonStyle
+    {
+        public TileLayerButton(ContentManager content)
+            : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/Buttons/NewButtons/TileLayerToggle");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/Buttons/NewButtons/TileLayerToggleHoover");
+        }
+    }
+
+    public class CollisionLayerButton : ButtonStyle
+    {
+        public CollisionLayerButton(ContentManager content)
+            : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/Buttons/NewButtons/CollisionLayerToggle");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/Buttons/NewButtons/CollisionLayerToggleHoover");
+        }
+    }
+
+    public class JumpLayerButton : ButtonStyle
+    {
+        public JumpLayerButton(ContentManager content)
+            : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/Buttons/NewButtons/JumpLayerToggle");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/Buttons/NewButtons/JumpLayerToggleHoover");
+        }
+    }
+
+    #region Styles for all ToolButtons
 
     public class Tile0 : ButtonStyle
     {
         public Tile0(ContentManager content): base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/Tile0");
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/Tile0");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/Tile0Hoover");
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/Tile0Hoover");
         }
     }
 
@@ -191,10 +262,10 @@ namespace LevelEditor
     {
         public Tile1(ContentManager content): base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/Tile1");
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/Tile1");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/Tile1Hoover");
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/Tile1Hoover");
         }
     }
 
@@ -202,10 +273,10 @@ namespace LevelEditor
     {
         public Tile2(ContentManager content): base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/Tile2");
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/Tile2");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/Tile2Hoover");
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/Tile2Hoover");
         }
     }
 
@@ -213,10 +284,10 @@ namespace LevelEditor
     {
         public Tile3(ContentManager content): base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/Tile3");
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/Tile3");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/Tile3Hoover");
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/Tile3Hoover");
         }
     }
 
@@ -224,10 +295,10 @@ namespace LevelEditor
     {
         public Tile4(ContentManager content): base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/Tile4");
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/Tile4");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/Tile4Hoover");
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/Tile4Hoover");
         }
     }
 
@@ -235,10 +306,10 @@ namespace LevelEditor
     {
         public Tile5(ContentManager content): base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/Tile5");
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/Tile5");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/Tile5Hoover");
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/Tile5Hoover");
         }
     }
 
@@ -246,10 +317,10 @@ namespace LevelEditor
     {
         public Tile6(ContentManager content): base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/Tile6");
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/Tile6");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/Tile6Hoover");
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/Tile6Hoover");
         }
     }
 
@@ -257,10 +328,10 @@ namespace LevelEditor
     {
         public Tile7(ContentManager content): base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/Tile7");
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/Tile7");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/Tile7Hoover");
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/Tile7Hoover");
         }
     }
 
@@ -268,10 +339,10 @@ namespace LevelEditor
     {
         public Tile8(ContentManager content): base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/Tile8");
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/Tile8");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/Tile8Hoover");
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/Tile8Hoover");
         }
     }
 
@@ -279,10 +350,10 @@ namespace LevelEditor
     {
         public Tile9(ContentManager content): base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/Tile9");
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/Tile9");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/Tile9Hoover");
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/Tile9Hoover");
         }
     }
 
@@ -290,10 +361,10 @@ namespace LevelEditor
     {
         public Tile10(ContentManager content): base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/Tile10");
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/Tile10");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/Tile10Hoover");
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/Tile10Hoover");
         }
     }
 
@@ -301,10 +372,10 @@ namespace LevelEditor
     {
         public Tile11(ContentManager content): base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/Tile11");
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/Tile11");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/Tile11Hoover");
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/Tile11Hoover");
         }
     }
 
@@ -312,10 +383,10 @@ namespace LevelEditor
     {
         public Tile12(ContentManager content): base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/Tile12");
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/Tile12");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/Tile12Hoover");
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/Tile12Hoover");
         }
     }
 
@@ -323,10 +394,10 @@ namespace LevelEditor
     {
         public Tile13(ContentManager content): base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/Tile13");
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/Tile13");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/Tile13Hoover");
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/Tile13Hoover");
         }
     }
 
@@ -334,10 +405,10 @@ namespace LevelEditor
     {
         public Tile14(ContentManager content): base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/Tile14");
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/Tile14");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/Tile14Hoover");
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/Tile14Hoover");
         }
     }
 
@@ -345,45 +416,151 @@ namespace LevelEditor
     {
         public Tile15(ContentManager content): base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/Tile15");
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/Tile15");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/Tile15Hoover");
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/Tile15Hoover");
         }
     }
 
-    #endregion
-
-    public class Spike0 : ButtonStyle
+    public class BGTile0 : ButtonStyle
     {
-        public Spike0(ContentManager content): base(content)
+        public BGTile0(ContentManager content)
+            : base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/Spike00");
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/BGTile0");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/Spike0Hoover");
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/BGTile0Hoover");
         }
     }
 
-    public class Spike1 : ButtonStyle
+    public class BGTile1 : ButtonStyle
     {
-        public Spike1(ContentManager content) : base(content)
+        public BGTile1(ContentManager content)
+            : base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/Spike01");
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/BGTile1");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/Spike01Hoover");
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/BGTile1Hoover");
         }
     }
 
-    public class Spike2 : ButtonStyle
+    public class BGTile2 : ButtonStyle
     {
-        public Spike2(ContentManager content): base(content)
+        public BGTile2(ContentManager content)
+            : base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/Spike02");
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/BGTile2");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/Spike02Hoover");
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/BGTile2Hoover");
+        }
+    }
+
+    public class BGTile3 : ButtonStyle
+    {
+        public BGTile3(ContentManager content)
+            : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/BGTile3");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/BGTile3Hoover");
+        }
+    }
+
+    public class BGTile4 : ButtonStyle
+    {
+        public BGTile4(ContentManager content)
+            : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/BGTile4");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/BGTile4Hoover");
+        }
+    }
+
+    public class BGTile5 : ButtonStyle
+    {
+        public BGTile5(ContentManager content)
+            : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/BGTile5");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/BGTile5Hoover");
+        }
+    }
+
+    public class BGTile6 : ButtonStyle
+    {
+        public BGTile6(ContentManager content)
+            : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/BGTile6");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/BGTile6Hoover");
+        }
+    }
+
+    public class BGTile7 : ButtonStyle
+    {
+        public BGTile7(ContentManager content)
+            : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/BGTile7");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/BGTile7Hoover");
+        }
+    }
+
+    public class BGTile8 : ButtonStyle
+    {
+        public BGTile8(ContentManager content)
+            : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/BGTile8");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/BGTile8Hoover");
+        }
+    }
+
+    public class Spike0Button : ButtonStyle
+    {
+        public Spike0Button(ContentManager content): base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/Spike00");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/Spike0Hoover");
+        }
+    }
+
+    public class Spike1Button : ButtonStyle
+    {
+        public Spike1Button(ContentManager content) : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/Spike01");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/Spike01Hoover");
+        }
+    }
+
+    public class Spike2Button : ButtonStyle
+    {
+        public Spike2Button(ContentManager content): base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/Spike02");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/Spike02Hoover");
         }
     }
 
@@ -392,10 +569,10 @@ namespace LevelEditor
         public GoalTileButton(ContentManager content)
             : base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/GoalTile");
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/GoalTile");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/GoalTileHoover");
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/GoalTileHoover");
         }
     }
 
@@ -404,12 +581,34 @@ namespace LevelEditor
         public JumpTileButton(ContentManager content)
             : base(content)
         {
-            normalTexture = content.Load<Texture2D>("Editor/TileButtons/Normal/JumpTile");
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/JumpTile");
             TextureToDraw = normalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Editor/TileButtons/Hoover/JumpTileHoover");
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/JumpTileHoover");
         }
     }
 
+    public class PlayerButton : ButtonStyle
+    {
+        public PlayerButton(ContentManager content)
+            : base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/PlayerButton");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/PlayerButtonHoover");
+        }
+    }
+
+    public class EnemyButton : ButtonStyle
+    {
+        public EnemyButton(ContentManager content):base(content)
+        {
+            normalTexture = content.Load<Texture2D>("Editor/ToolButtons/Normal/Enemy");
+            TextureToDraw = normalTexture;
+
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/Hoover/EnemyHoover");
+        }
+    }
     #endregion
 }

@@ -11,11 +11,8 @@ namespace LevelEditor.Tools
 {
     class JumpThroughMaker
     {
-        private Tile[, ,] TileArray;
-
-        public JumpThroughMaker(Tile[, ,] tileArray)
+        public JumpThroughMaker()
         {
-            TileArray = tileArray;
         }
 
         public void Update(int mouseX, int mouseY)
@@ -38,7 +35,8 @@ namespace LevelEditor.Tools
 
         private void MakeJumpthruable(int X, int Y)
         {
-            TileArray[0, X, Y].CanJumpThrough = true;
+            if (MapManager.CollisionLayer[X, Y] == 1)
+                MapManager.CollisionLayer[X, Y] = 2;
         }
 
         private void MakeSeveralJumpthruable(int startX, int startY, int endX, int endY)
@@ -47,15 +45,16 @@ namespace LevelEditor.Tools
             {
                 for (int y = startY; y < endY; y++)
                 {
-                    if(TileArray[0, x, y].Collidable)
-                        TileArray[0, x, y].CanJumpThrough = true;
+                    if (MapManager.CollisionLayer[x, y] == 1)
+                        MapManager.CollisionLayer[x, y] = 2;
                 }
             }
         }
 
         private void MakeNotJumpthruable(int X, int Y)
         {
-            TileArray[0, X, Y].CanJumpThrough = false;
+            if(MapManager.CollisionLayer[X, Y] == 2)
+                MapManager.CollisionLayer[X, Y] = 1;
         }
 
         private void MakeSeveralNotJumpthruable(int startX, int startY, int endX, int endY)
@@ -64,7 +63,8 @@ namespace LevelEditor.Tools
             {
                 for (int y = startY; y < endY; y++)
                 {
-                    TileArray[0, x, y].CanJumpThrough = false;
+                    if (MapManager.CollisionLayer[x, y] == 2)
+                        MapManager.CollisionLayer[x, y] = 1;
                 }
             }
         }

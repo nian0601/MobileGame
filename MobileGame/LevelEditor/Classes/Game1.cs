@@ -42,8 +42,8 @@ namespace LevelEditor
         {
             // TODO: Add your initialization logic here
 
-            graphics.PreferredBackBufferWidth = 1040;
-            graphics.PreferredBackBufferHeight = 640;
+            graphics.PreferredBackBufferWidth = 1100;
+            graphics.PreferredBackBufferHeight = 800;
 
             graphics.ApplyChanges();
 
@@ -82,17 +82,16 @@ namespace LevelEditor
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.SaddleBrown);
 
             screenManager.Draw(gameTime);
 
             base.Draw(gameTime);
         }
 
-
         public static void ChangeEditMode(int value)
         {
-            editMode += value;
+            editMode = value;
             if (editMode > 3)
                 editMode = 3;
 
