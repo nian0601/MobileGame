@@ -21,11 +21,14 @@ namespace MobileGame.Screens
         ContentManager content;
         GameManager gameManager;
         float pausAlpha;
+        float shaderPercent;
 
         public GamePlayScreen(): base()
         {
             TransitionOnTime = TimeSpan.FromSeconds(1.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
+
+            shaderPercent = 0.01f;
         }
 
         public override void Activate()
@@ -78,10 +81,18 @@ namespace MobileGame.Screens
         public override void Draw(GameTime gameTime)
         {
             SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
-
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, Camera.Get_Transformation());
             gameManager.Draw(spriteBatch);
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, Camera.Get_Transformation());
+            
             Camera.Draw(spriteBatch);
+            spriteBatch.End();
+
+            ScreenManager.Game.GraphicsDevice.SetRenderTarget(null);
+            ScreenManager.Game.GraphicsDevice.Clear(Color.CornflowerBlue);
+            TextureManager.PixelShader.Parameters["lightMask"].SetValue(Game1.ShaderTarget);
+
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, TextureManager.PixelShader);
+            spriteBatch.Draw(Game1.MainTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
 
             if (TransitionPosition > 0 || pausAlpha > 0)

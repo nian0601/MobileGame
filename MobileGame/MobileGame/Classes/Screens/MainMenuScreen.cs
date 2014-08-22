@@ -33,6 +33,11 @@ namespace MobileGame.Screens
             TitleTexture = ScreenManager.Game.Content.Load<Texture2D>("GUI Textures/MainMenu/MainMenuTitle");
 
             FileLoader.Initialize();
+
+            RenderTarget2D MainTarget = new RenderTarget2D(ScreenManager.Game.GraphicsDevice, FileLoader.LoadedLevelMapWidth * FileLoader.LoadedLevelTileSize, FileLoader.LoadedLevelMapHeight * FileLoader.LoadedLevelTileSize);
+            RenderTarget2D ShaderTarget = new RenderTarget2D(ScreenManager.Game.GraphicsDevice, FileLoader.LoadedLevelMapWidth * FileLoader.LoadedLevelTileSize, FileLoader.LoadedLevelMapHeight * FileLoader.LoadedLevelTileSize);
+            Game1.MainTarget = MainTarget;
+            Game1.ShaderTarget = ShaderTarget;
         }
 
         public override void Activate()

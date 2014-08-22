@@ -29,6 +29,10 @@ namespace MobileGame.Managers
         public static List<Texture2D> GameTextures { get; private set; }
 
         public static Texture2D FilledSquare { get; private set; }
+        public static Effect Ambient { get; private set; }
+        public static Effect Diffuse { get; private set; }
+        public static Effect PixelShader { get; private set; }
+        public static Texture2D LightSource { get; private set; }
 
         public static void LoadContents(ContentManager Content)
         {
@@ -51,6 +55,11 @@ namespace MobileGame.Managers
             SpikeTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/Spike_00"));
             SpikeTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/Spike_01"));
             SpikeTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/Spike_02"));
+
+            Ambient = Content.Load<Effect>("Shaders/Ambient.mgfxo");
+            Diffuse = Content.Load<Effect>("Shaders/Diffuse.mgfxo");
+            PixelShader = Content.Load<Effect>("Shaders/PixelShader.mgfxo");
+            LightSource = Content.Load<Texture2D>("Shaders/LightSource");
 
             GameTextures = new List<Texture2D>();
             GameTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/Tile_00"));        // 0

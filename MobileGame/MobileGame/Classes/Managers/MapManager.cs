@@ -61,6 +61,8 @@ namespace MobileGame.Managers
 
         public static byte[,] CollisionLayer { get { return collisionLayer; } }
 
+        public static Vector2 GoalPos { get; private set; }
+
         #endregion
 
         public MapManager()
@@ -196,7 +198,7 @@ namespace MobileGame.Managers
                         Camera.AddFocusObject(temp);
                         specialBlockList.Add(temp);
                         backgroundLayer[x, y] = backgroundValue;
-                        
+                        GoalPos = new Vector2(x * tileSize, y * tileSize);
                     }
                     else if (backgroundValue == 29)
                     {
@@ -234,6 +236,7 @@ namespace MobileGame.Managers
                         Camera.AddFocusObject(temp);
                         specialBlockList.Add(temp);
                         platformLayer[x, y] = platformValue;
+                        GoalPos = new Vector2(x * tileSize, y * tileSize);
                     }
                     else if (platformValue == 29)
                     {
@@ -266,6 +269,7 @@ namespace MobileGame.Managers
                         Camera.AddFocusObject(temp);
                         specialBlockList.Add(temp);
                         specialsLayer[x, y] = specialsValue;
+                        GoalPos = new Vector2(x * tileSize, y * tileSize);
                     }
                     else if (specialsValue == 29)
                     {

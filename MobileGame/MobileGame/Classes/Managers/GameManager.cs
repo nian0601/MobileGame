@@ -11,6 +11,8 @@ using MobileGame.FileManagement;
 using MobileGame.CameraManagement;
 using MobileGame.Units;
 
+using GUI_System.GameStateManagement;
+
 namespace MobileGame.Managers
 {
     class GameManager
@@ -70,12 +72,33 @@ namespace MobileGame.Managers
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            mapManager.Draw(spriteBatch);
+            ScreenManager.Game.GraphicsDevice.SetRenderTarget(Game1.ShaderTarget);
+            ScreenManager.Game.GraphicsDevice.Clear(Color.Black);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Camera.Get_Transformation());
+            Vector2 drawPos;
+            if (Player != null)
+            {
+                drawPos = new Vector2(Player.Position.X - TextureManager.LightSource.Width / 2, Player.Position.Y - TextureManager.LightSource.Height / 2);
+                spriteBatch.Draw(TextureManager.LightSource, drawPos, Color.White);
+            }
+            drawPos = new Vector2(MapManager.GoalPos.X - TextureManager.LightSource.Width / 2, MapManager.GoalPos.Y - TextureManager.LightSource.Height / 2);
+            spriteBatch.Draw(TextureManager.LightSource, drawPos, Color.White);
+            spriteBatch.End();
 
+            ScreenManager.Game.GraphicsDevice.SetRenderTarget(Game1.MainTarget);
+            ScreenManager.Game.GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, Camera.Get_Transformation());
+            mapManager.Draw(spriteBatch);
+            spriteBatch.End();
+
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, Camera.Get_Transformation());
             EnemyManager.Draw(spriteBatch);
 
-            if(Player != null)
+            if (Player != null)
                 Player.Draw(spriteBatch);
+            spriteBatch.End();
+            
         }
 
         public static void RestarLevel()

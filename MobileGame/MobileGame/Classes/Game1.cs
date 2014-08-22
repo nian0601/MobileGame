@@ -25,13 +25,16 @@ namespace MobileGame
         public static GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        ScreenManager screenManager;
+        public static ScreenManager screenManager;
 
         public static bool Debugging;
         public static bool Debugg2;
 
         public static int ScreenWidth { get; private set; }
         public static int ScreenHeight { get; private set; }
+
+        public static RenderTarget2D ShaderTarget;
+        public static RenderTarget2D MainTarget;
 
         public Game1(): base()
         {
@@ -76,6 +79,10 @@ namespace MobileGame
             Camera.Limits = new Rectangle(0, 0, 800, 600);
             Camera.LoadStuff(Content);
             // TODO: use this.Content to load your game content here
+
+            var pp = GraphicsDevice.PresentationParameters;
+            ShaderTarget = new RenderTarget2D(GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight);
+            MainTarget = new RenderTarget2D(GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight);
         }
 
         protected override void UnloadContent()
@@ -105,6 +112,7 @@ namespace MobileGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            
 
             screenManager.Draw(gameTime);
 
@@ -120,6 +128,12 @@ namespace MobileGame
 
             ScreenWidth = Width;
             ScreenHeight = Height;
+        }
+
+        public void SetRenderTargets(int Width, int Height)
+        {
+            ShaderTarget = new RenderTarget2D(GraphicsDevice, Width, Height);
+            MainTarget = new RenderTarget2D(GraphicsDevice, Width, Height);
         }
     }
 }
