@@ -199,6 +199,7 @@ namespace MobileGame.Managers
                         specialBlockList.Add(temp);
                         backgroundLayer[x, y] = backgroundValue;
                         GoalPos = new Vector2(x * tileSize, y * tileSize);
+                        LightingManager.AddLight(x * tileSize, y * tileSize, 400, 400, Color.White * 0.75f);
                     }
                     else if (backgroundValue == 29)
                     {
@@ -216,7 +217,11 @@ namespace MobileGame.Managers
                         backgroundLayer[x, y] = backgroundValue;
                     }
                     else
+                    {
                         backgroundLayer[x, y] = backgroundValue;
+
+                    }
+                        
                     #endregion
 
                     #region PlatformLayer
@@ -237,6 +242,7 @@ namespace MobileGame.Managers
                         specialBlockList.Add(temp);
                         platformLayer[x, y] = platformValue;
                         GoalPos = new Vector2(x * tileSize, y * tileSize);
+                        LightingManager.AddLight(x * tileSize, y * tileSize, 400, 400, Color.White * 0.75f);
                     }
                     else if (platformValue == 29)
                     {
@@ -250,6 +256,13 @@ namespace MobileGame.Managers
                     }
                     else
                         platformLayer[x, y] = platformValue;
+
+
+                    if (platformValue != 255 && platformValue != 15)
+                    {
+                        LightingManager.AddLight(x * TileSize, y * TileSize, tileSize * 3, tileSize * 3, Color.White * 0.5f);
+                    }
+
                     #endregion
 
                     #region SpecialsLayer
@@ -270,6 +283,7 @@ namespace MobileGame.Managers
                         specialBlockList.Add(temp);
                         specialsLayer[x, y] = specialsValue;
                         GoalPos = new Vector2(x * tileSize, y * tileSize);
+                        LightingManager.AddLight(x * tileSize, y * tileSize, 400, 400, Color.White * 0.75f);
                     }
                     else if (specialsValue == 29)
                     {

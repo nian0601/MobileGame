@@ -46,6 +46,8 @@
     <Compile Include="Classes\KeyMouseReader.cs" />
     <Compile Include="Classes\FileManagement\LevelData.cs" />
     <Compile Include="Classes\FileManagement\FileLoader.cs" />
+    <Compile Include="Classes\Lights\BasicLight.cs" />
+    <Compile Include="Classes\Managers\LightingManager.cs" />
     <Compile Include="Classes\Managers\MapManager.cs" />
     <Compile Include="Classes\Managers\GameManager.cs" />
     <Compile Include="Classes\Screens\BackgroundScreen.cs" />

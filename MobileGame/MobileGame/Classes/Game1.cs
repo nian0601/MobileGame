@@ -13,6 +13,7 @@ using GUI_System.GameStateManagement;
 
 using MobileGame.Screens;
 using MobileGame.CameraManagement;
+using MobileGame.Managers;
 #endregion
 
 namespace MobileGame
@@ -66,6 +67,9 @@ namespace MobileGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            LightingManager.GraphicsDevice = GraphicsDevice;
+            LightingManager.SpriteBatch = spriteBatch;
+
             screenManager = new ScreenManager(this);
             screenManager.SpriteBatch = spriteBatch;
             screenManager.Font = Content.Load<SpriteFont>("GUI Textures/Fonts/DejaVuSans_20");
@@ -83,6 +87,7 @@ namespace MobileGame
             var pp = GraphicsDevice.PresentationParameters;
             ShaderTarget = new RenderTarget2D(GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight);
             MainTarget = new RenderTarget2D(GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight);
+            LightingManager.LightingTarget = new RenderTarget2D(GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight);   
         }
 
         protected override void UnloadContent()

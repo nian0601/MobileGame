@@ -18,7 +18,7 @@ namespace MobileGame.Units
     {
         private Texture2D playerTex;
 
-        private Vector2 position;
+        public Vector2 position;
         private Vector2 startPos;
         private Vector2 velocity;
 
@@ -46,7 +46,7 @@ namespace MobileGame.Units
         public Vector2 Position
         {
             get { return position; }
-            private set { position = value; }
+            set { position = value; }
         }
 
         public Color[] ColorArray
