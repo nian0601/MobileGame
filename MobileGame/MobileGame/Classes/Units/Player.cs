@@ -18,7 +18,7 @@ namespace MobileGame.Units
     {
         private Texture2D playerTex;
 
-        public Vector2 position;
+        private Vector2 position;
         private Vector2 startPos;
         private Vector2 velocity;
 
@@ -48,6 +48,14 @@ namespace MobileGame.Units
             get { return position; }
             set { position = value; }
         }
+
+        public Vector2 Direction
+        {
+            get { Vector2 dir = velocity; dir.Normalize(); return dir; }
+        }
+
+        public int Width { get { return FrameWidth; } }
+        public int Height { get { return FrameHeight; } }
 
         public Color[] ColorArray
         {

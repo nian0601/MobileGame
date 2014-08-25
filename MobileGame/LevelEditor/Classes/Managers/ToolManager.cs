@@ -49,12 +49,12 @@ namespace LevelEditor.Managers
             mouseX = ConvertPixelsToIndex(KeyMouseReader.GetMousePos()).X;
             mouseY = ConvertPixelsToIndex(KeyMouseReader.GetMousePos()).Y;
 
-            mouseX += MapManager.xOffset;
-            mouseY += MapManager.yOffset;
+            mouseX += EditorMapManager.xOffset;
+            mouseY += EditorMapManager.yOffset;
 
             if (KeyMouseReader.isKeyDown(Keys.LeftAlt) && KeyMouseReader.LeftClick())
             {
-                MapManager.SetCursorTexture(MapManager.SelectedLayer[mouseX, mouseY]);
+                EditorMapManager.SetCursorTexture(EditorMapManager.SelectedLayer[mouseX, mouseY]);
             }
 
             #region Selection
@@ -114,8 +114,8 @@ namespace LevelEditor.Managers
 
         public static Point ConvertPixelsToIndex(Point pos)
         {
-            int x = (int)(pos.X - MapManager.Offset.X) / MapManager.TileSize;
-            int y = (int)(pos.Y - MapManager.Offset.Y) / MapManager.TileSize;
+            int x = (int)(pos.X - EditorMapManager.Offset.X) / EditorMapManager.TileSize;
+            int y = (int)(pos.Y - EditorMapManager.Offset.Y) / EditorMapManager.TileSize;
 
             return new Point(x, y);
         }

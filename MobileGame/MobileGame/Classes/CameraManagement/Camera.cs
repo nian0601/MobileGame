@@ -335,7 +335,18 @@ namespace MobileGame.CameraManagement
 
         public static Vector2 ScreenToWorldCoordinates(Vector2 coordinates)
         {
+            
             return Vector2.Transform(coordinates, Matrix.Invert(Get_Transformation()));
+        }
+
+
+        public static Vector2 WorldToScreen(Vector2 coordinates)
+        {
+            Matrix temp = Matrix.CreateTranslation(new Vector3(-position.X - viewPort.Width / 2, -position.Y - viewPort.Height / 2 + viewPort.Height, 0)) *
+                          Matrix.CreateRotationZ(rotation) *
+                          Matrix.CreateScale(new Vector3(zoom, zoom, 1)) *
+                          Matrix.CreateTranslation(new Vector3(viewPort.Width, viewPort.Height, 0));
+            return Vector2.Transform(coordinates, temp);
         }
 
         private static Vector2 CalculateTarget()

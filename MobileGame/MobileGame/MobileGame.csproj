@@ -46,7 +46,26 @@
     <Compile Include="Classes\KeyMouseReader.cs" />
     <Compile Include="Classes\FileManagement\LevelData.cs" />
     <Compile Include="Classes\FileManagement\FileLoader.cs" />
+    <Compile Include="Classes\LevelEditor\Screens\ConfirmationPopUp.cs" />
+    <Compile Include="Classes\LevelEditor\Screens\EditorScreen.cs" />
+    <Compile Include="Classes\LevelEditor\GUIStyles.cs" />
+    <Compile Include="Classes\LevelEditor\Screens\LoadMapScreen.cs" />
+    <Compile Include="Classes\LevelEditor\Managers\EditorMapManager.cs" />
+    <Compile Include="Classes\LevelEditor\Managers\ToolManager.cs" />
+    <Compile Include="Classes\LevelEditor\Managers\ToolPositionsManager.cs" />
+    <Compile Include="Classes\LevelEditor\Screens\SaveMapScreen.cs" />
+    <Compile Include="Classes\LevelEditor\Tools\ColliderMaker.cs" />
+    <Compile Include="Classes\LevelEditor\Tools\CopyPaster.cs" />
+    <Compile Include="Classes\LevelEditor\Tools\JumpThroughMaker.cs" />
+    <Compile Include="Classes\LevelEditor\Tools\Selector.cs" />
+    <Compile Include="Classes\LevelEditor\Tools\TileCreator.cs" />
+    <Compile Include="Classes\LightingSystem\Light.cs" />
+    <Compile Include="Classes\LightingSystem\LightRenderer.cs" />
+    <Compile Include="Classes\LightingSystem\PointLight.cs" />
+    <Compile Include="Classes\LightingSystem\SpotLight.cs" />
+    <Compile Include="Classes\Lights\AmbientLight.cs" />
     <Compile Include="Classes\Lights\BasicLight.cs" />
+    <Compile Include="Classes\Lights\ILight.cs" />
     <Compile Include="Classes\Managers\LightingManager.cs" />
     <Compile Include="Classes\Managers\MapManager.cs" />
     <Compile Include="Classes\Managers\GameManager.cs" />
@@ -121,6 +140,351 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\DebugTextures\FilledSquare.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Background.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\Cancel.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\CancelHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\LayerButtons\Background.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\LayerButtons\BackgroundHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\LayerButtons\Foreground.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\LayerButtons\ForegroundHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\LayerButtons\Middle.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\LayerButtons\MiddleHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\NewButtons\Close.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\NewButtons\CloseHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\NewButtons\CollisionLayerToggle.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\NewButtons\CollisionLayerToggleHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\NewButtons\JumpLayerToggle.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\NewButtons\JumpLayerToggleHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\NewButtons\LayerDown.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\NewButtons\LayerDownHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\NewButtons\LayerUp.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\NewButtons\LayerUpHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\NewButtons\Load.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\NewButtons\LoadHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\NewButtons\Save.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\NewButtons\SaveHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\NewButtons\TileLayerToggle.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\NewButtons\TileLayerToggleHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\Save.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Buttons\SaveHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ConfirmationBox\NoHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ConfirmationBox\NoNormal.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ConfirmationBox\TitleTexture.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ConfirmationBox\YesHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ConfirmationBox\YesNormal.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\GridTexture.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\LoadMap\DeleteHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\LoadMap\DeleteNormal.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\LoadMap\ListBackground.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\LoadMap\LoadHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\LoadMap\LoadLable.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\LoadMap\LoadNormal.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\LoadMap\MapListFont.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\SaveMap\InputBG.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\SaveMap\InputBGHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\SaveMap\InputLabel.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\BGTile0Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\BGTile1Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\BGTile2Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\BGTile3Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\BGTile4Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\BGTile5Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\BGTile6Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\BGTile7Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\BGTile8Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\EnemyHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\GoalTileHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\JumpTileHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\PlayerButtonHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\Spike01Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\Spike02Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\Spike0Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\Tile0Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\Tile10Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\Tile11Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\Tile12Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\Tile13Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\Tile14Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\Tile15Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\Tile1Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\Tile2Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\Tile3Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\Tile4Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\Tile5Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\Tile6Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\Tile7Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\Tile8Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Hoover\Tile9Hoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\BGTile0.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\BGTile1.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\BGTile2.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\BGTile3.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\BGTile4.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\BGTile5.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\BGTile6.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\BGTile7.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\BGTile8.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\Enemy.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\GoalTile.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\JumpTile.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\PlayerButton.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\Spike00.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\Spike01.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\Spike02.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\Tile0.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\Tile1.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\Tile10.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\Tile11.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\Tile12.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\Tile13.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\Tile14.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\Tile15.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\Tile2.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\Tile3.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\Tile4.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\Tile5.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\Tile6.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\Tile7.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\Tile8.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\ToolButtons\Normal\Tile9.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Effects\AmbientLight.mgfxo">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Effects\HorizontalBlur.mgfxo">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Effects\LightBlend.mgfxo">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Effects\PointLight.mgfxo">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Effects\SpotLight.mgfxo">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Effects\Unwrap.mgfxo">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Effects\UnwrapSpotLight.mgfxo">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Effects\VerticalBlur.mgfxo">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\GUI Textures\Background.xnb">

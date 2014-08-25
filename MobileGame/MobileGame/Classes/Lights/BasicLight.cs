@@ -8,12 +8,8 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MobileGame.Lights
 {
-    class BasicLight
+    class BasicLight : ILight
     {
-        private Rectangle Rect;
-        private Texture2D Texture;
-        private Color Color;
-
         public BasicLight(int X, int Y, int Width, int Height, Texture2D Texture, Color Color)
         {
             this.Rect = new Rectangle(X - Width/2, Y - Height/2, Width, Height);
@@ -21,7 +17,7 @@ namespace MobileGame.Lights
             this.Color = Color;
         }
 
-        public void Draw(SpriteBatch SpriteBatch)
+        public override void Draw(SpriteBatch SpriteBatch)
         {
             SpriteBatch.Draw(Texture, Rect, Color);
         }

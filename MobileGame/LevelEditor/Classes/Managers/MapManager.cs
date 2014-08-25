@@ -13,7 +13,7 @@ using LevelEditor.Tools;
 
 namespace LevelEditor.Managers
 {
-    class MapManager
+    class EditorMapManager
     {
         //The offset for the entire map, so that it begins drawing in the right spot
         //usually in the right side of the editor, so we can place tools/other ui stuff to the left
@@ -60,60 +60,6 @@ namespace LevelEditor.Managers
         private Texture2D GridTexture;
         private Texture2D Background;
         private static Texture2D CursorTexture;
-
-        public static List<Texture2D> TileTextures;
-
-        public enum TileTypes
-        {
-            BottomClosedLeftCornerTile,
-            BottomClosedRightCornerTile,
-            BottomClosedTile,
-            BottomLeftCorner,
-            BottomLeftOpenTile,
-            BottomLeftTile,
-            BottomMiddleTile,
-            BottomOpenTile,
-            BottomRightCorner,
-            BottomRightOpenTile,
-            BottomRightTile,
-            BottomTopOpenTile,
-            FourCornersTile,
-            LeftClosedBottomCornerTile,
-            LeftClosedTile,
-            LeftClosedTopCornerTile,
-            LeftOpenTile,
-            LeftRightOpenTile,
-            MiddleLeftTile,
-            MiddleRightTile,
-            MiddleTile,
-            RightClosedBottomCenterTile,
-            RightClosedTile,
-            RightClosedTopCenterTile,
-            RightOpenTile,
-            SingleTile,
-            ThreeCornersBottomLeftTile,
-            ThreeCornersBottomRightTile,
-            ThreeCornersTopLeftTile,
-            ThreeCornersTopRightTile,
-            TopClosedLeftCornerTile,
-            TopClosedrightCornerTile,
-            TopClosedTile,
-            TopLeftBottomRightCornerTile,
-            TopLeftCorner,
-            TopLeftOpenTile,
-            TopLeftTile,
-            TopMiddleTile,
-            TopOpenTile,
-            TopRightBottomLeftCornerTile,
-            TopRightCorner,
-            TopRightOpenTile,
-            TopRightTile,
-            TwoCornersBottomTile,
-            TwoCornersLeftTile,
-            TwoCornersRightTile,
-            TwoCornersTopTile
-        }
-
         #endregion
 
         private bool Initialized;
@@ -166,7 +112,7 @@ namespace LevelEditor.Managers
 
         private static int selectedLayerNum;
 
-        public MapManager(ContentManager Content, SpriteBatch spriteBatch)
+        public EditorMapManager(ContentManager Content, SpriteBatch spriteBatch)
         {
             this.Content = Content;
             Spritebatch = spriteBatch;
@@ -550,29 +496,6 @@ namespace LevelEditor.Managers
 
             if (yDisplayMax < editorYTiles)
                 yDisplayMax = editorYTiles;
-        }
-
-        private void LoadTileTextures()
-        {
-            TileTextures = new List<Texture2D>();
-            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/Tile_00"));     // 0
-            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/Tile_01"));     // 1
-            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/Tile_02"));     // 2
-            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/Tile_03"));     // 3
-            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/Tile_04"));     // 4
-            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/Tile_05"));     // 5
-            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/Tile_06"));     // 6
-            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/Tile_07"));     // 7
-            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/Tile_08"));     // 8
-            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/Tile_09"));     // 9
-            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/Tile_10"));    // 10
-            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/Tile_11"));    // 11
-            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/Tile_12"));    // 12
-            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/Tile_13"));    // 13
-            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/Tile_14"));    // 14
-            TileTextures.Add(Content.Load<Texture2D>("GameTextures/Tiles/Tile_15"));    // 15
-
-            TileSize = TileTextures[0].Width;
         }
     }
 }

@@ -20,14 +20,14 @@ namespace LevelEditor.Tools
         {
             if (ToolManager.HasActiveSelection && KeyMouseReader.LeftClick())
             {
-                CreatePlatforms(ToolManager.SelectionTopLeft.X, ToolManager.SelectionTopLeft.Y, ToolManager.SelectionBottomRight.X, ToolManager.SelectionBottomRight.Y, 0, MapManager.SelectedTileValue);
+                CreatePlatforms(ToolManager.SelectionTopLeft.X, ToolManager.SelectionTopLeft.Y, ToolManager.SelectionBottomRight.X, ToolManager.SelectionBottomRight.Y, 0, EditorMapManager.SelectedTileValue);
                 ToolManager.ClearSelection();
             }
             else if (KeyMouseReader.LeftMouseDown())
-                CreatePlatform(mouseX, mouseY, MapManager.SelectedTileValue);
+                CreatePlatform(mouseX, mouseY, EditorMapManager.SelectedTileValue);
             else if (ToolManager.HasActiveSelection && KeyMouseReader.RightClick())
             {
-                CreateAirs(ToolManager.SelectionTopLeft.X, ToolManager.SelectionTopLeft.Y, ToolManager.SelectionBottomRight.X, ToolManager.SelectionBottomRight.Y, 0, MapManager.SelectedTileValue);
+                CreateAirs(ToolManager.SelectionTopLeft.X, ToolManager.SelectionTopLeft.Y, ToolManager.SelectionBottomRight.X, ToolManager.SelectionBottomRight.Y, 0, EditorMapManager.SelectedTileValue);
                 ToolManager.ClearSelection();
             }
             else if (KeyMouseReader.RightMouseDown())
@@ -46,12 +46,12 @@ namespace LevelEditor.Tools
 
         private void CreateAir(int X, int Y)
         {
-            if (MapManager.SelectedLayer[X, Y] == 17)
-                MapManager.GoalPlaced = false;
-            if (MapManager.SelectedLayer[X, Y] == 29)
-                MapManager.PlayerPlaced = false;
+            if (EditorMapManager.SelectedLayer[X, Y] == 17)
+                EditorMapManager.GoalPlaced = false;
+            if (EditorMapManager.SelectedLayer[X, Y] == 29)
+                EditorMapManager.PlayerPlaced = false;
 
-            MapManager.SelectedLayer[X, Y] = 255;
+            EditorMapManager.SelectedLayer[X, Y] = 255;
         }
 
         private void CreateAirs(int startX, int startY, int endX, int endY, int layer, int TileValue)
@@ -76,7 +76,7 @@ namespace LevelEditor.Tools
                 CreatePlayerSpawn(X, Y);
             }
             else
-                MapManager.SelectedLayer[X, Y] = (byte)TileValue;
+                EditorMapManager.SelectedLayer[X, Y] = (byte)TileValue;
         }
 
         private void CreatePlatforms(int startX, int startY, int endX, int endY, int layer, int TileValue)
@@ -87,7 +87,7 @@ namespace LevelEditor.Tools
                 {
                     for (int y = startY; y < endY; y++)
                     {
-                        MapManager.SelectedLayer[x, y] = (byte)TileValue;
+                        EditorMapManager.SelectedLayer[x, y] = (byte)TileValue;
                     }
                 }
             }
@@ -96,37 +96,37 @@ namespace LevelEditor.Tools
 
         private void CreateJumpTile(int X, int Y)
         {
-            MapManager.SelectedLayer[X, Y] = 16;
+            EditorMapManager.SelectedLayer[X, Y] = 16;
         }
 
         private void CreateTeleportTile(int X, int Y)
         {
-            MapManager.SelectedLayer[X, Y] = 31;
+            EditorMapManager.SelectedLayer[X, Y] = 31;
         }
 
         private void CreateGoalTile(int X, int Y)
         {
-            if (!MapManager.GoalPlaced)
+            if (!EditorMapManager.GoalPlaced)
             {
-                MapManager.SelectedLayer[X, Y] = 17;
-                MapManager.GoalPlaced = true;
+                EditorMapManager.SelectedLayer[X, Y] = 17;
+                EditorMapManager.GoalPlaced = true;
             }
                 
         }
 
         private void CreatePlayerSpawn(int X, int Y)
         {
-            if (!MapManager.PlayerPlaced)
+            if (!EditorMapManager.PlayerPlaced)
             {
-                MapManager.SelectedLayer[X, Y] = 29;
-                MapManager.PlayerPlaced = true;
+                EditorMapManager.SelectedLayer[X, Y] = 29;
+                EditorMapManager.PlayerPlaced = true;
             }
                 
         }
 
         private void CreateEnemy(int X, int Y)
         {
-            MapManager.SelectedLayer[X, Y] = 30;
+            EditorMapManager.SelectedLayer[X, Y] = 30;
         }
     }
 }

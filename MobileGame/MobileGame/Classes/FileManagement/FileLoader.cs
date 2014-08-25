@@ -9,6 +9,7 @@ using System.Xml.Serialization;
 using Microsoft.Xna.Framework.Storage;
 
 using MobileGame.Managers;
+using MobileGame.LevelEditor;
 
 namespace MobileGame.FileManagement
 {
@@ -93,6 +94,115 @@ namespace MobileGame.FileManagement
                 GameManager.Player = null;
                 stream.Close();
             }
+        }
+
+        public static void LoadLevel(string MapName)
+        {
+            string LoadPath = LevelDirectoryPath + @"\" + MapName + ".xml";
+
+            FileStream stream = File.Open(LoadPath, FileMode.Open);
+
+            try
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(LevelData));
+                LoadedLevel = (LevelData)serializer.Deserialize(stream);
+            }
+            finally
+            {
+                stream.Close();
+            }
+
+            EditorMapManager.BuildMap();
+        }
+
+        public static void SaveLevel(string LevelName)
+        {
+            int MapHeight = EditorMapManager.mapHeight;
+            int MapWidth = EditorMapManager.mapWidth;
+
+            byte[,] CollisionLayer = EditorMapManager.CollisionLayer;
+            byte[,] BackgroundLayer = EditorMapManager.BackgroundLayer;
+            byte[,] PlatformLayer = EditorMapManager.PlatformLayer;
+            byte[,] SpecialsLayer = EditorMapManager.SpecialsLayer;
+
+
+            //First we read the GameData file so that we get access to the MapList
+            //We will use that to propperly name the new map
+            string GameDataPath = SaveFilesDirectoryPath + @"\GameData.xml";
+            GameData TempGameData;
+            FileStream GameDataStream = File.Open(GameDataPath, FileMode.Open);
+
+            try
+            {
+                XmlSerializer GameDataSerializer = new XmlSerializer(typeof(GameData));
+                TempGameData = (GameData)GameDataSerializer.Deserialize(GameDataStream);
+            }
+            finally
+            {
+                GameDataStream.Close();
+            }
+
+            //Now we make sure that we have a Levels directory
+            System.IO.Directory.CreateDirectory(LevelDirectoryPath);
+
+            //Get all the necessary LevelData
+            LevelData LevelData = new LevelData();
+            LevelData.TileSize = 20;
+            LevelData.MapHeight = MapHeight;
+            LevelData.MapWidth = MapWidth;
+            LevelData.CollisionLayer = ConvertToJaggedArray(CollisionLayer);
+            LevelData.BackgroundLayer = ConvertToJaggedArray(BackgroundLayer);
+            LevelData.PlatformLayer = ConvertToJaggedArray(PlatformLayer);
+            LevelData.SpecialsLayer = ConvertToJaggedArray(SpecialsLayer);
+
+            //And now its time to build the SavePath
+            //The new level we want to save should get number "MapList.Count + 1"
+            //So if the MapList is empty, that is we have no maps, 
+            //then the new map we save will get number "0 + 1 = 1"
+            //If there are 8 maps in the list then the new map will get number "8 + 1 = 9"
+            string savePath = LevelDirectoryPath + @"\" + LevelName + ".xml";
+            FileStream stream = File.Open(savePath, FileMode.Create);
+
+            try
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(LevelData));
+                serializer.Serialize(stream, LevelData);
+            }
+            finally
+            {
+                stream.Close();
+            }
+
+            //After we have saved the new level we need to update the GameData file (update the MapList)
+            TempGameData.MapList = gameData.MapList;
+            if (!TempGameData.MapList.Contains(LevelName))
+                TempGameData.MapList.Add(LevelName);
+
+            GameDataStream = File.Open(GameDataPath, FileMode.Create);
+
+            try
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(GameData));
+                serializer.Serialize(GameDataStream, TempGameData);
+            }
+            finally
+            {
+                GameDataStream.Close();
+            }
+
+            gameData = TempGameData;
+        }
+
+        public static void DeleteLevel(string MapName)
+        {
+            string GameDataPath = SaveFilesDirectoryPath + @"\GameData";
+
+            gameData.MapList.Remove(MapName);
+
+            UpdateGameData();
+
+            string MapPath = LevelDirectoryPath + @"\" + MapName;
+            File.Delete(MapPath);
         }
 
         public static void UpdateGameData()

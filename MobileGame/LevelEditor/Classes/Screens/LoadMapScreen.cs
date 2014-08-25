@@ -23,9 +23,7 @@ namespace LevelEditor.Screens
         private Texture2D TitleTexture;
         private Vector2 TitlePos;
 
-        private MapManager mapManager;
-
-        public LoadMapScreen(MapManager MapManager) : base("")
+        public LoadMapScreen() : base("")
         {
             LoadButton = new MenuButton(new LoadButtonStyle(ScreenManager.Game.Content));
             DeleteButton = new MenuButton(new DeleteButtonStyle(ScreenManager.Game.Content));
@@ -45,8 +43,6 @@ namespace LevelEditor.Screens
             MenuEntries.Add(SavedMapList);
 
             IsPopup = true;
-
-            mapManager = MapManager;
         }
 
         public override void HandleInput(GameTime gameTime)

@@ -31,23 +31,23 @@ namespace LevelEditor.Tools
             if (KeyMouseReader.LeftMouseDown() && !pointOnePlaced)
             {
                 firstPoint = KeyMouseReader.GetMousePos();
-                firstPoint.X += MapManager.xOffset * MapManager.TileSize;
-                firstPoint.Y += MapManager.yOffset * MapManager.TileSize;
+                firstPoint.X += EditorMapManager.xOffset * EditorMapManager.TileSize;
+                firstPoint.Y += EditorMapManager.yOffset * EditorMapManager.TileSize;
                 pointOnePlaced = true;
             }
 
             if (KeyMouseReader.LeftMouseDown() && pointOnePlaced)
             {
                 secondPoint = KeyMouseReader.GetMousePos();
-                secondPoint.X += MapManager.xOffset * MapManager.TileSize;
-                secondPoint.Y += MapManager.yOffset * MapManager.TileSize;
+                secondPoint.X += EditorMapManager.xOffset * EditorMapManager.TileSize;
+                secondPoint.Y += EditorMapManager.yOffset * EditorMapManager.TileSize;
                 
             }
             else if (!KeyMouseReader.LeftMouseDown() && pointOnePlaced)
             {
                 secondPoint = KeyMouseReader.GetMousePos();
-                secondPoint.X += MapManager.xOffset * MapManager.TileSize;
-                secondPoint.Y += MapManager.yOffset * MapManager.TileSize;
+                secondPoint.X += EditorMapManager.xOffset * EditorMapManager.TileSize;
+                secondPoint.Y += EditorMapManager.yOffset * EditorMapManager.TileSize;
                 pointTwoPlaced = true;
             }
 
@@ -72,8 +72,8 @@ namespace LevelEditor.Tools
                     for (int y = topLeft.Y; y < bottomRight.Y; y++)
                     {
                         Texture2D Texture = TextureManager.SelectionTexture;
-                        Vector2 Pos = new Vector2((x - MapManager.xOffset) * MapManager.TileSize, (y - MapManager.yOffset) * MapManager.TileSize) + MapManager.Offset;
-                        Rectangle Source = new Rectangle((int)Pos.X, (int)Pos.Y, MapManager.TileSize, MapManager.TileSize);
+                        Vector2 Pos = new Vector2((x - EditorMapManager.xOffset) * EditorMapManager.TileSize, (y - EditorMapManager.yOffset) * EditorMapManager.TileSize) + EditorMapManager.Offset;
+                        Rectangle Source = new Rectangle((int)Pos.X, (int)Pos.Y, EditorMapManager.TileSize, EditorMapManager.TileSize);
                         Color color = Color.Red * 0.25f;
 
                         spriteBatch.Draw(Texture, Source, null, color, 0f, Vector2.Zero, SpriteEffects.None, 1f);
@@ -90,8 +90,8 @@ namespace LevelEditor.Tools
                     for (int y = topLeft.Y; y < bottomRight.Y; y++)
                     {
                         Texture2D Texture = TextureManager.SelectionTexture;
-                        Vector2 Pos = new Vector2((x - MapManager.xOffset) * MapManager.TileSize, (y - MapManager.yOffset) * MapManager.TileSize) + MapManager.Offset;
-                        Rectangle Source = new Rectangle((int)Pos.X, (int)Pos.Y, MapManager.TileSize, MapManager.TileSize);
+                        Vector2 Pos = new Vector2((x - EditorMapManager.xOffset) * EditorMapManager.TileSize, (y - EditorMapManager.yOffset) * EditorMapManager.TileSize) + EditorMapManager.Offset;
+                        Rectangle Source = new Rectangle((int)Pos.X, (int)Pos.Y, EditorMapManager.TileSize, EditorMapManager.TileSize);
                         Color color = Color.Red * 0.25f;
 
                         spriteBatch.Draw(Texture, Source, null, color, 0f, Vector2.Zero, SpriteEffects.None, 1f);

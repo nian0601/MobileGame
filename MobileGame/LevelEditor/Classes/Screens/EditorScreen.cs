@@ -20,7 +20,7 @@ namespace LevelEditor.Screens
 
         private List<MenuButton> ToolButtons;
 
-        private MapManager mapManager;
+        private EditorMapManager editorMapManager;
 
         public EditorScreen(): base("Editor Screen")
         {
@@ -85,11 +85,11 @@ namespace LevelEditor.Screens
             FileManagement.FileLoader.Initialize();
             ToolPositionsManager.LoadData();
 
-            if(mapManager == null)
-                mapManager = new MapManager(ScreenManager.Game.Content, ScreenManager.SpriteBatch);
+            if(editorMapManager == null)
+                editorMapManager = new EditorMapManager(ScreenManager.Game.Content, ScreenManager.SpriteBatch);
 
-            mapManager.Initialize();
-            MapManager.Offset = new Vector2(240, 22);
+            editorMapManager.Initialize();
+            EditorMapManager.Offset = new Vector2(240, 22);
 
             for (int i = 0; i < ToolButtons.Count; i++)
             {
@@ -101,21 +101,21 @@ namespace LevelEditor.Screens
         public override void HandleInput(GameTime gameTime)
         {
             KeyMouseReader.Update();
-            mapManager.Update();
+            editorMapManager.Update();
 
             if (SaveButton.LeftClick())
             {
                 ConfirmationPopUp ProccedToSaveScreenBox = new ConfirmationPopUp();
 
-                if (!MapManager.PlayerPlaced)
+                if (!EditorMapManager.PlayerPlaced)
                     ProccedToSaveScreenBox = new ConfirmationPopUp("You have not placed the Player");
-                else if (!MapManager.GoalPlaced)
+                else if (!EditorMapManager.GoalPlaced)
                     ProccedToSaveScreenBox = new ConfirmationPopUp("You have not place the Goal");
-                else if (!MapManager.HasSufficentCollisionFlags)
+                else if (!EditorMapManager.HasSufficentCollisionFlags)
                     ProccedToSaveScreenBox = new ConfirmationPopUp("There is no or very few collisionflags");
                 else
                 {
-                    ScreenManager.AddScreen(new SaveMapScreen(mapManager));
+                    ScreenManager.AddScreen(new SaveMapScreen());
                     return;
                 }
 
@@ -125,7 +125,7 @@ namespace LevelEditor.Screens
 
 
             else if (LoadButton.LeftClick())
-                ScreenManager.AddScreen(new LoadMapScreen(mapManager));
+                ScreenManager.AddScreen(new LoadMapScreen());
 
             else if (ExitButton.LeftClick())
                 ExitScreen();
@@ -140,11 +140,11 @@ namespace LevelEditor.Screens
             if (Game1.EditMode == 0)
             {
                 if (BGLayerButton.LeftClick())
-                    MapManager.SetSelectedLayer(0);
+                    EditorMapManager.SetSelectedLayer(0);
                 else if (MiddleLayerButton.LeftClick())
-                    MapManager.SetSelectedLayer(1);
+                    EditorMapManager.SetSelectedLayer(1);
                 else if (FGLayerButton.LeftClick())
-                    MapManager.SetSelectedLayer(2);
+                    EditorMapManager.SetSelectedLayer(2);
             }
 
             for (int i = 0; i < ToolButtons.Count; i++)
@@ -152,7 +152,7 @@ namespace LevelEditor.Screens
                 ToolButtons[i].Update(this, gameTime);
 
                 if (ToolButtons[i].LeftClick())
-                    MapManager.SetCursorTexture(i);
+                    EditorMapManager.SetCursorTexture(i);
             }
 
             base.HandleInput(gameTime);
@@ -245,7 +245,7 @@ namespace LevelEditor.Screens
             SpriteFont font = ScreenManager.Font;
 
 
-            mapManager.Draw();
+            editorMapManager.Draw();
 
 
             spriteBatch.Begin();
@@ -279,7 +279,7 @@ namespace LevelEditor.Screens
 
         private void ProccedToSaveScreenAccepted(object sender, EventArgs e)
         {
-            ScreenManager.AddScreen(new SaveMapScreen(mapManager));
+            ScreenManager.AddScreen(new SaveMapScreen());
         }
     }
 }

@@ -85,6 +85,17 @@ namespace MobileGame.Managers
             BuildLevel();
         }
 
+        public void Update()
+        {
+            int mouseX = KeyMouseReader.GetMousePos().X;
+            int mouseY = KeyMouseReader.GetMousePos().Y;
+
+            Vector2 MousePos = Camera.ScreenToWorldCoordinates(new Vector2(mouseX, mouseY));
+
+            if (KeyMouseReader.isKeyDown(Keys.LeftControl) && KeyMouseReader.KeyClick(Keys.L))
+                LightingManager.AddBasicLight((int)MousePos.X, (int)MousePos.Y, 400, 400, Color.White * 0.5f);
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
             for (int x = 0; x < mapXTiles; x++)
@@ -127,6 +138,90 @@ namespace MobileGame.Managers
             }
         }
 
+        public void DrawBackground(SpriteBatch spriteBatch)
+        {
+            for (int x = 0; x < mapXTiles; x++)
+            {
+                for (int y = 0; y < mapYTiles; y++)
+                {
+                    Point pixelIndex = ConvertIndexToPixels(x, y);
+                    Color Color = Color.White;
+
+                    if (Game1.Debugging)
+                    {
+                        if (collisionLayer[x, y] == 1)
+                            Color = Color.PaleVioletRed;
+                    }
+
+                    Vector2 Pos = new Vector2(x * tileSize, y * tileSize);
+                    Texture2D Texture;
+
+                    byte value = backgroundLayer[x, y];
+                    if (value != 255)
+                    {
+                        Texture = TextureManager.GameTextures[value];
+                        spriteBatch.Draw(Texture, Pos, null, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
+                    }
+                }
+            }
+        }
+
+        public void DrawMiddle(SpriteBatch spriteBatch)
+        {
+            for (int x = 0; x < mapXTiles; x++)
+            {
+                for (int y = 0; y < mapYTiles; y++)
+                {
+                    Point pixelIndex = ConvertIndexToPixels(x, y);
+                    Color Color = Color.White;
+
+                    if (Game1.Debugging)
+                    {
+                        if (collisionLayer[x, y] == 1)
+                            Color = Color.PaleVioletRed;
+                    }
+
+                    Vector2 Pos = new Vector2(x * tileSize, y * tileSize);
+                    Texture2D Texture;
+
+                    byte value = platformLayer[x, y];
+                    if (value != 255)
+                    {
+                        Texture = TextureManager.GameTextures[value];
+                        spriteBatch.Draw(Texture, Pos, null, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
+                    }
+                }
+            }
+        }
+
+        public void DrawForeground(SpriteBatch spriteBatch)
+        {
+            for (int x = 0; x < mapXTiles; x++)
+            {
+                for (int y = 0; y < mapYTiles; y++)
+                {
+                    Point pixelIndex = ConvertIndexToPixels(x, y);
+                    Color Color = Color.White;
+
+                    if (Game1.Debugging)
+                    {
+                        if (collisionLayer[x, y] == 1)
+                            Color = Color.PaleVioletRed;
+                    }
+
+                    Vector2 Pos = new Vector2(x * tileSize, y * tileSize);
+                    Texture2D Texture;
+
+                    byte value = specialsLayer[x, y];
+                    if (value != 255)
+                    {
+                        Texture = TextureManager.GameTextures[value];
+                        spriteBatch.Draw(Texture, Pos, null, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f);
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Use this to generate rectangles for all collisionflags within a certain range of a point in the game
         /// </summary>
@@ -144,7 +239,7 @@ namespace MobileGame.Managers
             List<Rectangle> RectList = new List<Rectangle>();
 
             //Convert the given x and y values into a vector for convinence
-            Vector2 originPoint = new Vector2(x, y);
+            Point originPoint = new Point(x, y);
             //Convert the pixelposition into indexposition
             Vector2 index = ConvertPixelsToIndex(originPoint);
 
@@ -199,7 +294,7 @@ namespace MobileGame.Managers
                         specialBlockList.Add(temp);
                         backgroundLayer[x, y] = backgroundValue;
                         GoalPos = new Vector2(x * tileSize, y * tileSize);
-                        LightingManager.AddLight(x * tileSize, y * tileSize, 400, 400, Color.White * 0.75f);
+                        LightingManager.AddBasicLight(x * tileSize, y * tileSize, 400, 400, Color.White * 0.75f);
                     }
                     else if (backgroundValue == 29)
                     {
@@ -242,7 +337,7 @@ namespace MobileGame.Managers
                         specialBlockList.Add(temp);
                         platformLayer[x, y] = platformValue;
                         GoalPos = new Vector2(x * tileSize, y * tileSize);
-                        LightingManager.AddLight(x * tileSize, y * tileSize, 400, 400, Color.White * 0.75f);
+                        LightingManager.AddBasicLight(x * tileSize, y * tileSize, 400, 400, Color.White * 0.75f);
                     }
                     else if (platformValue == 29)
                     {
@@ -260,7 +355,7 @@ namespace MobileGame.Managers
 
                     if (platformValue != 255 && platformValue != 15)
                     {
-                        LightingManager.AddLight(x * TileSize, y * TileSize, tileSize * 3, tileSize * 3, Color.White * 0.5f);
+                        LightingManager.AddBasicLight(x * TileSize, y * TileSize, tileSize * 3, tileSize * 3, Color.White * 0.5f);
                     }
 
                     #endregion
@@ -283,7 +378,7 @@ namespace MobileGame.Managers
                         specialBlockList.Add(temp);
                         specialsLayer[x, y] = specialsValue;
                         GoalPos = new Vector2(x * tileSize, y * tileSize);
-                        LightingManager.AddLight(x * tileSize, y * tileSize, 400, 400, Color.White * 0.75f);
+                        LightingManager.AddBasicLight(x * tileSize, y * tileSize, 400, 400, Color.White * 0.75f);
                     }
                     else if (specialsValue == 29)
                     {
@@ -319,7 +414,7 @@ namespace MobileGame.Managers
         /// <summary>
         /// A simple helperfunction that takes an vector (pixelpos) and converts it into an index
         /// </summary>
-        public static Vector2 ConvertPixelsToIndex(Vector2 pos)
+        public static Vector2 ConvertPixelsToIndex(Point pos)
         {
             int x = (int)pos.X / tileSize;
             int y = (int)pos.Y / tileSize;

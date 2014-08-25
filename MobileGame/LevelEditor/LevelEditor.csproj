@@ -58,7 +58,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Classes\Screens\EditorScreen.cs" />
-    <Compile Include="Classes\Tile.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">

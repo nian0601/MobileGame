@@ -10,8 +10,7 @@ using GUI_System.GUIObjects;
 
 using MobileGame.FileManagement;
 using MobileGame.Managers;
-
-using LevelEditor.Screens;
+using MobileGame.LevelEditor;
 
 namespace MobileGame.Screens
 {
@@ -33,13 +32,9 @@ namespace MobileGame.Screens
 
             TitleTexture = ScreenManager.Game.Content.Load<Texture2D>("GUI Textures/MainMenu/MainMenuTitle");
 
+            TextureManager.LoadContents(ScreenManager.Game.Content);
             FileLoader.Initialize();
-            LightingManager.Initialize(FileLoader.LoadedLevelMapWidth * FileLoader.LoadedLevelTileSize, FileLoader.LoadedLevelMapHeight * FileLoader.LoadedLevelTileSize);
-            LightingManager.LightingTarget = new RenderTarget2D(ScreenManager.Game.GraphicsDevice, FileLoader.LoadedLevelMapWidth * FileLoader.LoadedLevelTileSize, FileLoader.LoadedLevelMapHeight * FileLoader.LoadedLevelTileSize);
-            RenderTarget2D MainTarget = new RenderTarget2D(ScreenManager.Game.GraphicsDevice, FileLoader.LoadedLevelMapWidth * FileLoader.LoadedLevelTileSize, FileLoader.LoadedLevelMapHeight * FileLoader.LoadedLevelTileSize);
-            RenderTarget2D ShaderTarget = new RenderTarget2D(ScreenManager.Game.GraphicsDevice, FileLoader.LoadedLevelMapWidth * FileLoader.LoadedLevelTileSize, FileLoader.LoadedLevelMapHeight * FileLoader.LoadedLevelTileSize);
-            Game1.MainTarget = MainTarget;
-            Game1.ShaderTarget = ShaderTarget;
+            LightingManager.Initialize();
         }
 
         public override void Activate()
@@ -71,7 +66,7 @@ namespace MobileGame.Screens
             if (KeyMouseReader.KeyClick(Microsoft.Xna.Framework.Input.Keys.E))
             {
                 Game1.SetScreenSize(1100, 800);
-                ScreenManager.AddScreen(new EditorScreen());
+                LoadingScreen.Load(ScreenManager, true, new EditorScreen());
             }
                 
 

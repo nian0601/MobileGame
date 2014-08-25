@@ -36,10 +36,10 @@ namespace LevelEditor.Tools
 
         private void MakeCollidable(int X, int Y)
         {
-            if(MapManager.CollisionLayer[X, Y] != 1)
-                MapManager.NumCollisionFlags++;
+            if(EditorMapManager.CollisionLayer[X, Y] != 1)
+                EditorMapManager.NumCollisionFlags++;
 
-            MapManager.CollisionLayer[X, Y] = 1;
+            EditorMapManager.CollisionLayer[X, Y] = 1;
         }
 
         private void MakeSeveralCollidable(int startX, int startY, int endX, int endY)
@@ -48,20 +48,20 @@ namespace LevelEditor.Tools
             {
                 for (int y = startY; y < endY; y++)
                 {
-                    if (MapManager.CollisionLayer[x, y] != 1)
-                        MapManager.NumCollisionFlags++;
+                    if (EditorMapManager.CollisionLayer[x, y] != 1)
+                        EditorMapManager.NumCollisionFlags++;
 
-                    MapManager.CollisionLayer[x, y] = 1;
+                    EditorMapManager.CollisionLayer[x, y] = 1;
                 }
             }
         }
 
         private void MakeUnCollidable(int X, int Y)
         {
-            if (MapManager.CollisionLayer[X, Y] != 0)
-                MapManager.NumCollisionFlags--;
+            if (EditorMapManager.CollisionLayer[X, Y] != 0)
+                EditorMapManager.NumCollisionFlags--;
 
-            MapManager.CollisionLayer[X, Y] = 0;
+            EditorMapManager.CollisionLayer[X, Y] = 0;
         }
 
         private void MakeSeveralUnCollidable(int startX, int startY, int endX, int endY)
@@ -70,10 +70,10 @@ namespace LevelEditor.Tools
             {
                 for (int y = startY; y < endY; y++)
                 {
-                    if (MapManager.CollisionLayer[x, y] != 0)
-                        MapManager.NumCollisionFlags--;
+                    if (EditorMapManager.CollisionLayer[x, y] != 0)
+                        EditorMapManager.NumCollisionFlags--;
 
-                    MapManager.CollisionLayer[x, y] = 0;
+                    EditorMapManager.CollisionLayer[x, y] = 0;
                 }
             }
         }

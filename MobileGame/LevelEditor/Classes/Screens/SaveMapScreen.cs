@@ -19,9 +19,7 @@ namespace LevelEditor.Screens
         private MenuButton SaveButton, CancelButton;
         private TextInputField NameInput;
 
-        private MapManager mapManager;
-
-        public SaveMapScreen(MapManager MapManager) : base("")
+        public SaveMapScreen() : base("")
         {
             SaveButton = new MenuButton(new SaveButtonStyle(ScreenManager.Game.Content));
             CancelButton = new MenuButton(new CancelButtonStyle(ScreenManager.Game.Content));
@@ -32,8 +30,6 @@ namespace LevelEditor.Screens
             MenuEntries.Add(NameInput);
 
             IsPopup = true;
-
-            mapManager = MapManager;
         }
 
         public override void HandleInput(GameTime gameTime)

@@ -81,7 +81,7 @@ namespace LevelEditor.Tools
                     {
                         //CopiedArraySegment[xCounter, yCounter].Draw(spritebatch, x - MapManager.xOffset, y - MapManager.yOffset, MapManager.Offset);
 
-                        Vector2 Pos = new Vector2((x - MapManager.xOffset) * MapManager.TileSize, (y - MapManager.yOffset) * MapManager.TileSize) + MapManager.Offset;
+                        Vector2 Pos = new Vector2((x - EditorMapManager.xOffset) * EditorMapManager.TileSize, (y - EditorMapManager.yOffset) * EditorMapManager.TileSize) + EditorMapManager.Offset;
                         byte value = CopiedLayerSegment[xCounter, yCounter];
 
                         if (value != 255)
@@ -116,7 +116,7 @@ namespace LevelEditor.Tools
             {
                 for (int y = topLeft.Y; y < bottomRight.Y; y++)
                 {
-                    CopiedLayerSegment[xCounter, yCounter] = MapManager.SelectedLayer[x, y];
+                    CopiedLayerSegment[xCounter, yCounter] = EditorMapManager.SelectedLayer[x, y];
 
                     yCounter++;
                 }
@@ -141,7 +141,7 @@ namespace LevelEditor.Tools
                 {
                     if (IsXInsideArray(x) && IsYInsideArray(y))
                     {
-                        MapManager.SelectedLayer[x, y] = CopiedLayerSegment[xCounter, yCounter];
+                        EditorMapManager.SelectedLayer[x, y] = CopiedLayerSegment[xCounter, yCounter];
                     }
                     
                     yCounter++;
@@ -155,7 +155,7 @@ namespace LevelEditor.Tools
 
         private bool IsXInsideArray(int X)
         {
-            if (X < MapManager.SelectedLayer.GetLowerBound(0) || X > MapManager.SelectedLayer.GetUpperBound(0))
+            if (X < EditorMapManager.SelectedLayer.GetLowerBound(0) || X > EditorMapManager.SelectedLayer.GetUpperBound(0))
                 return false;
 
             return true;
@@ -163,7 +163,7 @@ namespace LevelEditor.Tools
 
         private bool IsYInsideArray(int Y)
         {
-            if (Y < MapManager.SelectedLayer.GetLowerBound(1) || Y > MapManager.SelectedLayer.GetUpperBound(1))
+            if (Y < EditorMapManager.SelectedLayer.GetLowerBound(1) || Y > EditorMapManager.SelectedLayer.GetUpperBound(1))
                 return false;
 
             return true;

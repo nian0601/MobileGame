@@ -118,7 +118,6 @@ namespace MobileGame
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             
-
             screenManager.Draw(gameTime);
 
             base.Draw(gameTime);
