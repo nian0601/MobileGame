@@ -37,7 +37,8 @@ namespace MobileGame
         public static RenderTarget2D ShaderTarget;
         public static RenderTarget2D MainTarget;
 
-        public Game1(): base()
+        public Game1()
+            : base()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -48,7 +49,7 @@ namespace MobileGame
 
             graphics.PreferredBackBufferWidth = 800;
             graphics.PreferredBackBufferHeight = 600;
-            
+
             graphics.ApplyChanges();
 
             ScreenWidth = 800;
@@ -67,8 +68,6 @@ namespace MobileGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            LightingManager.GraphicsDevice = GraphicsDevice;
-            LightingManager.SpriteBatch = spriteBatch;
 
             screenManager = new ScreenManager(this);
             screenManager.SpriteBatch = spriteBatch;
@@ -87,7 +86,6 @@ namespace MobileGame
             var pp = GraphicsDevice.PresentationParameters;
             ShaderTarget = new RenderTarget2D(GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight);
             MainTarget = new RenderTarget2D(GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight);
-            LightingManager.LightingTarget = new RenderTarget2D(GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight);   
         }
 
         protected override void UnloadContent()
@@ -107,7 +105,7 @@ namespace MobileGame
                 Debugg2 = !Debugg2;
 
             screenManager.Update(gameTime);
-            
+
             //The game will break if i try to pring FPS here, do it in GameManager instead, yay
             //Console.WriteLine("FPS: " + (1000 / gameTime.ElapsedGameTime.Milliseconds));
 
@@ -117,7 +115,7 @@ namespace MobileGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            
+
             screenManager.Draw(gameTime);
 
             base.Draw(gameTime);
@@ -132,12 +130,6 @@ namespace MobileGame
 
             ScreenWidth = Width;
             ScreenHeight = Height;
-        }
-
-        public void SetRenderTargets(int Width, int Height)
-        {
-            ShaderTarget = new RenderTarget2D(GraphicsDevice, Width, Height);
-            MainTarget = new RenderTarget2D(GraphicsDevice, Width, Height);
         }
     }
 }

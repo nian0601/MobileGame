@@ -109,7 +109,6 @@ namespace MobileGame.LevelEditor.Tools
                 EditorMapManager.SelectedLayer[X, Y] = 17;
                 EditorMapManager.GoalPlaced = true;
             }
-
         }
 
         private void CreatePlayerSpawn(int X, int Y)

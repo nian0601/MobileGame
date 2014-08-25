@@ -117,8 +117,8 @@ namespace MobileGame.FileManagement
 
         public static void SaveLevel(string LevelName)
         {
-            int MapHeight = EditorMapManager.mapHeight;
-            int MapWidth = EditorMapManager.mapWidth;
+            int MapHeight = EditorMapManager.NumYTiles;
+            int MapWidth = EditorMapManager.NumXTiles;
 
             byte[,] CollisionLayer = EditorMapManager.CollisionLayer;
             byte[,] BackgroundLayer = EditorMapManager.BackgroundLayer;

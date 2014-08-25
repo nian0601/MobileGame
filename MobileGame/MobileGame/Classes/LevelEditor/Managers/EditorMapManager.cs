@@ -24,22 +24,16 @@ namespace MobileGame.LevelEditor
             set { offset = value; }
         }
 
+        //How many tiles the entire editor cover
+        private static int xTiles, yTiles;
+
         //The number of tiles high the map is
-        public static int mapHeight { get { return mapYTiles; } }
+        public static int NumYTiles { get { return yTiles; } }
         //The number of tiles wide the map is
-        public static int mapWidth { get { return mapXTiles; } }
+        public static int NumXTiles { get { return xTiles; } }
         //The size of one tile (since they are rectangular, we only need the size of one side)
         public static int TileSize;
 
-        //How many tiles the entire editor cover
-        private int editorXTiles, editorYTiles;
-        //How many tiles that is in the ENTIER map, even the ones not being displayed
-        private static int mapXTiles, mapYTiles;
-        //Used to only loop through the tiles that are currently being displayed in the editor
-        private int xDisplayMin, xDisplayMax;
-        private int yDisplayMin, yDisplayMax;
-        //The amount of tiles we should offset when we have moved the map
-        public static int xOffset, yOffset;
         //The TILE that the mouse is currently hoovering, different from the mouse's pixelpos
         private int mouseX, mouseY;
 
@@ -59,6 +53,7 @@ namespace MobileGame.LevelEditor
 
         private Texture2D GridTexture;
         private Texture2D Background;
+        private Texture2D GridCell;
         private static Texture2D CursorTexture;
         #endregion
 
@@ -123,27 +118,15 @@ namespace MobileGame.LevelEditor
 
             TileSize = 40;
 
-            mapXTiles = 100;
-            mapYTiles = 60;
+            xTiles = 80;
+            yTiles = 50;
 
-            collisionLayer = new byte[mapXTiles, mapYTiles];
-            backgroundLayer = new byte[mapXTiles, mapYTiles];
-            platformLayer = new byte[mapXTiles, mapYTiles];
-            specialsLayer = new byte[mapXTiles, mapYTiles];
+            collisionLayer = new byte[xTiles, yTiles];
+            backgroundLayer = new byte[xTiles, yTiles];
+            platformLayer = new byte[xTiles, yTiles];
+            specialsLayer = new byte[xTiles, yTiles];
             selectedLayer = backgroundLayer;
             selectedLayerNum = 0;
-
-            editorXTiles = 40;
-            editorYTiles = 36;
-
-            xDisplayMin = 0;
-            xDisplayMax = mapXTiles;
-
-            yDisplayMin = 0;
-            yDisplayMax = mapYTiles;
-
-            xOffset = 0;
-            yOffset = 0;
 
             SelectedTileValue = 0;
 
@@ -157,13 +140,14 @@ namespace MobileGame.LevelEditor
             {
                 GridTexture = Content.Load<Texture2D>("Editor/GridTexture");
                 Background = Content.Load<Texture2D>("Editor/Background");
+                GridCell = Content.Load<Texture2D>("Editor/GridCell");
                 CursorTexture = TextureManager.GameTextures[SelectedTileValue];
 
                 TileSize = TextureManager.TileSize;
                 ResetMap();
 
                 ToolManager.Initialize();
-                Initialized = true;
+                Initialized = true; 
             }
         }
 
@@ -174,40 +158,7 @@ namespace MobileGame.LevelEditor
                 mouseX = ConvertPixelsToIndex(KeyMouseReader.GetMousePos()).X;
                 mouseY = ConvertPixelsToIndex(KeyMouseReader.GetMousePos()).Y;
 
-                mouseX += xOffset;
-                mouseY += yOffset;
-
-                #region Support for dragging map around with space+mouse
-                if (KeyMouseReader.isKeyDown(Keys.Space))
-                {
-                    mousePos = KeyMouseReader.GetMousePos();
-
-                    if (KeyMouseReader.LeftMouseDown())
-                    {
-                        if (mousePos.X - prevMousePos.X <= -10)
-                        {
-                            MoveMapHorizontaly(2);
-                        }
-                        else if (mousePos.X - prevMousePos.X >= 10)
-                        {
-                            MoveMapHorizontaly(-2);
-                        }
-
-                        if (mousePos.Y - prevMousePos.Y <= -10)
-                        {
-                            MoveMapVerticaly(2);
-                        }
-                        else if (mousePos.Y - prevMousePos.Y >= 10)
-                        {
-                            MoveMapVerticaly(-2);
-                        }
-                    }
-
-                    prevMousePos = mousePos;
-                }
-                #endregion
-                else
-                    ToolManager.Update();
+                ToolManager.Update();
             }
 
             if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.isKeyDown(Keys.LeftAlt) && KeyMouseReader.KeyClick(Keys.R))
@@ -215,80 +166,146 @@ namespace MobileGame.LevelEditor
             else if (KeyMouseReader.KeyClick(Keys.R))
                 ResetMap();
 
-            if (KeyMouseReader.isKeyDown(Keys.Up))
-                MoveMapVerticaly(-1);
-            if (KeyMouseReader.isKeyDown(Keys.Down))
-                MoveMapVerticaly(1);
-            if (KeyMouseReader.isKeyDown(Keys.Left))
-                MoveMapHorizontaly(-1);
-            if (KeyMouseReader.isKeyDown(Keys.Right))
-                MoveMapHorizontaly(1);
+            if(KeyMouseReader.KeyClick(Keys.Q))
+                LightingManager.AmbientLights.Add(new Lights.AmbientLight(0, 0, xTiles * 20, yTiles * 20, Color.White * 0.5f));
         }
 
         public void Draw()
         {
-            Spritebatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
-            Spritebatch.Draw(TextureManager.FilledSquare, new Rectangle((int)Offset.X, (int)Offset.Y, editorXTiles * TileSize, editorYTiles * TileSize), Color.CornflowerBlue);
+            
+            //Spritebatch.Draw(TextureManager.FilledSquare, new Rectangle((int)Offset.X, (int)Offset.Y, editorXTiles * TileSize, editorYTiles * TileSize), Color.CornflowerBlue);
 
             //Background
-            for (int x = xDisplayMin; x < xDisplayMax; x++)
+            if (EditorScreen.EditMode == 4)
             {
-                for (int y = yDisplayMin; y < yDisplayMax; y++)
+                LightingManager.BeginDrawMainTarget();
+
+                Spritebatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
+
+                for (int x = 0; x < xTiles; x++)
                 {
-                    Vector2 Pos = new Vector2((x - xOffset) * TileSize, (y - yOffset) * TileSize) + Offset;
-                    Texture2D Texture;
-
-                    #region Background
-                    byte value = backgroundLayer[x, y];
-
-                    if (value != 255)
+                    for (int y = 0; y < yTiles; y++)
                     {
-                        Texture = TextureManager.GameTextures[value];
+                        Vector2 Pos = new Vector2(x * TileSize, y * TileSize);
+                        Texture2D Texture;
 
-                        Spritebatch.Draw(Texture, Pos, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
+                        #region Background
+                        byte value = backgroundLayer[x, y];
+
+                        if (value != 255)
+                        {
+                            Texture = TextureManager.GameTextures[value];
+
+                            Spritebatch.Draw(Texture, Pos, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
+                        }
+                        #endregion
+
+                        #region Platforms
+                        value = platformLayer[x, y];
+
+                        if (value != 255)
+                        {
+                            Texture = TextureManager.GameTextures[value];
+                            Color color = Color.White;
+                            if (selectedLayerNum == 0)
+                                color *= 0.5f;
+
+                            Spritebatch.Draw(Texture, Pos, null, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
+                        }
+                        #endregion
+
+                        #region Specials
+                        value = specialsLayer[x, y];
+
+                        if (value != 255)
+                        {
+                            Texture = TextureManager.GameTextures[value];
+                            Color color = Color.White;
+
+                            if (selectedLayerNum == 0)
+                                color *= 0.25f;
+                            else if (selectedLayerNum == 1)
+                                color *= 0.5f;
+
+                            Spritebatch.Draw(Texture, Pos, null, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f);
+                        }
+                        #endregion
                     }
-                    #endregion
-
-                    #region Platforms
-                    value = platformLayer[x, y];
-
-                    if (value != 255)
-                    {
-                        Texture = TextureManager.GameTextures[value];
-                        Color color = Color.White;
-                        if (selectedLayerNum == 0)
-                            color *= 0.5f;
-
-                        Spritebatch.Draw(Texture, Pos, null, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
-                    }
-                    #endregion
-
-                    #region Specials
-                    value = specialsLayer[x, y];
-
-                    if (value != 255)
-                    {
-                        Texture = TextureManager.GameTextures[value];
-                        Color color = Color.White;
-
-                        if (selectedLayerNum == 0)
-                            color *= 0.25f;
-                        else if (selectedLayerNum == 1)
-                            color *= 0.5f;
-
-                        Spritebatch.Draw(Texture, Pos, null, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f);
-                    }
-                    #endregion
                 }
+
+                Spritebatch.End();
+
+                LightingManager.EndDrawingMainTarget();
+
+                LightingManager.DrawLitScreen();
             }
+            else
+            {
+                Spritebatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
+
+                for (int x = 0; x < xTiles; x++)
+                {
+                    for (int y = 0; y < yTiles; y++)
+                    {
+                        Vector2 Pos = new Vector2(x * TileSize, y * TileSize);
+                        Texture2D Texture;
+
+                        #region Background
+                        byte value = backgroundLayer[x, y];
+
+                        if (value != 255)
+                        {
+                            Texture = TextureManager.GameTextures[value];
+
+                            Spritebatch.Draw(Texture, Pos, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
+                        }
+                        #endregion
+
+                        #region Platforms
+                        value = platformLayer[x, y];
+
+                        if (value != 255)
+                        {
+                            Texture = TextureManager.GameTextures[value];
+                            Color color = Color.White;
+                            if (selectedLayerNum == 0)
+                                color *= 0.5f;
+
+                            Spritebatch.Draw(Texture, Pos, null, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
+                        }
+                        #endregion
+
+                        #region Specials
+                        value = specialsLayer[x, y];
+
+                        if (value != 255)
+                        {
+                            Texture = TextureManager.GameTextures[value];
+                            Color color = Color.White;
+
+                            if (selectedLayerNum == 0)
+                                color *= 0.25f;
+                            else if (selectedLayerNum == 1)
+                                color *= 0.5f;
+
+                            Spritebatch.Draw(Texture, Pos, null, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f);
+                        }
+                        #endregion
+                    }
+                }
+
+                Spritebatch.End();
+            }
+
+            Spritebatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
 
             if (EditorScreen.EditMode == 1)
             {
-                for (int x = xDisplayMin; x < xDisplayMax; x++)
+                for (int x = 0; x < xTiles; x++)
                 {
-                    for (int y = yDisplayMin; y < yDisplayMax; y++)
+                    for (int y = 0; y < yTiles; y++)
                     {
-                        Vector2 Pos = new Vector2((x - xOffset) * TileSize, (y - yOffset) * TileSize) + Offset;
+                        Vector2 Pos = new Vector2(x * TileSize, y * TileSize);
                         Rectangle Source = new Rectangle((int)Pos.X, (int)Pos.Y, TileSize, TileSize);
                         Texture2D Texture = TextureManager.FilledSquare;
                         Color color;
@@ -308,11 +325,11 @@ namespace MobileGame.LevelEditor
             }
             else if (EditorScreen.EditMode == 2)
             {
-                for (int x = xDisplayMin; x < xDisplayMax; x++)
+                for (int x = 0; x < xTiles; x++)
                 {
-                    for (int y = yDisplayMin; y < yDisplayMax; y++)
+                    for (int y = 0; y < yTiles; y++)
                     {
-                        Vector2 Pos = new Vector2((x - xOffset) * TileSize, (y - yOffset) * TileSize) + Offset;
+                        Vector2 Pos = new Vector2(x * TileSize, y * TileSize);
                         Rectangle Source = new Rectangle((int)Pos.X, (int)Pos.Y, TileSize, TileSize);
                         Texture2D Texture = TextureManager.FilledSquare;
                         Color color;
@@ -341,7 +358,7 @@ namespace MobileGame.LevelEditor
             Spritebatch.Draw(GridTexture, offset, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
 
             if (EditorScreen.EditMode == 0)
-                Spritebatch.Draw(CursorTexture, new Vector2((mouseX - xOffset) * TileSize + Offset.X, (mouseY - yOffset) * TileSize + Offset.Y), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
+                Spritebatch.Draw(CursorTexture, new Vector2((mouseX * TileSize) + Offset.X, (mouseY * TileSize) + Offset.Y), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
 
             ToolManager.Draw(Spritebatch);
 
@@ -398,18 +415,18 @@ namespace MobileGame.LevelEditor
         private static void ResetMap()
         {
             //Collision-Layer
-            for (int x = 0; x < mapXTiles; x++)
+            for (int x = 0; x < xTiles; x++)
             {
-                for (int y = 0; y < mapYTiles; y++)
+                for (int y = 0; y < yTiles; y++)
                 {
                     collisionLayer[x, y] = 0;
                 }
             }
 
             //Rest of layuers
-            for (int x = 0; x < mapXTiles; x++)
+            for (int x = 0; x < xTiles; x++)
             {
-                for (int y = 0; y < mapYTiles; y++)
+                for (int y = 0; y < yTiles; y++)
                 {
                     backgroundLayer[x, y] = 255;
                     platformLayer[x, y] = 255;
@@ -427,8 +444,8 @@ namespace MobileGame.LevelEditor
 
             tempRect.X = (int)Offset.X;
             tempRect.Y = (int)Offset.Y;
-            tempRect.Width = editorXTiles * TileSize;
-            tempRect.Height = editorYTiles * TileSize;
+            tempRect.Width = xTiles * TileSize;
+            tempRect.Height = yTiles * TileSize;
 
             return tempRect;
         }
@@ -439,61 +456,6 @@ namespace MobileGame.LevelEditor
             int y = (int)(pos.Y - offset.Y) / TileSize;
 
             return new Point(x, y);
-        }
-
-        private void MoveMapHorizontaly(int MoveAmount)
-        {
-            xDisplayMin += MoveAmount;
-            xDisplayMax += MoveAmount;
-            //xOffset += MoveAmount;
-            //All this offset shit is used to make sure we add tiles in the correct places when the map has been moved
-            int maxXOffset = mapXTiles - editorXTiles;
-            if (xOffset + MoveAmount < 0)
-                xOffset = 0;
-            else if (xOffset + MoveAmount > maxXOffset)
-                xOffset = maxXOffset;
-            else
-                xOffset += MoveAmount;
-            //We also want to keep the number of displayed tiles the same
-            //So make sure we stop at the right times
-            if (xDisplayMin > mapXTiles - editorXTiles)
-                xDisplayMin = mapXTiles - editorXTiles;
-            //We never want to display tiles that dont exist
-            //So make sure the minDisplay never goes below 0
-            else if (xDisplayMin < 0)
-                xDisplayMin = 0;
-
-            if (xDisplayMax < editorXTiles)
-                xDisplayMax = editorXTiles;
-            //Also make sure that maxDisplay never is greater
-            //then the width of the map
-            else if (xDisplayMax > mapXTiles)
-                xDisplayMax = mapXTiles;
-        }
-
-        private void MoveMapVerticaly(int MoveAmount)
-        {
-            yDisplayMin += MoveAmount;
-            yDisplayMax += MoveAmount;
-            yOffset += MoveAmount;
-            //All this offset shit is used to make sure we add tiles in the correct places when the map has been moved
-            int maxYOffset = mapYTiles - editorYTiles;
-            if (yOffset < 0)
-                yOffset = 0;
-            else if (yOffset > maxYOffset)
-                yOffset = maxYOffset;
-
-            if (yDisplayMin < 0)
-                yDisplayMin = 0;
-
-            if (yDisplayMax > mapYTiles)
-                yDisplayMax = mapYTiles;
-
-            if (yDisplayMin > mapYTiles - editorYTiles)
-                yDisplayMin = mapYTiles - editorYTiles;
-
-            if (yDisplayMax < editorYTiles)
-                yDisplayMax = editorYTiles;
         }
     }
 }

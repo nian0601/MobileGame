@@ -10,7 +10,10 @@ namespace MobileGame.Lights
 {
     abstract class ILight
     {
-        protected Rectangle Rect;
+        public Vector2 Position;
+        public int Width;
+        public int Height;
+
         protected Texture2D Texture;
         protected Color Color;
         abstract public void Draw(SpriteBatch spriteBatch);

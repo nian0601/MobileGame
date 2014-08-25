@@ -34,13 +34,13 @@ namespace MobileGame.Screens
 
             TextureManager.LoadContents(ScreenManager.Game.Content);
             FileLoader.Initialize();
-            LightingManager.Initialize();
+            LightingManager.Initialize(ScreenManager.Game.GraphicsDevice);
+            LightingManager.LoadContent(ScreenManager.Game.Content);
         }
 
         public override void Activate()
         {
-            Game1.SetScreenSize(800, 600);
-            
+            //Game1.SetScreenSize(800, 600);
             base.Activate();
         }
 
@@ -49,7 +49,10 @@ namespace MobileGame.Screens
             //This will only ever be true when we leave the editor
             if (Game1.ScreenHeight != 600 && Game1.ScreenWidth != 800)
             {
-                Game1.SetScreenSize(800, 600);
+                Game1.graphics.PreferredBackBufferHeight = 600;
+                Game1.graphics.PreferredBackBufferWidth = 800;
+                Game1.graphics.IsFullScreen = false;
+                Game1.graphics.ApplyChanges();
                 FileLoader.Initialize();
             }
                 
@@ -65,7 +68,9 @@ namespace MobileGame.Screens
 
             if (KeyMouseReader.KeyClick(Microsoft.Xna.Framework.Input.Keys.E))
             {
-                Game1.SetScreenSize(1100, 800);
+                Game1.SetScreenSize(1920, 1080);
+                Game1.graphics.IsFullScreen = true;
+                Game1.graphics.ApplyChanges();
                 LoadingScreen.Load(ScreenManager, true, new EditorScreen());
             }
                 

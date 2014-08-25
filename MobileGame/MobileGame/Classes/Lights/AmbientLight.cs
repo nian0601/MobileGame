@@ -14,20 +14,25 @@ namespace MobileGame.Lights
     {
         public AmbientLight(int X, int Y, int Width, int Height, Color Color)
         {
-            this.Rect = new Rectangle(X, Y, Width, Height);
+            this.Position = new Vector2(X, Y);
+            this.Width = Width;
+            this.Height = Height;
             this.Color = Color;
             this.Texture = TextureManager.FilledSquare;
         }
 
         public AmbientLight(Color Color)
         {
-            this.Rect = new Rectangle(0, 0, MapManager.MapWidth * MapManager.TileSize, MapManager.MapHeight * MapManager.TileSize);
+            this.Position = new Vector2(0, 0);
+            this.Width = MapManager.MapWidth * MapManager.TileSize;
+            this.Height = MapManager.MapHeight * MapManager.TileSize;
             this.Color = Color;
             this.Texture = TextureManager.FilledSquare;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            Rectangle Rect = new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
             spriteBatch.Draw(Texture, Rect, Color);
         }
     }

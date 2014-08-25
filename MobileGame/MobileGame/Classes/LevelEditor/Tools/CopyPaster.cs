@@ -80,7 +80,7 @@ namespace MobileGame.LevelEditor.Tools
                 {
                     if (IsXInsideArray(x) && IsYInsideArray(y))
                     {
-                        Vector2 Pos = new Vector2((x - EditorMapManager.xOffset) * EditorMapManager.TileSize, (y - EditorMapManager.yOffset) * EditorMapManager.TileSize) + EditorMapManager.Offset;
+                        Vector2 Pos = new Vector2(x * EditorMapManager.TileSize, y * EditorMapManager.TileSize) + EditorMapManager.Offset;
                         byte value = CopiedLayerSegment[xCounter, yCounter];
 
                         if (value != 255)

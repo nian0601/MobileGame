@@ -11,6 +11,7 @@ using GUI_System.GUIObjects;
 
 using MobileGame.Managers;
 using MobileGame.Screens;
+using MobileGame.Lights;
 
 namespace MobileGame.LevelEditor
 {
@@ -95,7 +96,9 @@ namespace MobileGame.LevelEditor
                 EditorMapManager = new EditorMapManager(ScreenManager.Game.Content, ScreenManager.SpriteBatch);
 
             EditorMapManager.Initialize();
-            EditorMapManager.Offset = new Vector2(240, 22);
+            EditorMapManager.Offset = new Vector2(260, 45);
+            LightingManager.Initialize(ScreenManager.Game.GraphicsDevice, EditorMapManager.NumXTiles * EditorMapManager.TileSize, EditorMapManager.NumYTiles * EditorMapManager.TileSize, new Vector2(2640, 45));
+            LightingManager.DrawOffset = new Vector2(260, 45);
 
             for (int i = 0; i < ToolButtons.Count; i++)
             {
@@ -142,6 +145,9 @@ namespace MobileGame.LevelEditor
                 ChangeEditMode(1);
             else if (JumpLayerButton.LeftClick())
                 ChangeEditMode(2);
+
+            else if (KeyMouseReader.KeyClick(Microsoft.Xna.Framework.Input.Keys.D4))
+                ChangeEditMode(4);
 
             if (EditMode == 0)
             {

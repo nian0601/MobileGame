@@ -31,23 +31,30 @@ namespace MobileGame.LevelEditor.Tools
             if (KeyMouseReader.LeftMouseDown() && !pointOnePlaced)
             {
                 firstPoint = KeyMouseReader.GetMousePos();
-                firstPoint.X += EditorMapManager.xOffset * EditorMapManager.TileSize;
-                firstPoint.Y += EditorMapManager.yOffset * EditorMapManager.TileSize;
+                firstPoint.X *= EditorMapManager.TileSize;
+                firstPoint.X += (int)EditorMapManager.Offset.X;
+                firstPoint.Y *= EditorMapManager.TileSize;
+                firstPoint.Y += (int)EditorMapManager.Offset.Y;
+
                 pointOnePlaced = true;
             }
 
             if (KeyMouseReader.LeftMouseDown() && pointOnePlaced)
             {
                 secondPoint = KeyMouseReader.GetMousePos();
-                secondPoint.X += EditorMapManager.xOffset * EditorMapManager.TileSize;
-                secondPoint.Y += EditorMapManager.yOffset * EditorMapManager.TileSize;
+                secondPoint.X *= EditorMapManager.TileSize;
+                secondPoint.X += (int)EditorMapManager.Offset.X;
+                secondPoint.Y *= EditorMapManager.TileSize;
+                secondPoint.Y += (int)EditorMapManager.Offset.Y;
 
             }
             else if (!KeyMouseReader.LeftMouseDown() && pointOnePlaced)
             {
                 secondPoint = KeyMouseReader.GetMousePos();
-                secondPoint.X += EditorMapManager.xOffset * EditorMapManager.TileSize;
-                secondPoint.Y += EditorMapManager.yOffset * EditorMapManager.TileSize;
+                secondPoint.X *= EditorMapManager.TileSize;
+                secondPoint.X += (int)EditorMapManager.Offset.X;
+                secondPoint.Y *= EditorMapManager.TileSize;
+                secondPoint.Y += (int)EditorMapManager.Offset.Y;
                 pointTwoPlaced = true;
             }
 
@@ -72,7 +79,7 @@ namespace MobileGame.LevelEditor.Tools
                     for (int y = topLeft.Y; y < bottomRight.Y; y++)
                     {
                         Texture2D Texture = TextureManager.FilledSquare;
-                        Vector2 Pos = new Vector2((x - EditorMapManager.xOffset) * EditorMapManager.TileSize, (y - EditorMapManager.yOffset) * EditorMapManager.TileSize) + EditorMapManager.Offset;
+                        Vector2 Pos = new Vector2(x * EditorMapManager.TileSize, y * EditorMapManager.TileSize) + EditorMapManager.Offset;
                         Rectangle Source = new Rectangle((int)Pos.X, (int)Pos.Y, EditorMapManager.TileSize, EditorMapManager.TileSize);
                         Color color = Color.Red * 0.25f;
 
@@ -90,7 +97,7 @@ namespace MobileGame.LevelEditor.Tools
                     for (int y = topLeft.Y; y < bottomRight.Y; y++)
                     {
                         Texture2D Texture = TextureManager.FilledSquare;
-                        Vector2 Pos = new Vector2((x - EditorMapManager.xOffset) * EditorMapManager.TileSize, (y - EditorMapManager.yOffset) * EditorMapManager.TileSize) + EditorMapManager.Offset;
+                        Vector2 Pos = new Vector2(x * EditorMapManager.TileSize, y * EditorMapManager.TileSize) + EditorMapManager.Offset;
                         Rectangle Source = new Rectangle((int)Pos.X, (int)Pos.Y, EditorMapManager.TileSize, EditorMapManager.TileSize);
                         Color color = Color.Red * 0.25f;
 

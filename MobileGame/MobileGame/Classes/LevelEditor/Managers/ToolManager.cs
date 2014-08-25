@@ -46,11 +46,9 @@ namespace MobileGame.LevelEditor
 
         public static void Update()
         {
-            mouseX = ConvertPixelsToIndex(KeyMouseReader.GetMousePos()).X;
-            mouseY = ConvertPixelsToIndex(KeyMouseReader.GetMousePos()).Y;
-
-            mouseX += EditorMapManager.xOffset;
-            mouseY += EditorMapManager.yOffset;
+            Point Offset = new Point((int)EditorMapManager.Offset.X, (int)EditorMapManager.Offset.Y);
+            mouseX = ConvertPixelsToIndex(KeyMouseReader.GetMousePos() + Offset).X;
+            mouseY = ConvertPixelsToIndex(KeyMouseReader.GetMousePos() + Offset).Y;
 
             if (KeyMouseReader.isKeyDown(Keys.LeftAlt) && KeyMouseReader.LeftClick())
             {

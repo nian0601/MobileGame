@@ -35,8 +35,6 @@ namespace MobileGame.Screens
             if (content == null)
                 content = new ContentManager(ScreenManager.Game.Services, "Content");
 
-            
-
             if(gameManager == null)
                 gameManager = new GameManager();
 
