@@ -276,11 +276,11 @@ namespace MobileGame.CameraManagement
                 //Draw debugtextures for all focuspoints
                 foreach (IFocusable Object in allFocusPoints)
                 {
-                    Vector2 InterestPos = new Vector2(Object.Position.X + Object.InterestRadius/2, Object.Position.Y - Object.InterestRadius);
-                    Vector2 ControlPos = new Vector2(Object.Position.X + Object.ControlRadius/2, Object.Position.Y - Object.ControlRadius);
+                    Vector2 InterestPos = new Vector2(Object.Position.X + Object.InterestRadius/2 - Object.Width, Object.Position.Y - Object.InterestRadius - Object.Height);
+                    Vector2 ControlPos = new Vector2(Object.Position.X + Object.ControlRadius/2 - Object.Width, Object.Position.Y - Object.ControlRadius - Object.Height);
 
-                    sb.Draw(Object.InterestCircle, InterestPos, null, Color.Pink, 1f, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
-                    sb.Draw(Object.ControlCircle, ControlPos, null, Color.Black, 1f, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
+                    sb.Draw(Object.InterestCircle, InterestPos, null, Color.Pink, 1f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
+                    sb.Draw(Object.ControlCircle, ControlPos, null, Color.Black, 1f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
 
                 }
 
@@ -293,7 +293,7 @@ namespace MobileGame.CameraManagement
                 sb.Draw(filledCircle, cameraPos, null, Color.Green, 1f, Vector2.Zero, SpriteEffects.None, 1f);
 
                 Vector2 defPos = new Vector2(defaultFocus.Position.X + defaultFocus.ControlRadius / 2, defaultFocus.Position.Y -defaultFocus.ControlRadius);
-                sb.Draw(defaultFocus.ControlCircle, defPos, null, Color.Blue, 1f, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
+                sb.Draw(defaultFocus.ControlCircle, defPos, null, Color.Blue, 1f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
             }  
         }
 

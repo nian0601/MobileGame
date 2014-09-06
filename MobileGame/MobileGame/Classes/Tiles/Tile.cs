@@ -54,6 +54,9 @@ namespace MobileGame.Tiles
             get { return pixelPos; }
         }
 
+        public int Width { get { return tileSize; } }
+        public int Height { get { return tileSize; } }
+
         public int InterestRadius
         {
             get { return interestRadius; }

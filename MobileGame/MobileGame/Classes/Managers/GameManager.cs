@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework.Input;
 using MobileGame.FileManagement;
 using MobileGame.CameraManagement;
 using MobileGame.Units;
-using MobileGame.LightingSystem;
 using MobileGame.Lights;
 
 using GUI_System.GameStateManagement;
@@ -25,7 +24,7 @@ namespace MobileGame.Managers
         private static bool gameWon, gameLost;
 
         private List<AmbientLight> ambientLightHandles;
-        private List<BasicLight> basicLightHandles;
+        private List<PointLight> spotLightHandles;
 
         public GameManager(){}
 
@@ -49,13 +48,14 @@ namespace MobileGame.Managers
             Camera.Limits = new Rectangle(0, 0, MapManager.MapWidth, MapManager.MapHeight);
 
             ambientLightHandles = new List<AmbientLight>();
-            basicLightHandles = new List<BasicLight>();
+            spotLightHandles = new List<PointLight>();
 
-            ambientLightHandles.Add(new AmbientLight(Color.White * 0.5f));
-            basicLightHandles.Add(new BasicLight((int)Player.Position.X, (int)Player.Position.Y, 400, 400, Color.White));
+            ambientLightHandles.Add(new AmbientLight(Color.White * 0.40f));
+            ambientLightHandles.Add(new AmbientLight(Color.White));
+            spotLightHandles.Add(new PointLight(Player.Position, 200, 0.8f, Color.White));
 
             LightingManager.AmbientLights.Add(ambientLightHandles[0]);
-            LightingManager.BasicLights.Add(basicLightHandles[0]);
+            LightingManager.PointLights.Add(spotLightHandles[0]);
         }
 
         public void Update(float elapsedTime)
@@ -84,8 +84,16 @@ namespace MobileGame.Managers
             //The player handles collision against the generic platforms itself inside the update.
             Player.Update(elapsedTime);
 
-            basicLightHandles[0].Position.X = Player.Position.X;
-            basicLightHandles[0].Position.Y = Player.Position.Y;
+            if (KeyMouseReader.KeyClick(Keys.F))
+            {
+                if (LightingManager.AmbientLights.Contains(ambientLightHandles[1]))
+                    LightingManager.AmbientLights.Remove(ambientLightHandles[1]);
+                else
+                    LightingManager.AmbientLights.Add(ambientLightHandles[1]);
+            }
+
+            spotLightHandles[0].Position.X = Player.Position.X;
+            spotLightHandles[0].Position.Y = Player.Position.Y;
             //Console.WriteLine("FPS: " + (1000 / elapsedTime));
         }
 
@@ -95,7 +103,10 @@ namespace MobileGame.Managers
             LightingManager.BeginDrawMainTarget();
 
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, Camera.Get_Transformation());
-            mapManager.Draw(spriteBatch);
+
+            mapManager.DrawBackground(spriteBatch);
+            mapManager.DrawMiddle(spriteBatch);
+            mapManager.DrawForeground(spriteBatch);
 
             EnemyManager.Draw(spriteBatch);
 
@@ -106,6 +117,10 @@ namespace MobileGame.Managers
             LightingManager.EndDrawingMainTarget();
 
             LightingManager.DrawLitScreen();
+
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, Camera.Get_Transformation());
+            Camera.Draw(spriteBatch);
+            spriteBatch.End();
 
         }
 

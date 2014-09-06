@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 
 using MobileGame.FileManagement;
 using MobileGame.Managers;
+using MobileGame.Lights;
 
 namespace MobileGame.LevelEditor
 {
@@ -166,8 +167,7 @@ namespace MobileGame.LevelEditor
             else if (KeyMouseReader.KeyClick(Keys.R))
                 ResetMap();
 
-            if(KeyMouseReader.KeyClick(Keys.Q))
-                LightingManager.AmbientLights.Add(new Lights.AmbientLight(0, 0, xTiles * 20, yTiles * 20, Color.White * 0.5f));
+            
         }
 
         public void Draw()
@@ -247,7 +247,7 @@ namespace MobileGame.LevelEditor
                 {
                     for (int y = 0; y < yTiles; y++)
                     {
-                        Vector2 Pos = new Vector2(x * TileSize, y * TileSize);
+                        Vector2 Pos = new Vector2(x * TileSize, y * TileSize) + offset;
                         Texture2D Texture;
 
                         #region Background
@@ -305,7 +305,7 @@ namespace MobileGame.LevelEditor
                 {
                     for (int y = 0; y < yTiles; y++)
                     {
-                        Vector2 Pos = new Vector2(x * TileSize, y * TileSize);
+                        Vector2 Pos = new Vector2(x * TileSize, y * TileSize) + offset;
                         Rectangle Source = new Rectangle((int)Pos.X, (int)Pos.Y, TileSize, TileSize);
                         Texture2D Texture = TextureManager.FilledSquare;
                         Color color;
@@ -329,7 +329,7 @@ namespace MobileGame.LevelEditor
                 {
                     for (int y = 0; y < yTiles; y++)
                     {
-                        Vector2 Pos = new Vector2(x * TileSize, y * TileSize);
+                        Vector2 Pos = new Vector2(x * TileSize, y * TileSize) + offset;
                         Rectangle Source = new Rectangle((int)Pos.X, (int)Pos.Y, TileSize, TileSize);
                         Texture2D Texture = TextureManager.FilledSquare;
                         Color color;

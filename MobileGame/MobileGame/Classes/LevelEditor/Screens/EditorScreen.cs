@@ -12,6 +12,7 @@ using GUI_System.GUIObjects;
 using MobileGame.Managers;
 using MobileGame.Screens;
 using MobileGame.Lights;
+using Microsoft.Xna.Framework.Input;
 
 namespace MobileGame.LevelEditor
 {
@@ -20,6 +21,7 @@ namespace MobileGame.LevelEditor
         private MenuButton LoadButton, SaveButton, ExitButton;
         private MenuButton BGLayerButton, MiddleLayerButton, FGLayerButton;
         private MenuButton TileLayerButton, CollisionLayerButton, JumpLayerButton;
+        public static ColorPicker ColorPicker;
 
         private List<MenuButton> ToolButtons;
 
@@ -45,6 +47,8 @@ namespace MobileGame.LevelEditor
             TileLayerButton = new MenuButton(new TileLayerButton(ScreenManager.Game.Content));
             CollisionLayerButton = new MenuButton(new CollisionLayerButton(ScreenManager.Game.Content));
             JumpLayerButton = new MenuButton(new JumpLayerButton(ScreenManager.Game.Content));
+
+            ColorPicker = new ColorPicker(new ColorPickStyle(ScreenManager.Game.Content));
 
             MenuEntries.Add(ExitButton);
             MenuEntries.Add(SaveButton);
@@ -97,7 +101,7 @@ namespace MobileGame.LevelEditor
 
             EditorMapManager.Initialize();
             EditorMapManager.Offset = new Vector2(260, 45);
-            LightingManager.Initialize(ScreenManager.Game.GraphicsDevice, EditorMapManager.NumXTiles * EditorMapManager.TileSize, EditorMapManager.NumYTiles * EditorMapManager.TileSize, new Vector2(2640, 45));
+            LightingManager.Initialize(ScreenManager.Game.GraphicsDevice, EditorMapManager.NumXTiles * EditorMapManager.TileSize, EditorMapManager.NumYTiles * EditorMapManager.TileSize);
             LightingManager.DrawOffset = new Vector2(260, 45);
 
             for (int i = 0; i < ToolButtons.Count; i++)
@@ -175,6 +179,7 @@ namespace MobileGame.LevelEditor
             TileLayerButton.Update(this, gameTime);
             CollisionLayerButton.Update(this, gameTime);
             JumpLayerButton.Update(this, gameTime);
+            ColorPicker.Update(this, gameTime);
 
             if (EditMode == 0)
             {
@@ -238,6 +243,10 @@ namespace MobileGame.LevelEditor
             position.Y -= FGLayerButton.GetHeight(this) + ySpacing;
             FGLayerButton.Position = position;
 
+            position.Y -= 300;
+            position.X += 10;
+            ColorPicker.Position = position;
+
             if (KeyMouseReader.KeyClick(Microsoft.Xna.Framework.Input.Keys.M))
             {
                 for (int i = 0; i < ToolButtons.Count; i++)
@@ -269,6 +278,16 @@ namespace MobileGame.LevelEditor
             TileLayerButton.Draw(this, gameTime);
             CollisionLayerButton.Draw(this, gameTime);
             JumpLayerButton.Draw(this, gameTime);
+
+            if (EditMode == 4)
+            {
+                ColorPicker.Draw(this, gameTime);
+                Rectangle temp = new Rectangle((int)ColorPicker.Position.X - ColorPicker.HitBox().Width/2, (int)ColorPicker.Position.Y + ColorPicker.HitBox().Height/2 + 5, 50, 50);
+                spriteBatch.Draw(TextureManager.FilledSquare, temp, ColorPicker.SelectedColor);
+            }
+                
+
+            
 
             if (EditMode == 0)
             {

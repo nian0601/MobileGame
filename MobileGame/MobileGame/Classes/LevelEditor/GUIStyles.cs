@@ -11,6 +11,15 @@ using GUI_System.GUIObjects;
 
 namespace MobileGame.LevelEditor
 {
+    public class ColorPickStyle : ColorPickerStyle
+    {
+        public ColorPickStyle(ContentManager content)
+            : base(content)
+        {
+            TextureToPickFrom = content.Load<Texture2D>("Editor/Colorpicker2");
+        }
+    }
+
     public class ExitButtonStyle : ButtonStyle
     {
         public ExitButtonStyle(ContentManager content)

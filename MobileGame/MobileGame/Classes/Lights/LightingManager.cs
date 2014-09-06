@@ -13,13 +13,14 @@ using MobileGame.FileManagement;
 
 using GUI_System.GameStateManagement;
 using Microsoft.Xna.Framework.Content;
+using System.IO;
 
-namespace MobileGame.Managers
+namespace MobileGame.Lights
 {
     static class LightingManager
     {
-        public static List<BasicLight> BasicLights;
         public static List<AmbientLight> AmbientLights;
+        public static List<PointLight> PointLights;
         public static Vector2 DrawOffset;
         public static bool EditorMode;
 
@@ -27,8 +28,10 @@ namespace MobileGame.Managers
 
         private static RenderTarget2D mainTarget;
         private static RenderTarget2D lightingTarget;
+        private static int renderTargetWidth, renderTargetHeight;
 
         private static Effect pixelShader;
+        private static Effect pointLight;
       
         private static SpriteBatch spriteBatch;        
 
@@ -38,29 +41,30 @@ namespace MobileGame.Managers
         {
             graphicsDevice = GraphicsDevice;
             spriteBatch = new SpriteBatch(graphicsDevice);
-
-            lightingTarget = new RenderTarget2D(graphicsDevice, graphicsDevice.PresentationParameters.BackBufferWidth, graphicsDevice.PresentationParameters.BackBufferHeight);
-            mainTarget = new RenderTarget2D(graphicsDevice, graphicsDevice.PresentationParameters.BackBufferWidth, graphicsDevice.PresentationParameters.BackBufferHeight);
+            renderTargetWidth = graphicsDevice.PresentationParameters.BackBufferWidth;
+            renderTargetHeight = graphicsDevice.PresentationParameters.BackBufferHeight;
+            lightingTarget = new RenderTarget2D(graphicsDevice, renderTargetWidth, renderTargetHeight);
+            mainTarget = new RenderTarget2D(graphicsDevice, renderTargetWidth, renderTargetHeight);
             
-            BasicLights = new List<BasicLight>();
             AmbientLights = new List<AmbientLight>();
+            PointLights = new List<PointLight>();
             DrawOffset = Vector2.Zero;
             EditorMode = false;
 
             LightMode = 0;
         }
 
-        public static void Initialize(GraphicsDevice GraphicsDevice, int RenderTargetWidth, int RenderTargetHeight, Vector2 drawOffset)
+        public static void Initialize(GraphicsDevice GraphicsDevice, int RenderTargetWidth, int RenderTargetHeight)
         {
             graphicsDevice = GraphicsDevice;
             spriteBatch = new SpriteBatch(graphicsDevice);
 
-            lightingTarget = new RenderTarget2D(graphicsDevice, RenderTargetWidth, RenderTargetHeight);
-            mainTarget = new RenderTarget2D(graphicsDevice, RenderTargetWidth, RenderTargetHeight);
+            renderTargetWidth = RenderTargetWidth;
+            renderTargetHeight = RenderTargetHeight;
+            lightingTarget = new RenderTarget2D(graphicsDevice, renderTargetWidth, renderTargetHeight);
+            mainTarget = new RenderTarget2D(graphicsDevice, renderTargetWidth, renderTargetHeight);
 
-            BasicLights = new List<BasicLight>();
             AmbientLights = new List<AmbientLight>();
-            DrawOffset = drawOffset;
             EditorMode = true;
 
             LightMode = 0;
@@ -69,6 +73,9 @@ namespace MobileGame.Managers
         public static void LoadContent(ContentManager Content)
         {
             pixelShader = Content.Load<Effect>("Shaders/PixelShader.mgfxo");
+            pointLight = Content.Load<Effect>("Shaders/PointLight.mgfxo");
+
+            pointLight.Parameters["ScreenDimensions"].SetValue(new Vector2(800, 600));
         }
 
         public static void Update()
@@ -103,29 +110,52 @@ namespace MobileGame.Managers
         }
 
         private static void DrawLights()
-        {
+        { 
             //Make the GraphicsDevice draw onto our LightingTarget
             graphicsDevice.SetRenderTarget(lightingTarget);
             //Clear the new rendertarget to a solid black
             graphicsDevice.Clear(Color.Black);
 
-            if(!EditorMode)
-                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Camera.Get_Transformation());
-            else
-                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
 
-            if (LightMode != 2 && LightMode != 3 && LightMode != 4)
-            {
-                foreach (BasicLight Light in BasicLights)
-                    Light.Draw(spriteBatch);
-            }
-
+            
             if (LightMode != 1 && LightMode != 3 && LightMode != 4)
             {
                 foreach (AmbientLight Light in AmbientLights)
                     Light.Draw(spriteBatch);
             }
             
+            spriteBatch.End();
+
+            if (LightMode != 2 && LightMode != 3 && LightMode != 4)
+                foreach (PointLight pLight in PointLights)
+                    DrawPointLight(pLight);
+        }
+
+        private static void DrawPointLight(PointLight pLight)
+        {
+            Vector2 offset, lightPos;
+            if (!EditorMode)
+            {
+                offset = new Vector2(Camera.Position.X - Camera.ViewPort.Width / 2, Camera.Position.Y - Camera.ViewPort.Height / 2);
+                lightPos = new Vector2(pLight.Position.X - offset.X, pLight.Position.Y - offset.Y);
+                pointLight.Parameters["LightPos"].SetValue(lightPos);
+            }
+            else
+            {
+                lightPos = new Vector2(pLight.Position.X - DrawOffset.X, pLight.Position.Y - DrawOffset.Y);
+                pointLight.Parameters["LightPos"].SetValue(lightPos);
+            }
+            
+
+            
+            pointLight.Parameters["Radius"].SetValue(pLight.Radius);
+            pointLight.Parameters["LightPow"].SetValue(pLight.Power);
+            pointLight.Parameters["LightColor"].SetValue(pLight.Color.ToVector4());
+
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, pointLight);
+
+            spriteBatch.Draw(lightingTarget, new Rectangle(0, 0, renderTargetWidth, renderTargetHeight), Color.White);
             spriteBatch.End();
         }
     }

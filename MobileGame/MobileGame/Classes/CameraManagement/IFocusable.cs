@@ -16,6 +16,16 @@ namespace MobileGame.CameraManagement
         Vector2 Position { get; }
 
         /// <summary>
+        /// The width of the focusobject
+        /// </summary>
+        int Width { get; }
+
+        /// <summary>
+        /// The height of the focusobject
+        /// </summary>
+        int Height { get; }
+
+        /// <summary>
         /// The radius used to influence the cameramovement, but not completely take control of it
         /// </summary>
         int InterestRadius { get; }

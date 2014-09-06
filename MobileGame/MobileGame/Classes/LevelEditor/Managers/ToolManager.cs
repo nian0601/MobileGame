@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 using MobileGame.LevelEditor.Tools;
+using MobileGame.Lights;
 
 namespace MobileGame.LevelEditor
 {
@@ -47,8 +48,10 @@ namespace MobileGame.LevelEditor
         public static void Update()
         {
             Point Offset = new Point((int)EditorMapManager.Offset.X, (int)EditorMapManager.Offset.Y);
-            mouseX = ConvertPixelsToIndex(KeyMouseReader.GetMousePos() + Offset).X;
-            mouseY = ConvertPixelsToIndex(KeyMouseReader.GetMousePos() + Offset).Y;
+            mouseX = ConvertPixelsToIndex(KeyMouseReader.GetMousePos()).X;
+            mouseY = ConvertPixelsToIndex(KeyMouseReader.GetMousePos()).Y;
+
+            Console.WriteLine(KeyMouseReader.GetMousePos() - Offset);
 
             if (KeyMouseReader.isKeyDown(Keys.LeftAlt) && KeyMouseReader.LeftClick())
             {
@@ -85,6 +88,21 @@ namespace MobileGame.LevelEditor
                 else if (EditorScreen.EditMode == 2)
                 {
                     JumpThroughMaker.Update(mouseX, mouseY);
+                }
+                else if (EditorScreen.EditMode == 4)
+                {
+                    if (KeyMouseReader.KeyClick(Keys.Q))
+                        LightingManager.AmbientLights.Add(new Lights.AmbientLight(0, 0, EditorMapManager.NumXTiles * 20, EditorMapManager.NumYTiles * 20, EditorScreen.ColorPicker.SelectedColor * 0.5f));
+                    else if (KeyMouseReader.LeftClick())
+                    {
+                        Vector2 mousePos = new Vector2(KeyMouseReader.GetMousePos().X, KeyMouseReader.GetMousePos().Y) - EditorMapManager.Offset;
+                        PointLight tempLight = new PointLight(mousePos, 150, 0.8f, EditorScreen.ColorPicker.SelectedColor);
+                        LightingManager.PointLights.Add(tempLight);
+
+                        Console.WriteLine("MousePos : " + mousePos);
+                        Console.WriteLine("LightPos : " + tempLight.Position);
+                    }
+                    
                 }
                 #endregion
             }

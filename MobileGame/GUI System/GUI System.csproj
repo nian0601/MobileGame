@@ -41,7 +41,9 @@
     <Compile Include="GameStateManagement\MenuScreen.cs" />
     <Compile Include="GameStateManagement\MessageBoxScreen.cs" />
     <Compile Include="GameStateManagement\ScreenManager.cs" />
+    <Compile Include="GUIObjects\ColorPicker.cs" />
     <Compile Include="GUIObjects\GUIObject.cs" />
+    <Compile Include="GUIObjects\Styles\ColorPickerStyle.cs" />
     <Compile Include="GUIObjects\Styles\InputFieldStyle.cs" />
     <Compile Include="GUIObjects\Styles\IStyle.cs" />
     <Compile Include="GUIObjects\List.cs" />

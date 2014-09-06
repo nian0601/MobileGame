@@ -54,9 +54,6 @@ namespace MobileGame.Units
             get { Vector2 dir = velocity; dir.Normalize(); return dir; }
         }
 
-        public int Width { get { return FrameWidth; } }
-        public int Height { get { return FrameHeight; } }
-
         public Color[] ColorArray
         {
             get { return colorArray; }
@@ -81,6 +78,9 @@ namespace MobileGame.Units
         {
             get { return 100; }
         }
+
+        public int Width { get { return FrameWidth; } }
+        public int Height { get { return FrameHeight; } }
 
         private Texture2D interestCircle;
         public Texture2D InterestCircle
@@ -271,11 +271,6 @@ namespace MobileGame.Units
                 byte value = MapManager.CollisionLayer[index.X, index.Y];
                 if (collisionList[i].Intersects(HitBox()) && value != 2)
                 {
-                    //if (PixelCol(HitBox(), colorArray, collisionList[i], collisionList[i].ColorArray))
-                    //{
-                        
-                    //}
-
                     if (velocity.X >= 0)
                         position.X = collisionList[i].Left - HitBox().Width;
                     else if (velocity.X < 0)
@@ -294,11 +289,6 @@ namespace MobileGame.Units
             {
                 if (collisionList[i].Intersects(HitBox()))
                 {
-                    //if (PixelCol(HitBox(), colorArray, collisionList[i], collisionList[i].ColorArray))
-                    //{
-                        
-                    //}
-
                     Point index = new Point(collisionList[i].X / MapManager.TileSize, collisionList[i].Y / MapManager.TileSize);
                     byte value = MapManager.CollisionLayer[index.X, index.Y];
 

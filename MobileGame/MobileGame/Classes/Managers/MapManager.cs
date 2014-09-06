@@ -14,6 +14,7 @@ using MobileGame.FileManagement;
 using MobileGame.CameraManagement;
 using MobileGame.Tiles;
 using MobileGame.Enemies;
+using MobileGame.Lights;
 
 namespace MobileGame.Managers
 {
@@ -90,10 +91,12 @@ namespace MobileGame.Managers
             int mouseX = KeyMouseReader.GetMousePos().X;
             int mouseY = KeyMouseReader.GetMousePos().Y;
 
-            Vector2 MousePos = Camera.ScreenToWorldCoordinates(new Vector2(mouseX, mouseY));
+            Vector2 MousePos = new Vector2(mouseX, mouseY) + new Vector2((int)Camera.Position.X - Camera.ViewPort.Width/2, (int)Camera.Position.Y - Camera.ViewPort.Height/2);
+            //Console.WriteLine(MousePos);
 
             if (KeyMouseReader.isKeyDown(Keys.LeftControl) && KeyMouseReader.KeyClick(Keys.L))
-                LightingManager.BasicLights.Add(new Lights.BasicLight((int)MousePos.X, (int)MousePos.Y, 400, 400, Color.White * 0.5f));
+                LightingManager.PointLights.Add(new PointLight(MousePos, 200, 0.5f, Color.White));
+                //LightingManager.BasicLights.Add(new Lights.BasicLight((int)MousePos.X, (int)MousePos.Y, 400, 400, Color.White * 0.5f));
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -294,7 +297,7 @@ namespace MobileGame.Managers
                         specialBlockList.Add(temp);
                         backgroundLayer[x, y] = backgroundValue;
                         GoalPos = new Vector2(x * tileSize, y * tileSize);
-                        LightingManager.BasicLights.Add(new Lights.BasicLight(x * tileSize, y * tileSize, 400, 400, Color.White * 0.75f));
+                        LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 250, 0.7f, Color.White));
                     }
                     else if (backgroundValue == 29)
                     {
@@ -337,7 +340,7 @@ namespace MobileGame.Managers
                         specialBlockList.Add(temp);
                         platformLayer[x, y] = platformValue;
                         GoalPos = new Vector2(x * tileSize, y * tileSize);
-                        LightingManager.BasicLights.Add(new Lights.BasicLight(x * tileSize, y * tileSize, 400, 400, Color.White * 0.75f));
+                        LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 250, 0.7f, Color.White));
                     }
                     else if (platformValue == 29)
                     {
@@ -353,10 +356,10 @@ namespace MobileGame.Managers
                         platformLayer[x, y] = platformValue;
 
 
-                    if (platformValue != 255 && platformValue != 15)
-                    {
-                        LightingManager.BasicLights.Add(new Lights.BasicLight(x * TileSize + TileSize / 2, y * TileSize + TileSize / 2, tileSize * 3, tileSize * 3, Color.White * 0.5f));
-                    }
+                    //if (platformValue != 255 && platformValue != 15)
+                    //{
+                    //    LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize + TileSize/2, y * tileSize + TileSize/2), 20, 0.5f, Color.White));
+                    //}
 
                     #endregion
 
@@ -378,7 +381,7 @@ namespace MobileGame.Managers
                         specialBlockList.Add(temp);
                         specialsLayer[x, y] = specialsValue;
                         GoalPos = new Vector2(x * tileSize, y * tileSize);
-                        LightingManager.BasicLights.Add(new Lights.BasicLight(x * tileSize, y * tileSize, 400, 400, Color.White * 0.75f));
+                        LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 250, 0.7f, Color.White));
                     }
                     else if (specialsValue == 29)
                     {

@@ -18,7 +18,10 @@ namespace MobileGame.LevelEditor.Tools
         {
             if (ToolManager.HasActiveSelection && KeyMouseReader.LeftClick())
             {
-                CreatePlatforms(ToolManager.SelectionTopLeft.X, ToolManager.SelectionTopLeft.Y, ToolManager.SelectionBottomRight.X, ToolManager.SelectionBottomRight.Y, 0, EditorMapManager.SelectedTileValue);
+                Point pixelOffset = new Point((int)EditorMapManager.Offset.X, (int)EditorMapManager.Offset.Y);
+                Point indexOffset = ToolManager.ConvertPixelsToIndex(pixelOffset);
+
+                CreatePlatforms(ToolManager.SelectionTopLeft.X + indexOffset.X, ToolManager.SelectionTopLeft.Y + indexOffset.Y, ToolManager.SelectionBottomRight.X + indexOffset.X, ToolManager.SelectionBottomRight.Y + indexOffset.Y, 0, EditorMapManager.SelectedTileValue);
                 ToolManager.ClearSelection();
             }
             else if (KeyMouseReader.LeftMouseDown())

@@ -64,9 +64,9 @@
     <Compile Include="Classes\LightingSystem\PointLight.cs" />
     <Compile Include="Classes\LightingSystem\SpotLight.cs" />
     <Compile Include="Classes\Lights\AmbientLight.cs" />
-    <Compile Include="Classes\Lights\BasicLight.cs" />
     <Compile Include="Classes\Lights\ILight.cs" />
     <Compile Include="Classes\Lights\LightingManager.cs" />
+    <Compile Include="Classes\Lights\PointLight.cs" />
     <Compile Include="Classes\Managers\MapManager.cs" />
     <Compile Include="Classes\Managers\GameManager.cs" />
     <Compile Include="Classes\Screens\BackgroundScreen.cs" />
@@ -221,6 +221,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Editor\Buttons\SaveHoover.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Colorpicker.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Editor\Colorpicker2.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Editor\ConfirmationBox\NoHoover.xnb">
@@ -560,6 +566,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Shaders\PixelShader.mgfxo">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Shaders\PointLight.mgfxo">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\TestSpriteSheet.xnb">
