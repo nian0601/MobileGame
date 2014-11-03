@@ -103,6 +103,7 @@ namespace MobileGame.LevelEditor
             EditorMapManager.Offset = new Vector2(260, 45);
             LightingManager.Initialize(ScreenManager.Game.GraphicsDevice, EditorMapManager.NumXTiles * EditorMapManager.TileSize, EditorMapManager.NumYTiles * EditorMapManager.TileSize);
             LightingManager.DrawOffset = new Vector2(260, 45);
+            LightingManager.LoadContent(ScreenManager.Game.Content);
 
             for (int i = 0; i < ToolButtons.Count; i++)
             {

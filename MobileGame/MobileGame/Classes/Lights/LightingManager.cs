@@ -75,7 +75,16 @@ namespace MobileGame.Lights
             pixelShader = Content.Load<Effect>("Shaders/PixelShader.mgfxo");
             pointLight = Content.Load<Effect>("Shaders/PointLight.mgfxo");
 
-            pointLight.Parameters["ScreenDimensions"].SetValue(new Vector2(800, 600));
+
+            if (EditorMode == false)
+            {
+                pointLight.Parameters["ScreenDimensions"].SetValue(new Vector2(800, 600));
+            }
+            else
+            {
+                pointLight.Parameters["ScreenDimensions"].SetValue(new Vector2(1600, 1000));
+            }
+            
         }
 
         public static void Update()
@@ -143,7 +152,7 @@ namespace MobileGame.Lights
             }
             else
             {
-                lightPos = new Vector2(pLight.Position.X - DrawOffset.X, pLight.Position.Y - DrawOffset.Y);
+                lightPos = new Vector2(pLight.Position.X, pLight.Position.Y);
                 pointLight.Parameters["LightPos"].SetValue(lightPos);
             }
             

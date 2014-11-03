@@ -89,6 +89,9 @@ namespace MobileGame.LevelEditor
                 {
                     JumpThroughMaker.Update(mouseX, mouseY);
                 }
+                #endregion
+
+                #region Lights
                 else if (EditorScreen.EditMode == 4)
                 {
                     if (KeyMouseReader.KeyClick(Keys.Q))
@@ -102,9 +105,10 @@ namespace MobileGame.LevelEditor
                         Console.WriteLine("MousePos : " + mousePos);
                         Console.WriteLine("LightPos : " + tempLight.Position);
                     }
-                    
+
                 }
                 #endregion
+
             }
 
             if (KeyMouseReader.isKeyDown(Keys.LeftControl) && KeyMouseReader.KeyClick(Keys.D))
