@@ -27,17 +27,10 @@ namespace MobileGame.Tiles
         protected Vector2 pixelPos;
         protected int tileSize;
         
-        protected Color[] colorArray;
-
         protected int interestRadius;
         protected int controlRadius;
 
         #region Properties
-
-        public Color[] ColorArray
-        {
-            get { return colorArray; }
-        }
 
         public Vector2 PixelPosition
         {

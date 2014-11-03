@@ -44,7 +44,7 @@ namespace MobileGame.LevelEditor
         //Used when we are trying to move the map around using space+mouse
         //Need to know in which direction the mouse is moving so we move the map in the correct way
         //We get that by getting the difference between these two variables
-        private Point mousePos, prevMousePos;
+        //private Point mousePos, prevMousePos;
 
         private Point selectionTopLeft, selectionBottomRight;
 

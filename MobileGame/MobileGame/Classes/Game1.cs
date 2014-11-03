@@ -47,8 +47,8 @@ namespace MobileGame
         {
             // TODO: Add your initialization logic here
 
-            graphics.PreferredBackBufferWidth = 800;
-            graphics.PreferredBackBufferHeight = 600;
+            graphics.PreferredBackBufferWidth = 1000;
+            graphics.PreferredBackBufferHeight = 800;
 
             graphics.ApplyChanges();
 

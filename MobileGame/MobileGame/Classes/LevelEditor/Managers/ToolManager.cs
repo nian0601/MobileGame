@@ -29,6 +29,7 @@ namespace MobileGame.LevelEditor
         private static CopyPaster CopyPaster;
         private static ColliderMaker ColliderMaker;
         private static JumpThroughMaker JumpThroughMaker;
+        private static LightsPlacer LightPlacer;
 
         public static void Initialize()
         {
@@ -43,6 +44,7 @@ namespace MobileGame.LevelEditor
             CopyPaster = new CopyPaster();
             ColliderMaker = new ColliderMaker();
             JumpThroughMaker = new JumpThroughMaker();
+            LightPlacer = new LightsPlacer();
         }
 
         public static void Update()
@@ -94,18 +96,7 @@ namespace MobileGame.LevelEditor
                 #region Lights
                 else if (EditorScreen.EditMode == 4)
                 {
-                    if (KeyMouseReader.KeyClick(Keys.Q))
-                        LightingManager.AmbientLights.Add(new Lights.AmbientLight(0, 0, EditorMapManager.NumXTiles * 20, EditorMapManager.NumYTiles * 20, EditorScreen.ColorPicker.SelectedColor * 0.5f));
-                    else if (KeyMouseReader.LeftClick())
-                    {
-                        Vector2 mousePos = new Vector2(KeyMouseReader.GetMousePos().X, KeyMouseReader.GetMousePos().Y) - EditorMapManager.Offset;
-                        PointLight tempLight = new PointLight(mousePos, 150, 0.8f, EditorScreen.ColorPicker.SelectedColor);
-                        LightingManager.PointLights.Add(tempLight);
-
-                        Console.WriteLine("MousePos : " + mousePos);
-                        Console.WriteLine("LightPos : " + tempLight.Position);
-                    }
-
+                    LightPlacer.Update();
                 }
                 #endregion
 
@@ -121,6 +112,11 @@ namespace MobileGame.LevelEditor
                 CopyPaster.ShowPasteTarget(mouseX, mouseY, 0, SpriteBatch);
 
             Selector.Draw(SpriteBatch);
+
+            if (EditorScreen.EditMode == 4)
+            {
+                LightPlacer.Draw(SpriteBatch);
+            }
         }
 
         public static void ClearSelection()

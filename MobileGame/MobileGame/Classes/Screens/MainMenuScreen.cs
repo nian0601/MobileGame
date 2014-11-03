@@ -56,10 +56,14 @@ namespace MobileGame.Screens
                 Game1.graphics.ApplyChanges();
                 FileLoader.Initialize();
             }
-                
+
 
             if (playButton.LeftClick())
+            {
+                LightingManager.EditorMode = false;
                 LoadingScreen.Load(ScreenManager, true, new GamePlayScreen());
+            }
+                
 
             if (levelSelectButton.LeftClick())
                 ScreenManager.AddScreen(new LevelSelectScreen());

@@ -78,7 +78,7 @@ namespace MobileGame.Lights
 
             if (EditorMode == false)
             {
-                pointLight.Parameters["ScreenDimensions"].SetValue(new Vector2(800, 600));
+                pointLight.Parameters["ScreenDimensions"].SetValue(new Vector2(1000, 800));
             }
             else
             {
