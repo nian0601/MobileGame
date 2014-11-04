@@ -24,7 +24,7 @@ namespace MobileGame.Managers
         private static bool gameWon, gameLost;
 
         private List<AmbientLight> ambientLightHandles;
-        private List<PointLight> spotLightHandles;
+        private List<PointLight> pointLightHandles;
 
         public GameManager(){}
 
@@ -48,19 +48,17 @@ namespace MobileGame.Managers
             Camera.Limits = new Rectangle(0, 0, MapManager.MapWidth, MapManager.MapHeight);
 
             ambientLightHandles = new List<AmbientLight>();
-            spotLightHandles = new List<PointLight>();
+            pointLightHandles = new List<PointLight>();
 
-            ambientLightHandles.Add(new AmbientLight(Color.White * 0.40f));
-            ambientLightHandles.Add(new AmbientLight(Color.White));
-            spotLightHandles.Add(new PointLight(Player.Position, 200, 0.8f, Color.White));
+            ambientLightHandles.Add(new AmbientLight(Color.White, 1f));
+            pointLightHandles.Add(new PointLight(Player.Position, 200, 0.8f, Color.White, true));
 
-            LightingManager.AmbientLights.Add(ambientLightHandles[0]);
-            LightingManager.PointLights.Add(spotLightHandles[0]);
+            LightingManager.PointLights.Add(pointLightHandles[0]);
         }
 
         public void Update(float elapsedTime)
         {
-            LightingManager.Update();
+            LightingManager.Update(elapsedTime);
             mapManager.Update();
 
             //Collision against specialblocks is handled outside the player class
@@ -86,14 +84,13 @@ namespace MobileGame.Managers
 
             if (KeyMouseReader.KeyClick(Keys.F))
             {
-                if (LightingManager.AmbientLights.Contains(ambientLightHandles[1]))
-                    LightingManager.AmbientLights.Remove(ambientLightHandles[1]);
+                if (LightingManager.AmbientLights.Contains(ambientLightHandles[0]))
+                    LightingManager.AmbientLights.Remove(ambientLightHandles[0]);
                 else
-                    LightingManager.AmbientLights.Add(ambientLightHandles[1]);
+                    LightingManager.AmbientLights.Add(ambientLightHandles[0]);
             }
 
-            spotLightHandles[0].Position.X = Player.Position.X;
-            spotLightHandles[0].Position.Y = Player.Position.Y;
+            pointLightHandles[0].SetPosition(Player.Position);
             //Console.WriteLine("FPS: " + (1000 / elapsedTime));
         }
 

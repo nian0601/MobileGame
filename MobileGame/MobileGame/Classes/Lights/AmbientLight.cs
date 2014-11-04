@@ -12,28 +12,33 @@ namespace MobileGame.Lights
 {
     class AmbientLight : ILight
     {
-        public AmbientLight(int X, int Y, int Width, int Height, Color Color)
+        private float myPower;
+        public float Power { get { return myPower; } }
+
+        public AmbientLight(int aX, int aY, int aWidth, int aHeight, Color aColor, float aPower)
         {
-            this.Position = new Vector2(X, Y);
-            this.Width = Width;
-            this.Height = Height;
-            this.Color = Color;
-            this.Texture = TextureManager.FilledSquare;
+            myPosition = new Vector2(aX, aY);
+            myWidth = aWidth;
+            myHeight = aHeight;
+            myColor = aColor;
+            myTexture = TextureManager.FilledSquare;
+            myPower = aPower;
         }
 
-        public AmbientLight(Color Color)
+        public AmbientLight(Color aColor, float aPower)
         {
-            this.Position = new Vector2(0, 0);
-            this.Width = MapManager.MapWidth * MapManager.TileSize;
-            this.Height = MapManager.MapHeight * MapManager.TileSize;
-            this.Color = Color;
-            this.Texture = TextureManager.FilledSquare;
+            myPosition = new Vector2(0, 0);
+            myWidth = MapManager.MapWidth * MapManager.TileSize;
+            myHeight = MapManager.MapHeight * MapManager.TileSize;
+            myColor = aColor;
+            myTexture = TextureManager.FilledSquare;
+            myPower = aPower;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            Rectangle Rect = new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
-            spriteBatch.Draw(Texture, Rect, Color);
+            Rectangle Rect = new Rectangle((int)myPosition.X, (int)myPosition.Y, myWidth, myHeight);
+            spriteBatch.Draw(myTexture, Rect, myColor * myPower);
         }
     }
 }

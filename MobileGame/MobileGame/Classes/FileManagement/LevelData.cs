@@ -15,11 +15,19 @@ namespace MobileGame.FileManagement
         public byte[][] PlatformLayer;
         public byte[][] SpecialsLayer;
 
+        public int NumPointLights;
+        public float[][] PointLights;
+
+        public int NumAmbientLights;
+        public float[][] AmbientLights;
+
         public LevelData()
         {
             TileSize = 0;
             MapWidth = 0;
             MapHeight = 0;
+            NumPointLights = 0;
+            NumAmbientLights = 0;
         }
     }
 }

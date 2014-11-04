@@ -10,12 +10,20 @@ namespace MobileGame.Lights
 {
     abstract class ILight
     {
-        public Vector2 Position;
-        public int Width;
-        public int Height;
+        protected Vector2 myPosition;
+        public Vector2 Position { get { return myPosition; } }
 
-        protected Texture2D Texture;
-        protected Color Color;
+        protected int myWidth;
+        public int Width { get { return myWidth; } }
+
+        protected int myHeight;
+        public int Height { get { return myHeight; } }
+
+        protected Texture2D myTexture;
+
+        protected Color myColor;
+        public Color Color { get { return myColor; } }
+
         abstract public void Draw(SpriteBatch spriteBatch);
     }
 }

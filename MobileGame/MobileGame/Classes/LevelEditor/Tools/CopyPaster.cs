@@ -52,7 +52,7 @@ namespace MobileGame.LevelEditor.Tools
             else if (ToolManager.HasActiveSelection && KeyMouseReader.isKeyDown(Keys.LeftControl) && KeyMouseReader.KeyClick(Keys.C))
             {
                 Console.WriteLine("Try to save current selection");
-                MakeCopy(ToolManager.SelectionTopLeft.X, ToolManager.SelectionTopLeft.Y, ToolManager.SelectionBottomRight.X, ToolManager.SelectionBottomRight.Y, 0);
+                MakeCopy(ToolManager.SelectionTopLeftIndex.X, ToolManager.SelectionTopLeftIndex.Y, ToolManager.SelectionBottomRightIndex.X, ToolManager.SelectionBottomRightIndex.Y, 0);
 
                 active = true;
             }
@@ -103,8 +103,8 @@ namespace MobileGame.LevelEditor.Tools
             int xCounter = 0;
             int yCounter = 0;
 
-            Point topLeft = ToolManager.SelectionTopLeft;
-            Point bottomRight = ToolManager.SelectionBottomRight;
+            Point topLeft = ToolManager.SelectionTopLeftIndex;
+            Point bottomRight = ToolManager.SelectionBottomRightIndex;
 
             CopyWidth = bottomRight.X - topLeft.X;
             CopyHeight = bottomRight.Y - topLeft.Y;

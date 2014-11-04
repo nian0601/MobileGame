@@ -87,13 +87,18 @@ namespace MobileGame.Lights
             
         }
 
-        public static void Update()
+        public static void Update(float elapsedTime)
         {
             if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.KeyClick(Keys.L))
                 LightMode++;
 
             if (LightMode > 3)
                 LightMode = 0;
+
+            for (int i = 0; i < PointLights.Count; i++)
+            {
+                PointLights[i].Update(elapsedTime);
+            }
         }
 
         public static void BeginDrawMainTarget()

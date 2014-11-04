@@ -19,8 +19,8 @@ namespace MobileGame.Tiles
 
             pixelPos = new Vector2(index.X * tileSize, index.Y * tileSize - tileTexture.Height / 2);
 
-            interestRadius = 600;
-            controlRadius = 300;
+            interestRadius = 450;
+            controlRadius = 250;
         }
 
         public override void CollideWithUnit(Player Unit)

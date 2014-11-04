@@ -90,56 +90,8 @@ namespace MobileGame.Managers
         {
             int mouseX = KeyMouseReader.GetMousePos().X;
             int mouseY = KeyMouseReader.GetMousePos().Y;
-
-            Vector2 MousePos = new Vector2(mouseX, mouseY) + new Vector2((int)Camera.Position.X - Camera.ViewPort.Width/2, (int)Camera.Position.Y - Camera.ViewPort.Height/2);
-            //Console.WriteLine(MousePos);
-
-            if (KeyMouseReader.isKeyDown(Keys.LeftControl) && KeyMouseReader.KeyClick(Keys.L))
-                LightingManager.PointLights.Add(new PointLight(MousePos, 200, 0.5f, Color.White));
-                //LightingManager.BasicLights.Add(new Lights.BasicLight((int)MousePos.X, (int)MousePos.Y, 400, 400, Color.White * 0.5f));
         }
 
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            for (int x = 0; x < mapXTiles; x++)
-            {
-                for (int y = 0; y < mapYTiles; y++)
-                {
-                    Point pixelIndex = ConvertIndexToPixels(x, y);
-                    Color Color = Color.White;
-
-                    if (Game1.Debugging)
-                    {
-                        if (collisionLayer[x, y] == 1)
-                            Color = Color.PaleVioletRed;
-                    }
-
-                    Vector2 Pos = new Vector2(x * tileSize, y * tileSize);
-                    Texture2D Texture;
-
-                    byte value = backgroundLayer[x, y];
-                    if (value != 255)
-                    {
-                        Texture = TextureManager.GameTextures[value];
-                        spriteBatch.Draw(Texture, Pos, null, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
-                    }
-
-                    value = platformLayer[x, y];
-                    if (value != 255)
-                    {
-                        Texture = TextureManager.GameTextures[value];
-                        spriteBatch.Draw(Texture, Pos, null, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
-                    }
-
-                    value = specialsLayer[x, y];
-                    if (value != 255)
-                    {
-                        Texture = TextureManager.GameTextures[value];
-                        spriteBatch.Draw(Texture, Pos, null, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f);
-                    }
-                }
-            }
-        }
 
         public void DrawBackground(SpriteBatch spriteBatch)
         {
@@ -297,7 +249,7 @@ namespace MobileGame.Managers
                         specialBlockList.Add(temp);
                         backgroundLayer[x, y] = backgroundValue;
                         GoalPos = new Vector2(x * tileSize, y * tileSize);
-                        LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 250, 0.7f, Color.White));
+                        LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 250, 0.7f, Color.White, false));
                     }
                     else if (backgroundValue == 29)
                     {
@@ -340,7 +292,7 @@ namespace MobileGame.Managers
                         specialBlockList.Add(temp);
                         platformLayer[x, y] = platformValue;
                         GoalPos = new Vector2(x * tileSize, y * tileSize);
-                        LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 250, 0.7f, Color.White));
+                        LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 250, 0.7f, Color.White, false));
                     }
                     else if (platformValue == 29)
                     {
@@ -381,7 +333,7 @@ namespace MobileGame.Managers
                         specialBlockList.Add(temp);
                         specialsLayer[x, y] = specialsValue;
                         GoalPos = new Vector2(x * tileSize, y * tileSize);
-                        LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 250, 0.7f, Color.White));
+                        LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 250, 0.7f, Color.White, false));
                     }
                     else if (specialsValue == 29)
                     {
@@ -400,7 +352,38 @@ namespace MobileGame.Managers
                 }
             }
 
-            
+            for (int i = 0; i < FileLoader.LoadedLevelNumPointLights; i++)
+            {
+                float x = FileLoader.LoadedPointLights[i, 0];
+                float y = FileLoader.LoadedPointLights[i, 1];
+                float radius = FileLoader.LoadedPointLights[i, 2];
+                float power = FileLoader.LoadedPointLights[i, 3];
+                float r = FileLoader.LoadedPointLights[i, 4];
+                float g = FileLoader.LoadedPointLights[i, 5];
+                float b = FileLoader.LoadedPointLights[i, 6];
+
+                Color color = new Color(r, g, b);
+
+                PointLight newLight = new PointLight(new Vector2(x, y), radius, power, color, false);
+                LightingManager.PointLights.Add(newLight);
+            }
+
+            for (int i = 0; i < FileLoader.LoadedLevelNumAmbientLights; i++)
+            {
+                float x = FileLoader.LoadedAmbientLights[i, 0];
+                float y = FileLoader.LoadedAmbientLights[i, 1];
+                float width = FileLoader.LoadedAmbientLights[i, 2];
+                float height = FileLoader.LoadedAmbientLights[i, 3];
+                float r = FileLoader.LoadedAmbientLights[i, 4];
+                float g = FileLoader.LoadedAmbientLights[i, 5];
+                float b = FileLoader.LoadedAmbientLights[i, 6];
+                float power = FileLoader.LoadedAmbientLights[i, 7];
+
+                Color color = new Color(r, g, b);
+
+                AmbientLight newLight = new AmbientLight((int)x, (int)y, (int)width, (int)height, color, power);
+                LightingManager.AmbientLights.Add(newLight);
+            }
         }
 
         /// <summary>

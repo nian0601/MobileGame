@@ -21,14 +21,14 @@ namespace MobileGame.LevelEditor.Tools
                 Point pixelOffset = new Point((int)EditorMapManager.Offset.X, (int)EditorMapManager.Offset.Y);
                 Point indexOffset = ToolManager.ConvertPixelsToIndex(pixelOffset);
 
-                CreatePlatforms(ToolManager.SelectionTopLeft.X + indexOffset.X, ToolManager.SelectionTopLeft.Y + indexOffset.Y, ToolManager.SelectionBottomRight.X + indexOffset.X, ToolManager.SelectionBottomRight.Y + indexOffset.Y, 0, EditorMapManager.SelectedTileValue);
+                CreatePlatforms(ToolManager.SelectionTopLeftIndex.X + indexOffset.X, ToolManager.SelectionTopLeftIndex.Y + indexOffset.Y, ToolManager.SelectionBottomRightIndex.X + indexOffset.X, ToolManager.SelectionBottomRightIndex.Y + indexOffset.Y, 0, EditorMapManager.SelectedTileValue);
                 ToolManager.ClearSelection();
             }
             else if (KeyMouseReader.LeftMouseDown())
                 CreatePlatform(mouseX, mouseY, EditorMapManager.SelectedTileValue);
             else if (ToolManager.HasActiveSelection && KeyMouseReader.RightClick())
             {
-                CreateAirs(ToolManager.SelectionTopLeft.X, ToolManager.SelectionTopLeft.Y, ToolManager.SelectionBottomRight.X, ToolManager.SelectionBottomRight.Y, 0, EditorMapManager.SelectedTileValue);
+                CreateAirs(ToolManager.SelectionTopLeftIndex.X, ToolManager.SelectionTopLeftIndex.Y, ToolManager.SelectionBottomRightIndex.X, ToolManager.SelectionBottomRightIndex.Y, 0, EditorMapManager.SelectedTileValue);
                 ToolManager.ClearSelection();
             }
             else if (KeyMouseReader.RightMouseDown())

@@ -18,8 +18,8 @@ namespace MobileGame.LevelEditor
 
         #region Selection-Variables
         public static bool HasActiveSelection;
-        public static Point SelectionTopLeft;
-        public static Point SelectionBottomRight;
+        public static Point SelectionTopLeftIndex;
+        public static Point SelectionBottomRightIndex;
         #endregion
 
         public static bool ShowPasteTarget;
@@ -31,11 +31,13 @@ namespace MobileGame.LevelEditor
         private static JumpThroughMaker JumpThroughMaker;
         private static LightsPlacer LightPlacer;
 
+        private static int prevEditMode;
+
         public static void Initialize()
         {
             HasActiveSelection = false;
-            SelectionTopLeft = new Point(0, 0);
-            SelectionBottomRight = new Point(0, 0);
+            SelectionTopLeftIndex = new Point(0, 0);
+            SelectionBottomRightIndex = new Point(0, 0);
 
             ShowPasteTarget = false;
 
@@ -45,6 +47,8 @@ namespace MobileGame.LevelEditor
             ColliderMaker = new ColliderMaker();
             JumpThroughMaker = new JumpThroughMaker();
             LightPlacer = new LightsPlacer();
+
+            prevEditMode = 0;
         }
 
         public static void Update()
@@ -96,6 +100,9 @@ namespace MobileGame.LevelEditor
                 #region Lights
                 else if (EditorScreen.EditMode == 4)
                 {
+                    if (prevEditMode != 4)
+                        LightPlacer.Init();
+
                     LightPlacer.Update();
                 }
                 #endregion
@@ -104,6 +111,8 @@ namespace MobileGame.LevelEditor
 
             if (KeyMouseReader.isKeyDown(Keys.LeftControl) && KeyMouseReader.KeyClick(Keys.D))
                 ClearSelection();
+
+            prevEditMode = EditorScreen.EditMode;
         }
 
         public static void Draw(SpriteBatch SpriteBatch)
@@ -124,8 +133,8 @@ namespace MobileGame.LevelEditor
             Selector.Reset();
 
             HasActiveSelection = false;
-            SelectionTopLeft = new Point(0, 0);
-            SelectionBottomRight = new Point(0, 0);
+            SelectionTopLeftIndex = new Point(0, 0);
+            SelectionBottomRightIndex = new Point(0, 0);
         }
 
         public static Point ConvertPixelsToIndex(Point pos)

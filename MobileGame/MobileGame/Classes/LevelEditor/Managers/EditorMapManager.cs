@@ -384,6 +384,39 @@ namespace MobileGame.LevelEditor
             platformLayer = FileLoader.LoadedPlatformLayer;
             specialsLayer = FileLoader.LoadedSpecialsLayer;
 
+            for (int i = 0; i < FileLoader.LoadedLevelNumPointLights; i++)
+            {
+                float x = FileLoader.LoadedPointLights[i, 0];
+                float y = FileLoader.LoadedPointLights[i, 1];
+                float radius = FileLoader.LoadedPointLights[i, 2];
+                float power = FileLoader.LoadedPointLights[i, 3];
+                float r = FileLoader.LoadedPointLights[i, 4];
+                float g = FileLoader.LoadedPointLights[i, 5];
+                float b = FileLoader.LoadedPointLights[i, 6];
+
+                Color color = new Color(r, g, b);
+
+                PointLight newLight = new PointLight(new Vector2(x, y), radius, power, color, false);
+                LightingManager.PointLights.Add(newLight);
+            }
+
+            for (int i = 0; i < FileLoader.LoadedLevelNumAmbientLights; i++)
+            {
+                float x = FileLoader.LoadedAmbientLights[i, 0];
+                float y = FileLoader.LoadedAmbientLights[i, 1];
+                float width = FileLoader.LoadedAmbientLights[i, 2];
+                float height = FileLoader.LoadedAmbientLights[i, 3];
+                float r = FileLoader.LoadedAmbientLights[i, 4];
+                float g = FileLoader.LoadedAmbientLights[i, 5];
+                float b = FileLoader.LoadedAmbientLights[i, 6];
+                float power = FileLoader.LoadedAmbientLights[i, 7];
+
+                Color color = new Color(r, g, b);
+
+                AmbientLight newLight = new AmbientLight((int)x, (int)y, (int)width, (int)height, color, power);
+                LightingManager.AmbientLights.Add(newLight);
+            }
+
             GoalPlaced = true;
             PlayerPlaced = true;
         }

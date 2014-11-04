@@ -47,8 +47,8 @@ namespace MobileGame.LevelEditor.Tools
             if (pointOnePlaced && pointTwoPlaced)
             {
                 ToolManager.HasActiveSelection = true;
-                ToolManager.SelectionTopLeft = ToolManager.ConvertPixelsToIndex(new Point(GetSelectionRect().Left, GetSelectionRect().Top));
-                ToolManager.SelectionBottomRight = ToolManager.ConvertPixelsToIndex(new Point(GetSelectionRect().Right, GetSelectionRect().Bottom));
+                ToolManager.SelectionTopLeftIndex = ToolManager.ConvertPixelsToIndex(new Point(GetSelectionRect().Left, GetSelectionRect().Top));
+                ToolManager.SelectionBottomRightIndex = ToolManager.ConvertPixelsToIndex(new Point(GetSelectionRect().Right, GetSelectionRect().Bottom));
                 Reset();
             }
         }
@@ -75,8 +75,8 @@ namespace MobileGame.LevelEditor.Tools
             }
             else if (ToolManager.HasActiveSelection)
             {
-                Point topLeft = ToolManager.SelectionTopLeft;
-                Point bottomRight = ToolManager.SelectionBottomRight;
+                Point topLeft = ToolManager.SelectionTopLeftIndex;
+                Point bottomRight = ToolManager.SelectionBottomRightIndex;
 
                 for (int x = topLeft.X; x < bottomRight.X; x++)
                 {
