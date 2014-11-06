@@ -29,7 +29,8 @@ namespace MobileGame.LevelEditor
 
         public static int EditMode;
 
-        public EditorScreen() : base("Editor Screen")
+        public EditorScreen()
+            : base("Editor Screen")
         {
             TransitionOnTime = TimeSpan.FromSeconds(0.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
@@ -56,41 +57,48 @@ namespace MobileGame.LevelEditor
 
             #region TileButtons
             ToolButtons = new List<MenuButton>();
-            ToolButtons.Add(new MenuButton(new Tile0(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new Tile1(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new Tile2(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new Tile3(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new Tile4(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new Tile5(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new Tile6(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new Tile7(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new Tile8(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new Tile9(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new Tile10(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new Tile11(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new Tile12(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new Tile13(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new Tile14(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new Tile15(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new JumpTileButton(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new GoalTileButton(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new Spike1Button(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new Spike2Button(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new BGTile0(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new BGTile1(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new BGTile2(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new BGTile3(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new BGTile4(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new BGTile5(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new BGTile6(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new BGTile7(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new BGTile8(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new PlayerButton(ScreenManager.Game.Content)));
-            ToolButtons.Add(new MenuButton(new EnemyButton(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new Tile0(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new Tile1(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new Tile2(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new Tile3(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new Tile4(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new Tile5(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new Tile6(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new Tile7(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new Tile8(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new Tile9(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new Tile10(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new Tile11(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new Tile12(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new Tile13(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new Tile14(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new Tile15(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new JumpTileButton(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new GoalTileButton(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new Spike1Button(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new Spike2Button(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new BGTile0(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new BGTile1(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new BGTile2(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new BGTile3(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new BGTile4(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new BGTile5(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new BGTile6(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new BGTile7(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new BGTile8(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new PlayerButton(ScreenManager.Game.Content)));
+            //ToolButtons.Add(new MenuButton(new EnemyButton(ScreenManager.Game.Content)));
 
             #endregion
-        }
 
+            for (int i = 0; i < 41; i++)
+            {
+                int x = i % 8;
+                int y = i / 8;
+
+                ToolButtons.Add(new MenuButton(new DynamicTileButton(x, y, 20, ScreenManager.Game.Content)));
+            }
+        }
         public override void Activate()
         {
             FileManagement.FileLoader.Initialize();
@@ -303,8 +311,6 @@ namespace MobileGame.LevelEditor
             }
 
             spriteBatch.End();
-
-
         }
 
         private void ProccedToSaveScreenAccepted(object sender, EventArgs e)

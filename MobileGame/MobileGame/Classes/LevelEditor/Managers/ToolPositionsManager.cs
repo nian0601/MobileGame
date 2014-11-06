@@ -39,9 +39,10 @@ namespace MobileGame.LevelEditor
         public static void RemovePosition(string Key)
         {
             if (ToolPositions.ContainsKey(Key))
+            {
                 ToolPositions.Remove(Key);
-
-            Console.WriteLine("Removed Position, with Key: " + Key);
+                Console.WriteLine("Removed Position, with Key: " + Key);
+            }
         }
 
         public static Vector2 GetPosition(string Key)
@@ -49,7 +50,7 @@ namespace MobileGame.LevelEditor
             if (ToolPositions.ContainsKey(Key))
                 return ToolPositions[Key];
 
-            Vector2 newPos = new Vector2(50 * notFoundValues, 0);
+            Vector2 newPos = new Vector2(50 * notFoundValues, 100);
             notFoundValues++;
 
             return newPos;

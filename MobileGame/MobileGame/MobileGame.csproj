@@ -690,6 +690,9 @@
     <None Include="Content\Tiles\TeleportTile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Content\Tiles\TileSet.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Content\Tiles\Tiles\0Tile.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

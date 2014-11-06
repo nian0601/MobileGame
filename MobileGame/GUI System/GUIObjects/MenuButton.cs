@@ -39,11 +39,11 @@ namespace GUI_System.GUIObjects
             mousePos.X = currState.X;
             mousePos.Y = currState.Y;
 
-            buttonStyle.NormalTexture();
+            buttonStyle.ActivateNormalTexture();
 
             if (HitBox().Contains(mousePos))
             {
-                buttonStyle.HooverTexture();
+                buttonStyle.ActivateHooverTexture();
                 if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.LeftMouseDown())
                 {
                     Vector2 newPos = new Vector2(KeyMouseReader.GetMousePos().X, KeyMouseReader.GetMousePos().Y);
