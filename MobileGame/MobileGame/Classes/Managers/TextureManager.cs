@@ -22,6 +22,7 @@ namespace MobileGame.Managers
 
         public static Texture2D SpriteSheet { get; private set; }
         public static Texture2D PlayerSheet { get; private set; }
+        public static Texture2D PlayerSheet2 { get; private set; }
         public static Texture2D PlayerColTex { get; private set; }
 
         public static Texture2D TileSet { get; private set; }
@@ -49,6 +50,7 @@ namespace MobileGame.Managers
 
             SpriteSheet = Content.Load<Texture2D>("TestSpriteSheet");
             PlayerSheet = Content.Load<Texture2D>("Units/PlayerWalkingAnimation");
+            PlayerSheet2 = Content.Load<Texture2D>("Units/PlayerWalkingAnimation2");
             PlayerColTex = Content.Load<Texture2D>("Units/PlayerHitData");
 
             FilledSquare = Content.Load<Texture2D>("DebugTextures/FilledSquare");

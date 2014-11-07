@@ -62,8 +62,6 @@ namespace MobileGame.Managers
 
         public static byte[,] CollisionLayer { get { return collisionLayer; } }
 
-        public static Vector2 GoalPos { get; private set; }
-
         #endregion
 
         public MapManager()
@@ -245,105 +243,52 @@ namespace MobileGame.Managers
                     specialsValue = FileLoader.LoadedSpecialsLayer[x, y];
 
                     #region BackgroundLayer
-                    if (backgroundValue == 25)
+                    if (backgroundValue == 25) //JumpTile
                     {
                         specialBlockList.Add(new JumpTile(x, y));
-                        backgroundLayer[x, y] = backgroundValue;
                     }
-                    else if (backgroundValue == 26)
+                    else if (backgroundValue == 26) //GoalTile
                     {
                         GoalTile temp = new GoalTile(x, y);
                         Camera.AddFocusObject(temp);
                         specialBlockList.Add(temp);
-                        backgroundLayer[x, y] = backgroundValue;
-                        GoalPos = new Vector2(x * tileSize, y * tileSize);
                         LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 250, 0.7f, Color.White, false));
                     }
-                    //else if (backgroundValue == 29)
-                    //{
-                    //    playerStartPos = new Vector2(x * tileSize, y * tileSize);
-                    //    backgroundLayer[x, y] = 255;
-                    //}
-                    //else if (backgroundValue == 30)
-                    //{
-                    //    EnemyManager.AddEnemy(new SimpleEnemy(x, y, false));
-                    //    backgroundLayer[x, y] = 255;
-                    //}
-                    //else if (backgroundValue == 31)
-                    //{
-                    //    specialBlockList.Add(new TeleportTile(x, y));
-                    //    backgroundLayer[x, y] = backgroundValue;
-                    //}
-                    else
-                    {
-                        backgroundLayer[x, y] = backgroundValue;
-                    }
-                        
+
+                    backgroundLayer[x, y] = backgroundValue;
                     #endregion
 
                     #region PlatformLayer
-                    if (platformValue == 25)
+                    if (platformValue == 25) //JumpTile
                     {
                         specialBlockList.Add(new JumpTile(x, y));
-                        platformLayer[x, y] = platformValue;
                     }
-                    else if (platformValue == 26)
+                    else if (platformValue == 26) //GoalTile
                     {
                         GoalTile temp = new GoalTile(x, y);
                         Camera.AddFocusObject(temp);
                         specialBlockList.Add(temp);
-                        platformLayer[x, y] = platformValue;
-                        GoalPos = new Vector2(x * tileSize, y * tileSize);
                         LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 250, 0.7f, Color.White, false));
                     }
-                    //else if (platformValue == 29)
-                    //{
-                    //    playerStartPos = new Vector2(x * tileSize, y * tileSize);
-                    //    platformLayer[x, y] = 255;
-                    //}
-                    //else if (platformValue == 30)
-                    //{
-                    //    EnemyManager.AddEnemy(new SimpleEnemy(x, y, false));
-                    //    platformLayer[x, y] = 255;
-                    //}
-                    else
-                        platformLayer[x, y] = platformValue;
 
-
-                    //if (platformValue != 255 && platformValue != 15)
-                    //{
-                    //    LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize + TileSize/2, y * tileSize + TileSize/2), 20, 0.5f, Color.White));
-                    //}
+                    platformLayer[x, y] = platformValue;
 
                     #endregion
 
                     #region SpecialsLayer
-                    if (specialsValue == 25)
+                    if (specialsValue == 25) //JumpTile
                     {
                         specialBlockList.Add(new JumpTile(x, y));
-                        specialsLayer[x, y] = specialsValue;
                     }
-                    else if (specialsValue == 26)
+                    else if (specialsValue == 26) //GoalTile
                     {
                         GoalTile temp = new GoalTile(x, y);
                         Camera.AddFocusObject(temp);
                         specialBlockList.Add(temp);
-                        specialsLayer[x, y] = specialsValue;
-                        GoalPos = new Vector2(x * tileSize, y * tileSize);
                         LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 250, 0.7f, Color.White, false));
                     }
-                    //else if (specialsValue == 29)
-                    //{
-                    //    playerStartPos = new Vector2(x * tileSize, y * tileSize);
-                    //    specialsLayer[x, y] = 255;
-                    //}
-                    //else if (specialsValue == 30)
-                    //{
-                    //    EnemyManager.AddEnemy(new SimpleEnemy(x, y, false));
-                    //    specialsLayer[x, y] = 255;
-                    //}
-                    else
-                        specialsLayer[x, y] = specialsValue;
+
+                    specialsLayer[x, y] = specialsValue;
                     #endregion
 
                 }

@@ -173,10 +173,7 @@ namespace MobileGame.LevelEditor
 
         public void Draw()
         {
-            
-            //Spritebatch.Draw(TextureManager.FilledSquare, new Rectangle((int)Offset.X, (int)Offset.Y, editorXTiles * TileSize, editorYTiles * TileSize), Color.CornflowerBlue);
-
-            //Background
+            //LightingMode
             if (EditorScreen.EditMode == 4)
             {
                 LightingManager.BeginDrawMainTarget();
@@ -187,17 +184,18 @@ namespace MobileGame.LevelEditor
                 {
                     for (int y = 0; y < yTiles; y++)
                     {
-                        Vector2 Pos = new Vector2(x * TileSize, y * TileSize);
-                        Texture2D Texture;
+                        Vector2 Pos = new Vector2(x * TileSize, y * TileSize) + offset;
 
                         #region Background
                         byte value = backgroundLayer[x, y];
 
                         if (value != 255)
                         {
-                            Texture = TextureManager.GameTextures[value];
+                            int sourceX = value % 8;
+                            int sourceY = value / 8;
+                            Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
 
-                            Spritebatch.Draw(Texture, Pos, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
+                            Spritebatch.Draw(TextureManager.TileSet, Pos, sourceRect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
                         }
                         #endregion
 
@@ -206,12 +204,15 @@ namespace MobileGame.LevelEditor
 
                         if (value != 255)
                         {
-                            Texture = TextureManager.GameTextures[value];
                             Color color = Color.White;
                             if (selectedLayerNum == 0)
                                 color *= 0.5f;
 
-                            Spritebatch.Draw(Texture, Pos, null, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
+                            int sourceX = value % 8;
+                            int sourceY = value / 8;
+                            Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+
+                            Spritebatch.Draw(TextureManager.TileSet, Pos, sourceRect, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
                         }
                         #endregion
 
@@ -220,7 +221,6 @@ namespace MobileGame.LevelEditor
 
                         if (value != 255)
                         {
-                            Texture = TextureManager.GameTextures[value];
                             Color color = Color.White;
 
                             if (selectedLayerNum == 0)
@@ -228,7 +228,11 @@ namespace MobileGame.LevelEditor
                             else if (selectedLayerNum == 1)
                                 color *= 0.5f;
 
-                            Spritebatch.Draw(Texture, Pos, null, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f);
+                            int sourceX = value % 8;
+                            int sourceY = value / 8;
+                            Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+
+                            Spritebatch.Draw(TextureManager.TileSet, Pos, sourceRect, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f);
                         }
                         #endregion
                     }
@@ -240,6 +244,7 @@ namespace MobileGame.LevelEditor
 
                 LightingManager.DrawLitScreen();
             }
+            //Non-Lighing mode
             else
             {
                 Spritebatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
@@ -249,15 +254,12 @@ namespace MobileGame.LevelEditor
                     for (int y = 0; y < yTiles; y++)
                     {
                         Vector2 Pos = new Vector2(x * TileSize, y * TileSize) + offset;
-                        //Texture2D Texture;
 
                         #region Background
                         byte value = backgroundLayer[x, y];
 
                         if (value != 255)
                         {
-                            //Texture = TextureManager.GameTextures[value];
-
                             int sourceX = value % 8;
                             int sourceY = value / 8;
                             Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
@@ -271,16 +273,15 @@ namespace MobileGame.LevelEditor
 
                         if (value != 255)
                         {
-                            //Texture = TextureManager.GameTextures[value];
                             Color color = Color.White;
                             if (selectedLayerNum == 0)
                                 color *= 0.5f;
+
                             int sourceX = value % 8;
                             int sourceY = value / 8;
                             Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
 
-                            Spritebatch.Draw(TextureManager.TileSet, Pos, sourceRect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
-                            //Spritebatch.Draw(Texture, Pos, null, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
+                            Spritebatch.Draw(TextureManager.TileSet, Pos, sourceRect, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
                         }
                         #endregion
 
@@ -289,7 +290,6 @@ namespace MobileGame.LevelEditor
 
                         if (value != 255)
                         {
-                            //Texture = TextureManager.GameTextures[value];
                             Color color = Color.White;
 
                             if (selectedLayerNum == 0)
@@ -301,8 +301,7 @@ namespace MobileGame.LevelEditor
                             int sourceY = value / 8;
                             Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
 
-                            Spritebatch.Draw(TextureManager.TileSet, Pos, sourceRect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
-                            //Spritebatch.Draw(Texture, Pos, null, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f);
+                            Spritebatch.Draw(TextureManager.TileSet, Pos, sourceRect, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f);
                         }
                         #endregion
                     }

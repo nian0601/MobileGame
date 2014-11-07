@@ -64,7 +64,8 @@ namespace MobileGame.LevelEditor.Tools
                 PointLight tempLight = new PointLight(pos, radius, 0.5f, EditorScreen.ColorPicker.SelectedColor, false);
                 LightingManager.PointLights.Add(tempLight);
 
-                Rectangle hitBox = new Rectangle(centerx, centery, 20, 20);
+
+                Rectangle hitBox = new Rectangle((int)tempLight.Position.X - 10 + (int)EditorMapManager.Offset.X, (int)tempLight.Position.Y - 10 + (int)EditorMapManager.Offset.Y, 20, 20);
                 pointLightHitBoxes.Add(hitBox);
             }
             else if (KeyMouseReader.KeyClick(Keys.Q))
@@ -76,7 +77,6 @@ namespace MobileGame.LevelEditor.Tools
 
                 Rectangle hitBox = new Rectangle(x + (int)EditorMapManager.Offset.X, y + (int)EditorMapManager.Offset.Y, 20, 20);
                 ambientLightHitBoxes.Add(hitBox);
-
             }
 
             else if (KeyMouseReader.LeftClick())

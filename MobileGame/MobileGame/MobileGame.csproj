@@ -759,6 +759,9 @@
     <None Include="Content\Units\PlayerWalkingAnimation.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Content\Units\PlayerWalkingAnimation2.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Content\Units\SmallerEnemy.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

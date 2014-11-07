@@ -15,6 +15,8 @@ namespace MobileGame.Tiles
 
         public virtual void CollideWithUnit(Player Unit) { }
 
+        public virtual void CollideWithUnit(Player Unit, float ElapsedTime) { }
+
         public virtual void CollideWithUnit(IEnemy Unit) { }
     }
 }
