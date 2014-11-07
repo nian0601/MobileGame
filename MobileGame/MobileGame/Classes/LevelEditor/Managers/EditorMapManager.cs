@@ -436,8 +436,8 @@ namespace MobileGame.LevelEditor
                 LightingManager.AmbientLights.Add(newLight);
             }
 
-            GoalPlaced = true;
-            PlayerPlaced = true;
+            GoalPlaced = false;
+            PlayerPlaced = false;
         }
 
         public static void SetSelectedLayer(int Value)

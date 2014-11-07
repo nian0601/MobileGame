@@ -86,7 +86,7 @@ namespace MobileGame.LevelEditor
             //ToolButtons.Add(new MenuButton(new BGTile6(ScreenManager.Game.Content)));
             //ToolButtons.Add(new MenuButton(new BGTile7(ScreenManager.Game.Content)));
             //ToolButtons.Add(new MenuButton(new BGTile8(ScreenManager.Game.Content)));
-            //ToolButtons.Add(new MenuButton(new PlayerButton(ScreenManager.Game.Content)));
+            
             //ToolButtons.Add(new MenuButton(new EnemyButton(ScreenManager.Game.Content)));
 
             #endregion
@@ -98,7 +98,10 @@ namespace MobileGame.LevelEditor
 
                 ToolButtons.Add(new MenuButton(new DynamicTileButton(x, y, 20, ScreenManager.Game.Content)));
             }
+
+            ToolButtons.Add(new MenuButton(new PlayerButton(ScreenManager.Game.Content)));
         }
+
         public override void Activate()
         {
             FileManagement.FileLoader.Initialize();

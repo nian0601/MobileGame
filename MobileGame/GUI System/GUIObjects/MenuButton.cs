@@ -17,6 +17,8 @@ namespace GUI_System.GUIObjects
 
         private ButtonStyle buttonStyle;
 
+        private bool myLockedToMouse;
+
         public Vector2 Position
         {
             get { return buttonStyle.Position; }
@@ -29,6 +31,8 @@ namespace GUI_System.GUIObjects
             currState = Mouse.GetState();
 
             buttonStyle = style;
+
+            myLockedToMouse = false;
         }
 
         public void Update(MenuScreen screen, GameTime gameTime)
@@ -44,13 +48,24 @@ namespace GUI_System.GUIObjects
             if (HitBox().Contains(mousePos))
             {
                 buttonStyle.ActivateHooverTexture();
-                if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.LeftMouseDown())
+
+                if(KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.LeftClick())
                 {
-                    Vector2 newPos = new Vector2(KeyMouseReader.GetMousePos().X, KeyMouseReader.GetMousePos().Y);
-                    Position = newPos;
+                    myLockedToMouse = true;
                 }
             }
-                
+
+            if(KeyMouseReader.RightClick())
+            {
+                myLockedToMouse = false;
+            }
+               
+            if(myLockedToMouse == true)
+            {
+                Vector2 newPos = new Vector2(KeyMouseReader.GetMousePos().X, KeyMouseReader.GetMousePos().Y);
+                Position = newPos;
+            }
+
         }
 
         public void Draw(MenuScreen screen, GameTime gameTime)
