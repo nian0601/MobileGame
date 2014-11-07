@@ -272,10 +272,10 @@ namespace MobileGame.LevelEditor
         public DynamicTileButton(int aTileSheetX, int aTileSheetY, int aTileSize, ContentManager content)
             : base(content)
         {
-            NormalTexture = content.Load<Texture2D>("Tiles/TileSet");
+            NormalTexture = content.Load<Texture2D>("Editor/ToolButtons/TileSetEditorButtons");
             TextureToDraw = NormalTexture;
 
-            hooverTexture = content.Load<Texture2D>("Tiles/TileSet");
+            hooverTexture = content.Load<Texture2D>("Editor/ToolButtons/TileSetEditorButtons");
 
             SourceRect = new Rectangle(aTileSheetX * aTileSize, aTileSheetY * aTileSize, aTileSize, aTileSize);
         }

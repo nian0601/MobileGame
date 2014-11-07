@@ -25,6 +25,7 @@ namespace MobileGame.Managers
         public static Texture2D PlayerColTex { get; private set; }
 
         public static Texture2D TileSet { get; private set; }
+        public static Texture2D TileSetEditorEdition { get; private set; }
 
         public static List<Texture2D> SpikeTextures { get; private set; }
 
@@ -54,6 +55,7 @@ namespace MobileGame.Managers
             FilledSquare = Content.Load<Texture2D>("DebugTextures/FilledSquare");
 
             TileSet = Content.Load<Texture2D>("Tiles/TileSet");
+            TileSetEditorEdition = Content.Load<Texture2D>("Editor/ToolButtons/TileSetEditorButtons");
 
             SpikeTextures = new List<Texture2D>();
             SpikeTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/Spike_00"));

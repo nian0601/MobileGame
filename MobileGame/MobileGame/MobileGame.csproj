@@ -492,6 +492,9 @@
     <None Include="Content\Editor\ToolButtons\Normal\Tile9.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Content\Editor\ToolButtons\TileSetEditorButtons.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Content\Effects\AmbientLight.mgfxo">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
