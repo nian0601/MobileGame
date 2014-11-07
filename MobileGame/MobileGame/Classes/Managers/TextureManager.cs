@@ -27,6 +27,7 @@ namespace MobileGame.Managers
 
         public static Texture2D TileSet { get; private set; }
         public static Texture2D TileSetEditorEdition { get; private set; }
+        public static Texture2D BurningTorch { get; private set; }
 
         public static List<Texture2D> SpikeTextures { get; private set; }
 
@@ -58,6 +59,7 @@ namespace MobileGame.Managers
 
             TileSet = Content.Load<Texture2D>("Tiles/TileSet");
             TileSetEditorEdition = Content.Load<Texture2D>("Editor/ToolButtons/TileSetEditorButtons");
+            BurningTorch = Content.Load<Texture2D>("Tiles/BurningTorch");
 
             SpikeTextures = new List<Texture2D>();
             SpikeTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/Spike_00"));

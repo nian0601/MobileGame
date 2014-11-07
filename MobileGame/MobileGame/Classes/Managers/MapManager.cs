@@ -29,7 +29,8 @@ namespace MobileGame.Managers
         private static int mapWidth;
         private static int mapHeight;
 
-        private List<SpecialTile> specialBlockList;
+        private List<SpecialTile> mySpecialTiles;
+        private List<AnimatedTile> myAnimatedTiles;
         private int mapYTiles;
         private int mapXTiles;
         private Vector2 playerStartPos;
@@ -40,7 +41,7 @@ namespace MobileGame.Managers
 
         public List<SpecialTile> SpecialBlocksList
         {
-            get { return specialBlockList; }
+            get { return mySpecialTiles; }
         }
 
         public Vector2 PlayerStartPos
@@ -66,7 +67,8 @@ namespace MobileGame.Managers
 
         public MapManager()
         {
-            specialBlockList = new List<SpecialTile>();
+            mySpecialTiles = new List<SpecialTile>();
+            myAnimatedTiles = new List<AnimatedTile>();
             playerStartPos = new Vector2(200, 200);
         }
 
@@ -84,10 +86,15 @@ namespace MobileGame.Managers
             BuildLevel();
         }
 
-        public void Update()
+        public void Update(float aElaspedTime)
         {
             int mouseX = KeyMouseReader.GetMousePos().X;
             int mouseY = KeyMouseReader.GetMousePos().Y;
+
+            for (int i = 0; i < myAnimatedTiles.Count; i++)
+            {
+                myAnimatedTiles[i].Update(aElaspedTime);
+            }
         }
 
 
@@ -97,7 +104,6 @@ namespace MobileGame.Managers
             {
                 for (int y = 0; y < mapYTiles; y++)
                 {
-                    Point pixelIndex = ConvertIndexToPixels(x, y);
                     Color Color = Color.White;
 
                     if (Game1.Debugging)
@@ -106,16 +112,13 @@ namespace MobileGame.Managers
                             Color = Color.PaleVioletRed;
                     }
 
-                    Vector2 Pos = new Vector2(x * tileSize, y * tileSize);
-                    //Texture2D Texture;
-
                     byte value = backgroundLayer[x, y];
                     if (value != 255)
                     {
+                        Vector2 Pos = new Vector2(x * tileSize, y * tileSize);
                         int sourceX = value % 8;
                         int sourceY = value / 8;
                         Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
-                        //Texture = TextureManager.GameTextures[value];
                         spriteBatch.Draw(TextureManager.TileSet, Pos, sourceRect, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
                     }
                 }
@@ -128,7 +131,6 @@ namespace MobileGame.Managers
             {
                 for (int y = 0; y < mapYTiles; y++)
                 {
-                    Point pixelIndex = ConvertIndexToPixels(x, y);
                     Color Color = Color.White;
 
                     if (Game1.Debugging)
@@ -137,16 +139,13 @@ namespace MobileGame.Managers
                             Color = Color.PaleVioletRed;
                     }
 
-                    Vector2 Pos = new Vector2(x * tileSize, y * tileSize);
-                    //Texture2D Texture;
-
                     byte value = platformLayer[x, y];
                     if (value != 255)
                     {
+                        Vector2 Pos = new Vector2(x * tileSize, y * tileSize);
                         int sourceX = value % 8;
                         int sourceY = value / 8;
                         Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
-                        //Texture = TextureManager.GameTextures[value];
                         spriteBatch.Draw(TextureManager.TileSet, Pos, sourceRect, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
                     }
                 }
@@ -159,7 +158,6 @@ namespace MobileGame.Managers
             {
                 for (int y = 0; y < mapYTiles; y++)
                 {
-                    Point pixelIndex = ConvertIndexToPixels(x, y);
                     Color Color = Color.White;
 
                     if (Game1.Debugging)
@@ -168,19 +166,25 @@ namespace MobileGame.Managers
                             Color = Color.PaleVioletRed;
                     }
 
-                    Vector2 Pos = new Vector2(x * tileSize, y * tileSize);
-                    //Texture2D Texture;
 
                     byte value = specialsLayer[x, y];
                     if (value != 255)
                     {
+                        Vector2 Pos = new Vector2(x * tileSize, y * tileSize);
                         int sourceX = value % 8;
                         int sourceY = value / 8;
                         Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
-                        //Texture = TextureManager.GameTextures[value];
                         spriteBatch.Draw(TextureManager.TileSet, Pos, sourceRect, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f); ;
                     }
                 }
+            }
+        }
+
+        public void DrawAnimatedTiles(SpriteBatch aSpriteBatch)
+        {
+            for (int i = 0; i < myAnimatedTiles.Count; i++)
+            {
+                myAnimatedTiles[i].Draw(aSpriteBatch);
             }
         }
 
@@ -227,7 +231,7 @@ namespace MobileGame.Managers
             platformLayer = new byte[mapXTiles, mapYTiles];
             specialsLayer = new byte[mapXTiles, mapYTiles];
 
-            specialBlockList.Clear();
+            mySpecialTiles.Clear();
 
             byte backgroundValue, platformValue, specialsValue;
 
@@ -242,54 +246,39 @@ namespace MobileGame.Managers
                     platformValue = FileLoader.LoadedPlatformLayer[x, y];
                     specialsValue = FileLoader.LoadedSpecialsLayer[x, y];
 
-                    #region BackgroundLayer
-                    if (backgroundValue == 25) //JumpTile
+                    if (backgroundValue == 25 || platformValue == 25 || specialsValue == 25) //JumpTile
                     {
-                        specialBlockList.Add(new JumpTile(x, y));
+                        mySpecialTiles.Add(new JumpTile(x, y));
                     }
-                    else if (backgroundValue == 26) //GoalTile
+                    else if (backgroundValue == 26 || platformValue == 26 || specialsValue == 26) //GoalTile
                     {
                         GoalTile temp = new GoalTile(x, y);
                         Camera.AddFocusObject(temp);
-                        specialBlockList.Add(temp);
+                        mySpecialTiles.Add(temp);
                         LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 250, 0.7f, Color.White, false));
+                    }
+                    else if (backgroundValue == 27 || backgroundValue == 28 || backgroundValue == 29
+                            || platformValue == 27 || platformValue == 28 || platformValue == 29
+                            || specialsValue == 27 || specialsValue == 28 || specialsValue == 29) //SpikeTile
+                    {
+                        mySpecialTiles.Add(new SpikeTile(x, y));
+                    }
+
+                    if (backgroundValue == 41 || platformValue == 41 || specialsValue == 41) // Torch
+                    {
+                        myAnimatedTiles.Add(new AnimatedTile(x, y, TextureManager.BurningTorch, 0, 0, 5, 0, 100));
+                        LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 150, 0.7f, Color.White, true));
+                        //Right now the torch is getting drawn two times:
+                        //The first is a static image of the first frame
+                        //The second is the acctual animation
+                        //This is because i did not want to do alot of if-checks for each backgroundvalue/platformvalue/specialvalue
+                        //and set the corresponding layer to 255 if a toirch was found
+                        //should figure out something to do this in a pretty way later
                     }
 
                     backgroundLayer[x, y] = backgroundValue;
-                    #endregion
-
-                    #region PlatformLayer
-                    if (platformValue == 25) //JumpTile
-                    {
-                        specialBlockList.Add(new JumpTile(x, y));
-                    }
-                    else if (platformValue == 26) //GoalTile
-                    {
-                        GoalTile temp = new GoalTile(x, y);
-                        Camera.AddFocusObject(temp);
-                        specialBlockList.Add(temp);
-                        LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 250, 0.7f, Color.White, false));
-                    }
-
                     platformLayer[x, y] = platformValue;
-
-                    #endregion
-
-                    #region SpecialsLayer
-                    if (specialsValue == 25) //JumpTile
-                    {
-                        specialBlockList.Add(new JumpTile(x, y));
-                    }
-                    else if (specialsValue == 26) //GoalTile
-                    {
-                        GoalTile temp = new GoalTile(x, y);
-                        Camera.AddFocusObject(temp);
-                        specialBlockList.Add(temp);
-                        LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 250, 0.7f, Color.White, false));
-                    }
-
                     specialsLayer[x, y] = specialsValue;
-                    #endregion
 
                 }
             }

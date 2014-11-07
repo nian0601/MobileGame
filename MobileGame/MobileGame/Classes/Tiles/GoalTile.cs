@@ -15,12 +15,10 @@ namespace MobileGame.Tiles
     {
         public GoalTile(int x, int y) : base(x, y)
         {
-            tileTexture = TextureManager.GoalTile;
+            myPixelPos = new Vector2(x * MapManager.TileSize, y * MapManager.TileSize);
 
-            pixelPos = new Vector2(index.X * tileSize, index.Y * tileSize - tileTexture.Height / 2);
-
-            interestRadius = 450;
-            controlRadius = 250;
+            myInterestRadius = 450;
+            myControlRadius = 250;
         }
 
         public override void CollideWithUnit(Player Unit)
@@ -30,7 +28,7 @@ namespace MobileGame.Tiles
 
         public override Rectangle HitBox()
         {
-            return new Rectangle((int)pixelPos.X, (int)pixelPos.Y, tileTexture.Width, tileTexture.Height);
+            return new Rectangle((int)myPixelPos.X, (int)myPixelPos.Y, MapManager.TileSize, MapManager.TileSize);
         }
     }
 }

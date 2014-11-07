@@ -57,9 +57,9 @@ namespace MobileGame.Lights
 
                 if (myGrowing == true)
                 {
-                    if (myRadius < myNormalRadius + 40)
+                    if (myRadius < myNormalRadius + 20)
                     {
-                        myRadius = LinearTween(currTime, myNormalRadius - 40, 40, 200);
+                        myRadius = LinearTween(currTime, myNormalRadius - 20, 20, 200);
                     }
                     else 
                     {
@@ -69,9 +69,9 @@ namespace MobileGame.Lights
                 }
                 else
                 {
-                    if (myRadius > myNormalRadius - 40)
+                    if (myRadius > myNormalRadius - 20)
                     {
-                        myRadius = LinearTween(currTime, myNormalRadius + 40, -40, 200);
+                        myRadius = LinearTween(currTime, myNormalRadius + 20, -20, 200);
                     }
                     else
                     {

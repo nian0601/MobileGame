@@ -85,9 +85,11 @@ namespace MobileGame.LevelEditor.Tools
 
                         if (value != 255)
                         {
-                            Texture2D Texture = TextureManager.GameTextures[value];
+                            int sourceX = value % 8;
+                            int sourceY = value / 8;
+                            Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
 
-                            spritebatch.Draw(Texture, Pos, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
+                            spritebatch.Draw(TextureManager.TileSet, Pos, sourceRect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
                         }
                     }
 

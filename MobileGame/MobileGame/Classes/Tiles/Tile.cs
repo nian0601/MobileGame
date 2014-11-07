@@ -22,7 +22,6 @@ namespace MobileGame.Tiles
         public bool canJumpThrough;
         public Color Color;
 
-        protected Texture2D tileTexture;
         protected Vector2 index;
         protected Vector2 pixelPos;
         protected int tileSize;
@@ -92,14 +91,14 @@ namespace MobileGame.Tiles
             Color = Color.White;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            if (shouldDraw)
-            {
-                spriteBatch.Draw(tileTexture, pixelPos, null, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f); 
-                Color = Color.White;
-            }     
-        }
+        //public void Draw(SpriteBatch spriteBatch)
+        //{
+        //    if (shouldDraw)
+        //    {
+        //        spriteBatch.Draw(tileTexture, pixelPos, null, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f); 
+        //        Color = Color.White;
+        //    }     
+        //}
 
 
         public virtual Rectangle HitBox()

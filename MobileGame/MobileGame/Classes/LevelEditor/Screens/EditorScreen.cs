@@ -91,12 +91,12 @@ namespace MobileGame.LevelEditor
 
             #endregion
 
-            for (int i = 0; i < 41; i++)
+            for (int i = 0; i < 43; i++)
             {
                 int x = i % 8;
                 int y = i / 8;
 
-                ToolButtons.Add(new MenuButton(new DynamicTileButton(x, y, 20, ScreenManager.Game.Content)));
+                ToolButtons.Add(new MenuButton(new DynamicTileButton(x, y, 40, ScreenManager.Game.Content)));
             }
 
             ToolButtons.Add(new MenuButton(new PlayerButton(ScreenManager.Game.Content)));
@@ -255,7 +255,7 @@ namespace MobileGame.LevelEditor
             position.Y -= FGLayerButton.GetHeight(this) + ySpacing;
             FGLayerButton.Position = position;
 
-            position.Y -= 300;
+            position.Y -= 100;
             position.X += 10;
             ColorPicker.Position = position;
 

@@ -51,15 +51,15 @@ namespace MobileGame.Managers
             pointLightHandles = new List<PointLight>();
 
             ambientLightHandles.Add(new AmbientLight(Color.White, 1f));
-            pointLightHandles.Add(new PointLight(Player.Position, 200, 0.8f, Color.White, true));
+            //pointLightHandles.Add(new PointLight(Player.Position, 200, 0.8f, Color.White, false));
 
-            LightingManager.PointLights.Add(pointLightHandles[0]);
+            //LightingManager.PointLights.Add(pointLightHandles[0]);
         }
 
         public void Update(float elapsedTime)
         {
             LightingManager.Update(elapsedTime);
-            mapManager.Update();
+            mapManager.Update(elapsedTime);
 
             //Collision against specialblocks is handled outside the player class
             for (int i = 0; i < mapManager.SpecialBlocksList.Count; i++)
@@ -90,7 +90,7 @@ namespace MobileGame.Managers
                     LightingManager.AmbientLights.Add(ambientLightHandles[0]);
             }
 
-            pointLightHandles[0].SetPosition(Player.Position);
+            //pointLightHandles[0].SetPosition(Player.Position);
             //Console.WriteLine("FPS: " + (1000 / elapsedTime));
         }
 
@@ -104,6 +104,7 @@ namespace MobileGame.Managers
             mapManager.DrawBackground(spriteBatch);
             mapManager.DrawMiddle(spriteBatch);
             mapManager.DrawForeground(spriteBatch);
+            mapManager.DrawAnimatedTiles(spriteBatch);
 
             EnemyManager.Draw(spriteBatch);
 

@@ -94,6 +94,7 @@
     <Compile Include="Classes\Screens\MainMenuScreen.cs" />
     <Compile Include="Classes\Screens\PausScreen.cs" />
     <Compile Include="Classes\Screens\WinScreen.cs" />
+    <Compile Include="Classes\Tiles\AnimatedTile.cs" />
     <Compile Include="Classes\Tiles\GoalTile.cs" />
     <Compile Include="Classes\Tiles\JumpTile.cs" />
     <Compile Include="Classes\Tiles\SpikeTile.cs" />
@@ -595,6 +596,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\TestSpriteSheet.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Tiles\BurningTorch.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Tiles\GoalTile.xnb">
