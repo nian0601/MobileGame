@@ -14,6 +14,7 @@ namespace MobileGame.Animations
         private int timePerFrame;
         private int startCol, startRow;
         private int endCol, endRow;
+        private bool loop;
 
         public string Name { get { return name; } }
         public int TimePerFrame { get { return timePerFrame; } }
@@ -21,8 +22,9 @@ namespace MobileGame.Animations
         public int StartRow { get { return startRow; } }
         public int EndCol { get { return endCol; } }
         public int EndRow { get { return endRow; } }
+        public bool Looping { get { return loop; } }
 
-        public Animation(string Name, int TimePerFrame, int StartCol, int StartRow, int EndCol, int EndRow)
+        public Animation(string Name, int TimePerFrame, int StartCol, int StartRow, int EndCol, int EndRow, bool Looping)
         {
             name = Name;
             timePerFrame = TimePerFrame;
@@ -30,6 +32,7 @@ namespace MobileGame.Animations
             startRow = StartRow;
             endCol = EndCol;
             endRow = EndRow;
+            loop = Looping;
         }
     }
 }

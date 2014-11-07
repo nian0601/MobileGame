@@ -50,7 +50,7 @@ namespace MobileGame.LevelEditor
             if (ToolPositions.ContainsKey(Key))
                 return ToolPositions[Key];
 
-            Vector2 newPos = new Vector2(50 * notFoundValues, 100);
+            Vector2 newPos = new Vector2(50 * notFoundValues, 500);
             notFoundValues++;
 
             return newPos;

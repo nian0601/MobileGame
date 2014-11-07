@@ -47,7 +47,7 @@ namespace MobileGame.LevelEditor.Tools
 
         private void CreateAir(int X, int Y)
         {
-            if (EditorMapManager.SelectedLayer[X, Y] == 17)
+            if (EditorMapManager.SelectedLayer[X, Y] == 26)
                 EditorMapManager.GoalPlaced = false;
             if (EditorMapManager.SelectedLayer[X, Y] == 29)
                 EditorMapManager.PlayerPlaced = false;
@@ -68,7 +68,7 @@ namespace MobileGame.LevelEditor.Tools
 
         private void CreatePlatform(int X, int Y, int TileValue)
         {
-            if (TileValue == 17)
+            if (TileValue == 26)
             {
                 CreateGoalTile(X, Y);
             }
@@ -97,7 +97,7 @@ namespace MobileGame.LevelEditor.Tools
 
         private void CreateJumpTile(int X, int Y)
         {
-            EditorMapManager.SelectedLayer[X, Y] = 16;
+            EditorMapManager.SelectedLayer[X, Y] = 25;
         }
 
         private void CreateTeleportTile(int X, int Y)
@@ -109,7 +109,7 @@ namespace MobileGame.LevelEditor.Tools
         {
             if (!EditorMapManager.GoalPlaced)
             {
-                EditorMapManager.SelectedLayer[X, Y] = 17;
+                EditorMapManager.SelectedLayer[X, Y] = 26;
                 EditorMapManager.GoalPlaced = true;
             }
         }

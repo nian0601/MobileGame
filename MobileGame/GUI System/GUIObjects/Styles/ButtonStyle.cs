@@ -35,13 +35,13 @@ namespace GUI_System.GUIObjects
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            Origin = new Vector2(ClickableArea().Width / 2, ClickableArea().Height / 2);
+            Origin = new Vector2(SourceRect.Width / 2, SourceRect.Height/2);
             spriteBatch.Draw(TextureToDraw, Position, SourceRect, Color, 0, Origin, 1f, SpriteEffects.None, 0);
         }
 
         public virtual Rectangle ClickableArea()
         {
-            return new Rectangle((int)Position.X - (int)Origin.X, (int)Position.Y - (int)Origin.Y, TextureToDraw.Width, TextureToDraw.Height);
+            return new Rectangle((int)Position.X - (int)Origin.X, (int)Position.Y - (int)Origin.Y, SourceRect.Width, SourceRect.Height);
         }
 
         public virtual void ActivateNormalTexture()
