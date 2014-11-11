@@ -147,7 +147,6 @@ namespace MobileGame.Managers
             {
                 for (int y = 0; y < mapYTiles; y++)
                 {
-                    Point pixelIndex = ConvertIndexToPixels(x, y);
                     Color Color = Color.White;
 
                     if (Game1.Debugging)
@@ -156,14 +155,15 @@ namespace MobileGame.Managers
                             Color = Color.PaleVioletRed;
                     }
 
-                    Vector2 Pos = new Vector2(x * tileSize, y * tileSize);
-                    Texture2D Texture;
 
                     byte value = backgroundLayer[x, y];
                     if (value != 255)
                     {
-                        Texture = TextureManager.GameTextures[value];
-                        spriteBatch.Draw(Texture, Pos, null, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
+                        Vector2 Pos = new Vector2(x * tileSize, y * tileSize);
+                        int sourceX = value % 8;
+                        int sourceY = value / 8;
+                        Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+                        spriteBatch.Draw(TextureManager.TileSheet, Pos, sourceRect, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
                     }
                 }
             }
@@ -175,7 +175,6 @@ namespace MobileGame.Managers
             {
                 for (int y = 0; y < mapYTiles; y++)
                 {
-                    Point pixelIndex = ConvertIndexToPixels(x, y);
                     Color Color = Color.White;
 
                     if (Game1.Debugging)
@@ -184,14 +183,14 @@ namespace MobileGame.Managers
                             Color = Color.PaleVioletRed;
                     }
 
-                    Vector2 Pos = new Vector2(x * tileSize, y * tileSize);
-                    Texture2D Texture;
-
                     byte value = platformLayer[x, y];
                     if (value != 255)
                     {
-                        Texture = TextureManager.GameTextures[value];
-                        spriteBatch.Draw(Texture, Pos, null, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
+                        Vector2 Pos = new Vector2(x * tileSize, y * tileSize);
+                        int sourceX = value % 8;
+                        int sourceY = value / 8;
+                        Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+                        spriteBatch.Draw(TextureManager.TileSheet, Pos, sourceRect, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
                     }
                 }
             }
@@ -203,7 +202,6 @@ namespace MobileGame.Managers
             {
                 for (int y = 0; y < mapYTiles; y++)
                 {
-                    Point pixelIndex = ConvertIndexToPixels(x, y);
                     Color Color = Color.White;
 
                     if (Game1.Debugging)
@@ -212,14 +210,15 @@ namespace MobileGame.Managers
                             Color = Color.PaleVioletRed;
                     }
 
-                    Vector2 Pos = new Vector2(x * tileSize, y * tileSize);
-                    Texture2D Texture;
 
                     byte value = specialsLayer[x, y];
                     if (value != 255)
                     {
-                        Texture = TextureManager.GameTextures[value];
-                        spriteBatch.Draw(Texture, Pos, null, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f);
+                        Vector2 Pos = new Vector2(x * tileSize, y * tileSize);
+                        int sourceX = value % 8;
+                        int sourceY = value / 8;
+                        Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+                        spriteBatch.Draw(TextureManager.TileSheet, Pos, sourceRect, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
                     }
                 }
             }
@@ -306,7 +305,7 @@ namespace MobileGame.Managers
                     }
                     else if (backgroundValue == 30)
                     {
-                        EnemyManager.AddEnemy(new SimpleEnemy(x, y, false));
+                        //EnemyManager.AddEnemy(new SimpleEnemy(x, y, false));
                         backgroundLayer[x, y] = 255;
                     }
                     else if (backgroundValue == 31)
@@ -349,7 +348,7 @@ namespace MobileGame.Managers
                     }
                     else if (platformValue == 30)
                     {
-                        EnemyManager.AddEnemy(new SimpleEnemy(x, y, false));
+                        //EnemyManager.AddEnemy(new SimpleEnemy(x, y, false));
                         platformLayer[x, y] = 255;
                     }
                     else
@@ -390,7 +389,7 @@ namespace MobileGame.Managers
                     }
                     else if (specialsValue == 30)
                     {
-                        EnemyManager.AddEnemy(new SimpleEnemy(x, y, false));
+                        //EnemyManager.AddEnemy(new SimpleEnemy(x, y, false));
                         specialsLayer[x, y] = 255;
                     }
                     else

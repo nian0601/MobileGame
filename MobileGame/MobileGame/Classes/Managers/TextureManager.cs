@@ -28,6 +28,9 @@ namespace MobileGame.Managers
 
         public static List<Texture2D> GameTextures { get; private set; }
 
+        public static Texture2D TileSheet { get; private set; }
+        public static Texture2D BurningTorch { get; private set; }
+
         public static Texture2D FilledSquare { get; private set; }
         public static Effect Ambient { get; private set; }
         public static Effect Diffuse { get; private set; }
@@ -48,6 +51,9 @@ namespace MobileGame.Managers
             SpriteSheet = Content.Load<Texture2D>("TestSpriteSheet");
             PlayerSheet = Content.Load<Texture2D>("Units/PlayerWalkingAnimation");
             PlayerColTex = Content.Load<Texture2D>("Units/PlayerHitData");
+
+            TileSheet = Content.Load<Texture2D>("Tiles/TileSet");
+            BurningTorch = Content.Load<Texture2D>("Tiles/BurningTorch");
 
             FilledSquare = Content.Load<Texture2D>("DebugTextures/FilledSquare");
 

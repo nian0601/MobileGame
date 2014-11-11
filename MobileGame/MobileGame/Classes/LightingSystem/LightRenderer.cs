@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 
 using MobileGame.CameraManagement;
+using MobileGame.Managers;
 
 namespace MobileGame.LightingSystem
 {
@@ -62,27 +63,17 @@ namespace MobileGame.LightingSystem
             spotLights = new List<SpotLight>();
             pointLights = new List<PointLight>();
 
-            backBufferCache = new RenderTarget2D(graphics.GraphicsDevice, graphics.GraphicsDevice.PresentationParameters.BackBufferWidth, graphics.GraphicsDevice.PresentationParameters.BackBufferHeight);
-            midGroundTarget = new RenderTarget2D(graphics.GraphicsDevice, graphics.GraphicsDevice.PresentationParameters.BackBufferWidth, graphics.GraphicsDevice.PresentationParameters.BackBufferHeight);
-            lightMap = new RenderTarget2D(graphics.GraphicsDevice, graphics.GraphicsDevice.PresentationParameters.BackBufferWidth, graphics.GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.None, 1, RenderTargetUsage.PreserveContents);
-            unwrapTarget = new RenderTarget2D(graphics.GraphicsDevice, graphics.GraphicsDevice.PresentationParameters.BackBufferWidth, graphics.GraphicsDevice.PresentationParameters.BackBufferWidth, false, SurfaceFormat.HdrBlendable, DepthFormat.None);
-            occlusionMap = new RenderTarget2D(graphics.GraphicsDevice, graphics.GraphicsDevice.PresentationParameters.BackBufferWidth, 1, false, SurfaceFormat.HdrBlendable, DepthFormat.None);
-            postProcessTarget = new RenderTarget2D(graphics.GraphicsDevice, graphics.GraphicsDevice.PresentationParameters.BackBufferWidth, graphics.GraphicsDevice.PresentationParameters.BackBufferHeight);
-            horizontalBlurTarget = new RenderTarget2D(graphics.GraphicsDevice, graphics.GraphicsDevice.PresentationParameters.BackBufferWidth, graphics.GraphicsDevice.PresentationParameters.BackBufferHeight);
-            verticalBlurTarget = new RenderTarget2D(graphics.GraphicsDevice, graphics.GraphicsDevice.PresentationParameters.BackBufferWidth, graphics.GraphicsDevice.PresentationParameters.BackBufferHeight);
-            ambientTarget = new RenderTarget2D(graphics.GraphicsDevice, graphics.GraphicsDevice.PresentationParameters.BackBufferWidth, graphics.GraphicsDevice.PresentationParameters.BackBufferHeight);
+            backBufferCache = new RenderTarget2D(graphics.GraphicsDevice, MapManager.MapWidth, MapManager.MapHeight);
+            midGroundTarget = new RenderTarget2D(graphics.GraphicsDevice, MapManager.MapWidth, MapManager.MapHeight);
+            lightMap = new RenderTarget2D(graphics.GraphicsDevice, MapManager.MapWidth, MapManager.MapHeight, false, SurfaceFormat.Color, DepthFormat.None, 1, RenderTargetUsage.PreserveContents);
+            unwrapTarget = new RenderTarget2D(graphics.GraphicsDevice, MapManager.MapWidth, MapManager.MapWidth, false, SurfaceFormat.HdrBlendable, DepthFormat.None);
+            occlusionMap = new RenderTarget2D(graphics.GraphicsDevice, MapManager.MapWidth, 1, false, SurfaceFormat.HdrBlendable, DepthFormat.None);
+            postProcessTarget = new RenderTarget2D(graphics.GraphicsDevice, MapManager.MapWidth, MapManager.MapHeight);
+            horizontalBlurTarget = new RenderTarget2D(graphics.GraphicsDevice, MapManager.MapWidth, MapManager.MapHeight);
+            verticalBlurTarget = new RenderTarget2D(graphics.GraphicsDevice, MapManager.MapWidth, MapManager.MapHeight);
+            ambientTarget = new RenderTarget2D(graphics.GraphicsDevice, MapManager.MapWidth, MapManager.MapHeight);
 
-            //backBufferCache = new RenderTarget2D(graphics.GraphicsDevice, Camera.ViewPort.Width, Camera.ViewPort.Height);
-            //midGroundTarget = new RenderTarget2D(graphics.GraphicsDevice, Camera.ViewPort.Width, Camera.ViewPort.Height);
-            //lightMap = new RenderTarget2D(graphics.GraphicsDevice, Camera.ViewPort.Width, Camera.ViewPort.Height, false, SurfaceFormat.Color, DepthFormat.None, 1, RenderTargetUsage.PreserveContents);
-            //unwrapTarget = new RenderTarget2D(graphics.GraphicsDevice, Camera.ViewPort.Width, Camera.ViewPort.Width, false, SurfaceFormat.HdrBlendable, DepthFormat.None);
-            //occlusionMap = new RenderTarget2D(graphics.GraphicsDevice, Camera.ViewPort.Width, 1, false, SurfaceFormat.HdrBlendable, DepthFormat.None);
-            //postProcessTarget = new RenderTarget2D(graphics.GraphicsDevice, Camera.ViewPort.Width, Camera.ViewPort.Height);
-            //horizontalBlurTarget = new RenderTarget2D(graphics.GraphicsDevice, Camera.ViewPort.Width, Camera.ViewPort.Height);
-            //verticalBlurTarget = new RenderTarget2D(graphics.GraphicsDevice, Camera.ViewPort.Width, Camera.ViewPort.Height);
-            //ambientTarget = new RenderTarget2D(graphics.GraphicsDevice, Camera.ViewPort.Width, Camera.ViewPort.Height);
-
-            fullScreen = new Rectangle(0, 0, graphics.GraphicsDevice.PresentationParameters.BackBufferWidth, graphics.GraphicsDevice.PresentationParameters.BackBufferHeight);
+            fullScreen = new Rectangle(0, 0, MapManager.MapWidth, MapManager.MapHeight);
 
             collapseBlendState = new BlendState();
             collapseBlendState.ColorBlendFunction = BlendFunction.Min;
@@ -92,7 +83,7 @@ namespace MobileGame.LightingSystem
             collapseBlendState.AlphaSourceBlend = Blend.One;
             collapseBlendState.AlphaDestinationBlend = Blend.One;
 
-            screenDims = new Vector2(graphics.GraphicsDevice.PresentationParameters.BackBufferWidth, graphics.GraphicsDevice.PresentationParameters.BackBufferHeight);
+            screenDims = new Vector2(MapManager.MapWidth, MapManager.MapHeight);
             cameraTopLeft = new Vector2(Camera.Position.X - Camera.ViewPort.Width / 2, Camera.Position.Y - Camera.ViewPort.Height / 2);
         }
 
@@ -202,8 +193,6 @@ namespace MobileGame.LightingSystem
 
             ambientLight.Parameters["lightColor"].SetValue(Color.White.ToVector4() * 0.5f);
 
-            
-
             graphics.GraphicsDevice.SetRenderTarget(lightMap);
             graphics.GraphicsDevice.Clear(Color.Black);
         }
@@ -219,7 +208,6 @@ namespace MobileGame.LightingSystem
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.PointClamp, null, null, unwrapSpotlight);
             spriteBatch.Draw(midGroundTarget, new Rectangle(0, 0, fullScreen.Width, fullScreen.Width), Color.White);
-            //spriteBatch.Draw(midGroundTarget, new Rectangle((int)cameraTopLeft.X, (int)cameraTopLeft.Y, fullScreen.Width, fullScreen.Width), Color.White);
             spriteBatch.End();
         }
 
@@ -232,7 +220,6 @@ namespace MobileGame.LightingSystem
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.PointClamp, null, null, unwrap);
             spriteBatch.Draw(midGroundTarget, new Rectangle(0, 0, fullScreen.Width, fullScreen.Width), Color.White);
-            //spriteBatch.Draw(midGroundTarget, new Rectangle((int)cameraTopLeft.X, (int)cameraTopLeft.Y, fullScreen.Width, fullScreen.Width), Color.White);
             spriteBatch.End();
         }
 
@@ -241,11 +228,10 @@ namespace MobileGame.LightingSystem
             graphics.GraphicsDevice.SetRenderTarget(occlusionMap);
             graphics.GraphicsDevice.Clear(Color.White);
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, collapseBlendState, SamplerState.PointClamp, null, null, null);
+            spriteBatch.Begin(SpriteSortMode.Deferred, collapseBlendState, SamplerState.PointClamp, null, null);
             for (int i = 0; i < fullScreen.Width; i++)
             {
-                spriteBatch.Draw(unwrapTarget, new Rectangle(0, 0, graphics.GraphicsDevice.PresentationParameters.BackBufferWidth, 1), new Rectangle(0, i, graphics.GraphicsDevice.PresentationParameters.BackBufferWidth, 1), Color.White);
-                //spriteBatch.Draw(unwrapTarget, new Rectangle((int)cameraTopLeft.X, (int)cameraTopLeft.Y, Camera.ViewPort.Width, 1), new Rectangle(0, i, Camera.ViewPort.Width, 1), Color.White);
+                spriteBatch.Draw(unwrapTarget, new Rectangle(0, 0, fullScreen.Width, 1), new Rectangle(0, i, fullScreen.Width, 1), Color.White);
             }
             spriteBatch.End();
         }
@@ -314,7 +300,7 @@ namespace MobileGame.LightingSystem
         {
             graphics.GraphicsDevice.SetRenderTarget(lightMap);
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, null, null, null, null);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, null, null, null);
             spriteBatch.Draw(verticalBlurTarget, fullScreen, light.color);
             spriteBatch.End();
         }
@@ -332,11 +318,11 @@ namespace MobileGame.LightingSystem
             spriteBatch.End();
             graphics.GraphicsDevice.Textures[1] = null;
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
             spriteBatch.Draw(midGroundTarget, fullScreen, Color.White);
             spriteBatch.End();
 
-            graphics.GraphicsDevice.SetRenderTarget(null);
+            graphics.GraphicsDevice.SetRenderTarget(GameManager.finalRenderTarget);
             graphics.GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, ambientLight);
