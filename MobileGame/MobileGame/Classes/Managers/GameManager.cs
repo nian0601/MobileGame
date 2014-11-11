@@ -28,6 +28,11 @@ namespace MobileGame.Managers
         private List<SpotLight> spotLightHandles;
 
         private Vector2 spotLightDir;
+        private Vector2 lightPos;
+        private bool myAffectLightDir;
+        private int myCurrLight;
+
+        public static RenderTarget2D finalRenderTarget;
 
         public GameManager(){}
 
@@ -41,10 +46,13 @@ namespace MobileGame.Managers
 
             mapManager.Initialize();
 
+            finalRenderTarget = new RenderTarget2D(ScreenManager.Game.GraphicsDevice, MapManager.MapWidth, MapManager.MapHeight);
+
             if (Player == null)
                 Player = new Player();
 
             Player.SetStartPos(mapManager.PlayerStartPos);
+            lightPos = mapManager.PlayerStartPos;
             Camera.ResetValues(mapManager.PlayerStartPos);
             Camera.DefaultFocus = Player;
             Camera.Position = mapManager.PlayerStartPos;
@@ -55,20 +63,26 @@ namespace MobileGame.Managers
 
             LightRenderer = new LightingSystem.LightRenderer(Game1.graphics);
             LightRenderer.Initialize();
-            LightRenderer.minLight = 0.5f;
-            LightRenderer.lightBias = 3f;
+            LightRenderer.minLight = 0.0f;
+            LightRenderer.lightBias = 10f;
 
-            spotLightDir = new Vector2(-1, 0);
+            spotLightDir = Vector2.UnitX * -1.00001f;
 
-            pointLightHandles.Add(new PointLight(new Vector2(ScreenManager.Game.GraphicsDevice.Viewport.Width / 2, ScreenManager.Game.GraphicsDevice.Viewport.Height / 2), 300f, 300f, Color.Red));
-            spotLightHandles.Add(new SpotLight(new Vector2(ScreenManager.Game.GraphicsDevice.Viewport.X + 50, ScreenManager.Game.GraphicsDevice.Viewport.Height / 2), spotLightDir, 0.5f, 2f, 500f, 500f, Color.White));
-            LightRenderer.pointLights.Add(pointLightHandles[0]);
-            //LightRenderer.spotLights.Add(spotLightHandles[0]);
+            pointLightHandles.Add(new PointLight(new Vector2(ScreenManager.Game.GraphicsDevice.Viewport.Width / 2, ScreenManager.Game.GraphicsDevice.Viewport.Height / 2), 1000f, 300f, Color.White));
+            spotLightHandles.Add(new SpotLight(new Vector2(200, 200), spotLightDir, 1f, 2f, 2f, 500f, Color.Blue));
+            spotLightHandles.Add(new SpotLight(new Vector2(200, 200), spotLightDir, 1f, 2f, 2f, 500f, Color.Red));
+            //LightRenderer.pointLights.Add(pointLightHandles[0]);
+            LightRenderer.spotLights.Add(spotLightHandles[0]);
+            LightRenderer.spotLights.Add(spotLightHandles[1]);
+
 
             LightRenderer.LoadContent(ScreenManager.Game.Content);
 
             LightingManager.DefinePlayerLight(600, 600, Color.White, true);
             LightingManager.AddAmbientLight(Color.White * 0.5f);
+
+            myAffectLightDir = false;
+            myCurrLight = 0;
         }
 
         public void Update(float elapsedTime)
@@ -97,9 +111,47 @@ namespace MobileGame.Managers
             //The player handles collision against the generic platforms itself inside the update.
             Player.Update(elapsedTime);
 
-            pointLightHandles[0].Position.X = Player.Position.X;
-            pointLightHandles[0].Position.Y = Player.Position.Y;
-            //Console.WriteLine("FPS: " + (1000 / elapsedTime));
+            if (KeyMouseReader.KeyClick(Keys.F))
+                myAffectLightDir = !myAffectLightDir;
+
+            if (KeyMouseReader.isKeyDown(Keys.Up))
+            {
+                lightPos.Y -= 5;
+                if(myAffectLightDir)
+                    spotLightDir = Vector2.UnitY * -1.00001f;
+            }
+                
+            if (KeyMouseReader.isKeyDown(Keys.Down))
+            {
+                lightPos.Y += 5;
+                if (myAffectLightDir)
+                    spotLightDir = Vector2.UnitY * 1.00001f;
+            }
+                
+            if (KeyMouseReader.isKeyDown(Keys.Left))
+            {
+                lightPos.X -= 5;
+                if (myAffectLightDir)
+                    spotLightDir = Vector2.UnitX * 1.00001f;
+            }
+                
+            if (KeyMouseReader.isKeyDown(Keys.Right))
+            {
+                lightPos.X += 5;
+                if (myAffectLightDir)
+                    spotLightDir = Vector2.UnitX * -1.00001f;
+            }
+
+
+            if (KeyMouseReader.KeyClick(Keys.D1))
+                myCurrLight = 0;
+            if (KeyMouseReader.KeyClick(Keys.D2))
+                myCurrLight = 1;
+
+            spotLightHandles[myCurrLight].Position.X = lightPos.X;
+            spotLightHandles[myCurrLight].Position.Y = lightPos.Y;
+            spotLightHandles[myCurrLight].direction = spotLightDir;
+            Console.WriteLine("FPS: " + (1000 / elapsedTime));
         }
 
         //public void Draw(SpriteBatch spriteBatch)
@@ -138,7 +190,7 @@ namespace MobileGame.Managers
         {
             LightRenderer.BeginDrawBackground();
 
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, Camera.Get_Transformation());
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
 
             mapManager.DrawBackground(spriteBatch);
             mapManager.DrawForeground(spriteBatch);
@@ -150,7 +202,7 @@ namespace MobileGame.Managers
 
             LightRenderer.BeginDrawShadowCasters();
 
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, Camera.Get_Transformation());
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
 
             mapManager.DrawMiddle(spriteBatch);
 
@@ -161,11 +213,36 @@ namespace MobileGame.Managers
             LightRenderer.DrawLitScene();
 
             //And draw all tiles, the player and enemies
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, Camera.Get_Transformation());
-            EnemyManager.Draw(spriteBatch);
+            
+            Vector2 finalDrawPos = new Vector2
+            (
+                Camera.Position.X - Camera.ViewPort.Width / 2,
+                Camera.Position.Y - Camera.ViewPort.Height / 2
+            );
 
+            Rectangle finalSource = new Rectangle
+            (
+                (int)finalDrawPos.X,
+                (int)finalDrawPos.Y,
+                Camera.ViewPort.Width,
+                Camera.ViewPort.Height
+            );
+
+            ScreenManager.Game.GraphicsDevice.SetRenderTarget(null);
+            ScreenManager.Game.GraphicsDevice.Clear(Color.Black);
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, Camera.Get_Transformation());
+            spriteBatch.Draw(finalRenderTarget, finalDrawPos, finalSource, Color.White);
             if (Player != null)
                 Player.Draw(spriteBatch);
+
+            spriteBatch.Draw(TextureManager.FilledSquare, new Rectangle((int)lightPos.X - 10, (int)lightPos.Y - 10, 20, 20), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1f);
+            spriteBatch.End();
+
+
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
+            EnemyManager.Draw(spriteBatch);
+
+            
             spriteBatch.End();
         }
 
