@@ -35,10 +35,6 @@ namespace MobileGame.Managers
 
         public static RenderTarget2D finalRenderTarget;
 
-        private List<AmbientLight> ambientLightHandles;
-        private List<PointLight> pointLightHandles;
-
-
         public GameManager(){}
 
         public void Initialize()
@@ -86,23 +82,10 @@ namespace MobileGame.Managers
 
             myAffectLightDir = false;
             myCurrLight = 0;
-
-            ambientLightHandles = new List<AmbientLight>();
-            pointLightHandles = new List<PointLight>();
-
-            ambientLightHandles.Add(new AmbientLight(Color.White, 1f));
-            //pointLightHandles.Add(new PointLight(Player.Position, 200, 0.8f, Color.White, false));
-
-            //LightingManager.PointLights.Add(pointLightHandles[0]);
-
         }
 
         public void Update(float elapsedTime)
         {
-
-            mapManager.Update();
-
-            LightingManager.Update(elapsedTime);
             mapManager.Update(elapsedTime);
 
 
@@ -126,20 +109,6 @@ namespace MobileGame.Managers
 
             //The player handles collision against the generic platforms itself inside the update.
             Player.Update(elapsedTime);
-
-
-
-            if (KeyMouseReader.KeyClick(Keys.F))
-            {
-                if (LightingManager.AmbientLights.Contains(ambientLightHandles[0]))
-                    LightingManager.AmbientLights.Remove(ambientLightHandles[0]);
-                else
-                    LightingManager.AmbientLights.Add(ambientLightHandles[0]);
-            }
-
-
-            //pointLightHandles[0].SetPosition(Player.Position);
-            //Console.WriteLine("FPS: " + (1000 / elapsedTime));
 
             if (KeyMouseReader.isKeyDown(Keys.Up))
             {
@@ -178,7 +147,7 @@ namespace MobileGame.Managers
             //spotLightHandles[myCurrLight].Position.X = lightPos.X;
             //spotLightHandles[myCurrLight].Position.Y = lightPos.Y;
             //spotLightHandles[myCurrLight].direction = spotLightDir;
-            pointLightHandles[0].Position = lightPos;
+            pointLightHandles[myCurrLight].Position = lightPos;
             Console.WriteLine("FPS: " + (1000 / elapsedTime));
         }
 

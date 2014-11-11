@@ -112,9 +112,6 @@ namespace MobileGame.Managers
                             Color = Color.PaleVioletRed;
                     }
 
-
-
-
                     byte value = backgroundLayer[x, y];
                     if (value != 255)
                     {
@@ -122,8 +119,6 @@ namespace MobileGame.Managers
                         int sourceX = value % 8;
                         int sourceY = value / 8;
                         Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
-
-                        spriteBatch.Draw(TextureManager.TileSheet, Pos, sourceRect, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
 
                         spriteBatch.Draw(TextureManager.TileSet, Pos, sourceRect, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
 
@@ -154,10 +149,7 @@ namespace MobileGame.Managers
                         int sourceY = value / 8;
                         Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
 
-                        spriteBatch.Draw(TextureManager.TileSheet, Pos, sourceRect, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
-
                         spriteBatch.Draw(TextureManager.TileSet, Pos, sourceRect, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
-
                     }
                 }
             }
@@ -186,10 +178,7 @@ namespace MobileGame.Managers
                         int sourceY = value / 8;
                         Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
 
-                        spriteBatch.Draw(TextureManager.TileSheet, Pos, sourceRect, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
-
                         spriteBatch.Draw(TextureManager.TileSet, Pos, sourceRect, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f); ;
-
                     }
                 }
             }
@@ -279,21 +268,6 @@ namespace MobileGame.Managers
                         mySpecialTiles.Add(new SpikeTile(x, y));
                     }
 
-                    else if (backgroundValue == 30)
-                    {
-                        //EnemyManager.AddEnemy(new SimpleEnemy(x, y, false));
-                        backgroundLayer[x, y] = 255;
-                    }
-                    else if (backgroundValue == 31)
-                    {
-                        specialBlockList.Add(new TeleportTile(x, y));
-                        backgroundLayer[x, y] = backgroundValue;
-                    }
-                    else
-                    {
-                        backgroundLayer[x, y] = backgroundValue;
-
-
 
                     if (backgroundValue == 41 || platformValue == 41 || specialsValue == 41) // Torch
                     {
@@ -307,80 +281,9 @@ namespace MobileGame.Managers
                         //should figure out something to do this in a pretty way later
                     }
 
-                    else if (platformValue == 31)
-                    {
-                        specialBlockList.Add(new TeleportTile(x, y));
-                        platformLayer[x, y] = platformValue;
-                    }
-                    else if (platformValue == 17)
-                    {
-                        GoalTile temp = new GoalTile(x, y);
-                        Camera.AddFocusObject(temp);
-                        specialBlockList.Add(temp);
-                        platformLayer[x, y] = platformValue;
-                        GoalPos = new Vector2(x * tileSize, y * tileSize);
-                        LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 250, 0.7f, Color.White));
-                    }
-                    else if (platformValue == 29)
-                    {
-                        playerStartPos = new Vector2(x * tileSize, y * tileSize);
-                        platformLayer[x, y] = 255;
-                    }
-                    else if (platformValue == 30)
-                    {
-                        //EnemyManager.AddEnemy(new SimpleEnemy(x, y, false));
-                        platformLayer[x, y] = 255;
-                    }
-                    else
-                        platformLayer[x, y] = platformValue;
-
-
-                    //if (platformValue != 255 && platformValue != 15)
-                    //{
-                    //    LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize + TileSize/2, y * tileSize + TileSize/2), 20, 0.5f, Color.White));
-                    //}
-
-                    #endregion
-
-                    #region SpecialsLayer
-                    if (specialsValue == 16)
-                    {
-                        specialBlockList.Add(new JumpTile(x, y));
-                        specialsLayer[x, y] = specialsValue;
-                    }
-                    else if (specialsValue == 31)
-                    {
-                        specialBlockList.Add(new TeleportTile(x, y));
-                        specialsLayer[x, y] = specialsValue;
-                    }
-                    else if (specialsValue == 17)
-                    {
-                        GoalTile temp = new GoalTile(x, y);
-                        Camera.AddFocusObject(temp);
-                        specialBlockList.Add(temp);
-                        specialsLayer[x, y] = specialsValue;
-                        GoalPos = new Vector2(x * tileSize, y * tileSize);
-                        LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 250, 0.7f, Color.White));
-                    }
-                    else if (specialsValue == 29)
-                    {
-                        playerStartPos = new Vector2(x * tileSize, y * tileSize);
-                        specialsLayer[x, y] = 255;
-                    }
-                    else if (specialsValue == 30)
-                    {
-                        //EnemyManager.AddEnemy(new SimpleEnemy(x, y, false));
-                        specialsLayer[x, y] = 255;
-                    }
-                    else
-                        specialsLayer[x, y] = specialsValue;
-                    #endregion
-
-
                     backgroundLayer[x, y] = backgroundValue;
                     platformLayer[x, y] = platformValue;
                     specialsLayer[x, y] = specialsValue;
-
 
                 }
             }
