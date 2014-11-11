@@ -69,9 +69,9 @@ namespace MobileGame.Managers
             spotLightDir = Vector2.UnitX * -1.00001f;
 
             pointLightHandles.Add(new PointLight(new Vector2(ScreenManager.Game.GraphicsDevice.Viewport.Width / 2, ScreenManager.Game.GraphicsDevice.Viewport.Height / 2), 1000f, 300f, Color.White));
-            spotLightHandles.Add(new SpotLight(new Vector2(200, 200), spotLightDir, 1f, 2f, 2f, 500f, Color.Blue));
+            spotLightHandles.Add(new SpotLight(new Vector2(200, 200), spotLightDir, 1f, 2f, 2f, 500f, Color.LightBlue));
             spotLightHandles.Add(new SpotLight(new Vector2(200, 200), spotLightDir, 1f, 2f, 2f, 500f, Color.Red));
-            //LightRenderer.pointLights.Add(pointLightHandles[0]);
+            LightRenderer.pointLights.Add(pointLightHandles[0]);
             LightRenderer.spotLights.Add(spotLightHandles[0]);
             LightRenderer.spotLights.Add(spotLightHandles[1]);
 
@@ -148,9 +148,10 @@ namespace MobileGame.Managers
             if (KeyMouseReader.KeyClick(Keys.D2))
                 myCurrLight = 1;
 
-            spotLightHandles[myCurrLight].Position.X = lightPos.X;
-            spotLightHandles[myCurrLight].Position.Y = lightPos.Y;
-            spotLightHandles[myCurrLight].direction = spotLightDir;
+            //spotLightHandles[myCurrLight].Position.X = lightPos.X;
+            //spotLightHandles[myCurrLight].Position.Y = lightPos.Y;
+            //spotLightHandles[myCurrLight].direction = spotLightDir;
+            pointLightHandles[0].Position = lightPos;
             Console.WriteLine("FPS: " + (1000 / elapsedTime));
         }
 

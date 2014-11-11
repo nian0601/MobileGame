@@ -193,8 +193,6 @@ namespace MobileGame.LightingSystem
 
             ambientLight.Parameters["lightColor"].SetValue(Color.White.ToVector4() * 0.5f);
 
-            
-
             graphics.GraphicsDevice.SetRenderTarget(lightMap);
             graphics.GraphicsDevice.Clear(Color.Black);
         }
@@ -210,7 +208,6 @@ namespace MobileGame.LightingSystem
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.PointClamp, null, null, unwrapSpotlight);
             spriteBatch.Draw(midGroundTarget, new Rectangle(0, 0, fullScreen.Width, fullScreen.Width), Color.White);
-            //spriteBatch.Draw(midGroundTarget, new Rectangle((int)cameraTopLeft.X, (int)cameraTopLeft.Y, fullScreen.Width, fullScreen.Width), Color.White);
             spriteBatch.End();
         }
 
@@ -223,7 +220,6 @@ namespace MobileGame.LightingSystem
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.PointClamp, null, null, unwrap);
             spriteBatch.Draw(midGroundTarget, new Rectangle(0, 0, fullScreen.Width, fullScreen.Width), Color.White);
-            //spriteBatch.Draw(midGroundTarget, new Rectangle((int)cameraTopLeft.X, (int)cameraTopLeft.Y, fullScreen.Width, fullScreen.Width), Color.White);
             spriteBatch.End();
         }
 
@@ -232,7 +228,7 @@ namespace MobileGame.LightingSystem
             graphics.GraphicsDevice.SetRenderTarget(occlusionMap);
             graphics.GraphicsDevice.Clear(Color.White);
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, collapseBlendState, SamplerState.PointClamp, null, null, null);
+            spriteBatch.Begin(SpriteSortMode.Deferred, collapseBlendState, SamplerState.PointClamp, null, null);
             for (int i = 0; i < fullScreen.Width; i++)
             {
                 spriteBatch.Draw(unwrapTarget, new Rectangle(0, 0, fullScreen.Width, 1), new Rectangle(0, i, fullScreen.Width, 1), Color.White);
@@ -304,7 +300,7 @@ namespace MobileGame.LightingSystem
         {
             graphics.GraphicsDevice.SetRenderTarget(lightMap);
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, null, null, null, null);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, null, null, null);
             spriteBatch.Draw(verticalBlurTarget, fullScreen, light.color);
             spriteBatch.End();
         }
