@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using MobileGame.FileManagement;
 using MobileGame.CameraManagement;
 using MobileGame.Units;
-using MobileGame.Lights;
+using MobileGame.LightingSystem;
 
 using GUI_System.GameStateManagement;
 
@@ -45,7 +45,6 @@ namespace MobileGame.Managers
                 mapManager = new MapManager();
 
             mapManager.Initialize();
-
             finalRenderTarget = new RenderTarget2D(ScreenManager.Game.GraphicsDevice, MapManager.MapWidth, MapManager.MapHeight);
 
             if (Player == null)
@@ -53,6 +52,7 @@ namespace MobileGame.Managers
 
             Player.SetStartPos(mapManager.PlayerStartPos);
             lightPos = mapManager.PlayerStartPos;
+
             Camera.ResetValues(mapManager.PlayerStartPos);
             Camera.DefaultFocus = Player;
             Camera.Position = mapManager.PlayerStartPos;
@@ -61,19 +61,22 @@ namespace MobileGame.Managers
             pointLightHandles = new List<PointLight>();
             spotLightHandles = new List<SpotLight>();
 
-            LightRenderer = new LightingSystem.LightRenderer(Game1.graphics);
+            LightRenderer = new LightRenderer(Game1.graphics);
             LightRenderer.Initialize();
             LightRenderer.minLight = 0.0f;
             LightRenderer.lightBias = 10f;
-
             spotLightDir = Vector2.UnitX * -1.00001f;
 
             pointLightHandles.Add(new PointLight(new Vector2(ScreenManager.Game.GraphicsDevice.Viewport.Width / 2, ScreenManager.Game.GraphicsDevice.Viewport.Height / 2), 1000f, 300f, Color.White));
             spotLightHandles.Add(new SpotLight(new Vector2(200, 200), spotLightDir, 1f, 2f, 2f, 500f, Color.LightBlue));
             spotLightHandles.Add(new SpotLight(new Vector2(200, 200), spotLightDir, 1f, 2f, 2f, 500f, Color.Red));
+
             LightRenderer.pointLights.Add(pointLightHandles[0]);
             LightRenderer.spotLights.Add(spotLightHandles[0]);
             LightRenderer.spotLights.Add(spotLightHandles[1]);
+
+
+            LightRenderer.LoadContent(ScreenManager.Game.Content);
 
             myAffectLightDir = false;
             myCurrLight = 0;
@@ -81,7 +84,6 @@ namespace MobileGame.Managers
 
         public void Update(float elapsedTime)
         {
-            LightingManager.Update();
             mapManager.Update();
 
             //Collision against specialblocks is handled outside the player class
@@ -105,13 +107,6 @@ namespace MobileGame.Managers
             //The player handles collision against the generic platforms itself inside the update.
             Player.Update(elapsedTime);
 
-            if (KeyMouseReader.KeyClick(Keys.F))
-            {
-                if (LightingManager.AmbientLights.Contains(ambientLightHandles[1]))
-                    LightingManager.AmbientLights.Remove(ambientLightHandles[1]);
-                else
-                    LightingManager.AmbientLights.Add(ambientLightHandles[1]);
-            }
 
             spotLightHandles[0].Position.X = Player.Position.X;
             spotLightHandles[0].Position.Y = Player.Position.Y;
@@ -160,50 +155,38 @@ namespace MobileGame.Managers
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            //Draw all the Lights we have added to LightingManager.LightTarget
-            LightingManager.BeginDrawMainTarget();
-
+            //Begin to draw background (stuff that WONT cast shadows)
+            LightRenderer.BeginDrawBackground();
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
 
+            //Draw the background
             mapManager.DrawBackground(spriteBatch);
-            mapManager.DrawMiddle(spriteBatch);
             mapManager.DrawForeground(spriteBatch);
 
-
-            EnemyManager.Draw(spriteBatch);
-
             spriteBatch.End();
-
             LightRenderer.EndDrawBackground();
+            //Finished drawing background
 
-
+            //Begin to draw shadowcasters (stuff that WILL cast shadows)
             LightRenderer.BeginDrawShadowCasters();
-
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
 
+            //Draw shadwocasters
             mapManager.DrawMiddle(spriteBatch);
 
-
-            if (Player != null)
-                Player.Draw(spriteBatch);
             spriteBatch.End();
+            LightRenderer.EndDrawShadowCasters();
+            //Finished drawing shadowcasters
 
-            LightingManager.EndDrawingMainTarget();
+            //Draw the finished, lit screen
+            LightRenderer.DrawLitScene();
 
-            LightingManager.DrawLitScreen();
 
-
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, Camera.Get_Transformation());
-            Camera.Draw(spriteBatch);
-
-            //And draw all tiles, the player and enemies
-            
             Vector2 finalDrawPos = new Vector2
             (
                 Camera.Position.X - Camera.ViewPort.Width / 2,
                 Camera.Position.Y - Camera.ViewPort.Height / 2
             );
-
             Rectangle finalSource = new Rectangle
             (
                 (int)finalDrawPos.X,
@@ -214,20 +197,17 @@ namespace MobileGame.Managers
 
             ScreenManager.Game.GraphicsDevice.SetRenderTarget(null);
             ScreenManager.Game.GraphicsDevice.Clear(Color.Black);
+
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, Camera.Get_Transformation());
+
             spriteBatch.Draw(finalRenderTarget, finalDrawPos, finalSource, Color.White);
             if (Player != null)
                 Player.Draw(spriteBatch);
-
-            spriteBatch.Draw(TextureManager.FilledSquare, new Rectangle((int)lightPos.X - 10, (int)lightPos.Y - 10, 20, 20), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1f);
-            spriteBatch.End();
-
-
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
             EnemyManager.Draw(spriteBatch);
 
-            spriteBatch.End();
+            spriteBatch.Draw(TextureManager.FilledSquare, new Rectangle((int)lightPos.X - 10, (int)lightPos.Y - 10, 20, 20), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 1f);
 
+            spriteBatch.End();
         }
 
         public static void RestarLevel()
