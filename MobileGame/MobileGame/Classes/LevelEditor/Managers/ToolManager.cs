@@ -18,8 +18,8 @@ namespace MobileGame.LevelEditor
 
         #region Selection-Variables
         public static bool HasActiveSelection;
-        public static Point SelectionTopLeft;
-        public static Point SelectionBottomRight;
+        public static Point SelectionTopLeftIndex;
+        public static Point SelectionBottomRightIndex;
         #endregion
 
         public static bool ShowPasteTarget;
@@ -29,12 +29,15 @@ namespace MobileGame.LevelEditor
         private static CopyPaster CopyPaster;
         private static ColliderMaker ColliderMaker;
         private static JumpThroughMaker JumpThroughMaker;
+        private static LightsPlacer LightPlacer;
+
+        private static int prevEditMode;
 
         public static void Initialize()
         {
             HasActiveSelection = false;
-            SelectionTopLeft = new Point(0, 0);
-            SelectionBottomRight = new Point(0, 0);
+            SelectionTopLeftIndex = new Point(0, 0);
+            SelectionBottomRightIndex = new Point(0, 0);
 
             ShowPasteTarget = false;
 
@@ -43,6 +46,9 @@ namespace MobileGame.LevelEditor
             CopyPaster = new CopyPaster();
             ColliderMaker = new ColliderMaker();
             JumpThroughMaker = new JumpThroughMaker();
+            LightPlacer = new LightsPlacer();
+
+            prevEditMode = 0;
         }
 
         public static void Update()
@@ -89,26 +95,24 @@ namespace MobileGame.LevelEditor
                 {
                     JumpThroughMaker.Update(mouseX, mouseY);
                 }
+                #endregion
+
+                #region Lights
                 else if (EditorScreen.EditMode == 4)
                 {
-                    if (KeyMouseReader.KeyClick(Keys.Q))
-                        LightingManager.AmbientLights.Add(new Lights.AmbientLight(0, 0, EditorMapManager.NumXTiles * 20, EditorMapManager.NumYTiles * 20, EditorScreen.ColorPicker.SelectedColor * 0.5f));
-                    else if (KeyMouseReader.LeftClick())
-                    {
-                        Vector2 mousePos = new Vector2(KeyMouseReader.GetMousePos().X, KeyMouseReader.GetMousePos().Y) - EditorMapManager.Offset;
-                        PointLight tempLight = new PointLight(mousePos, 150, 0.8f, EditorScreen.ColorPicker.SelectedColor);
-                        LightingManager.PointLights.Add(tempLight);
+                    if (prevEditMode != 4)
+                        LightPlacer.Init();
 
-                        Console.WriteLine("MousePos : " + mousePos);
-                        Console.WriteLine("LightPos : " + tempLight.Position);
-                    }
-                    
+                    LightPlacer.Update();
                 }
                 #endregion
+
             }
 
             if (KeyMouseReader.isKeyDown(Keys.LeftControl) && KeyMouseReader.KeyClick(Keys.D))
                 ClearSelection();
+
+            prevEditMode = EditorScreen.EditMode;
         }
 
         public static void Draw(SpriteBatch SpriteBatch)
@@ -117,6 +121,11 @@ namespace MobileGame.LevelEditor
                 CopyPaster.ShowPasteTarget(mouseX, mouseY, 0, SpriteBatch);
 
             Selector.Draw(SpriteBatch);
+
+            if (EditorScreen.EditMode == 4)
+            {
+                LightPlacer.Draw(SpriteBatch);
+            }
         }
 
         public static void ClearSelection()
@@ -124,8 +133,8 @@ namespace MobileGame.LevelEditor
             Selector.Reset();
 
             HasActiveSelection = false;
-            SelectionTopLeft = new Point(0, 0);
-            SelectionBottomRight = new Point(0, 0);
+            SelectionTopLeftIndex = new Point(0, 0);
+            SelectionBottomRightIndex = new Point(0, 0);
         }
 
         public static Point ConvertPixelsToIndex(Point pos)

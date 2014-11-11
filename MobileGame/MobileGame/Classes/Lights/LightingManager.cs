@@ -75,16 +75,30 @@ namespace MobileGame.Lights
             pixelShader = Content.Load<Effect>("Shaders/PixelShader.mgfxo");
             pointLight = Content.Load<Effect>("Shaders/PointLight.mgfxo");
 
-            pointLight.Parameters["ScreenDimensions"].SetValue(new Vector2(800, 600));
+
+            if (EditorMode == false)
+            {
+                pointLight.Parameters["ScreenDimensions"].SetValue(new Vector2(1000, 800));
+            }
+            else
+            {
+                pointLight.Parameters["ScreenDimensions"].SetValue(new Vector2(1600, 1000));
+            }
+            
         }
 
-        public static void Update()
+        public static void Update(float elapsedTime)
         {
             if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.KeyClick(Keys.L))
                 LightMode++;
 
             if (LightMode > 3)
                 LightMode = 0;
+
+            for (int i = 0; i < PointLights.Count; i++)
+            {
+                PointLights[i].Update(elapsedTime);
+            }
         }
 
         public static void BeginDrawMainTarget()
@@ -143,7 +157,7 @@ namespace MobileGame.Lights
             }
             else
             {
-                lightPos = new Vector2(pLight.Position.X - DrawOffset.X, pLight.Position.Y - DrawOffset.Y);
+                lightPos = new Vector2(pLight.Position.X, pLight.Position.Y);
                 pointLight.Parameters["LightPos"].SetValue(lightPos);
             }
             

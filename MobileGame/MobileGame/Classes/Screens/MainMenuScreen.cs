@@ -56,10 +56,14 @@ namespace MobileGame.Screens
                 Game1.graphics.ApplyChanges();
                 FileLoader.Initialize();
             }
-                
+
 
             if (playButton.LeftClick())
+            {
+                LightingManager.EditorMode = false;
                 LoadingScreen.Load(ScreenManager, true, new GamePlayScreen());
+            }
+                
 
             if (levelSelectButton.LeftClick())
                 ScreenManager.AddScreen(new LevelSelectScreen());
@@ -70,7 +74,7 @@ namespace MobileGame.Screens
             if (KeyMouseReader.KeyClick(Microsoft.Xna.Framework.Input.Keys.E))
             {
                 Game1.SetScreenSize(1920, 1080);
-                //Game1.graphics.IsFullScreen = true;
+                Game1.graphics.IsFullScreen = true;
                 Game1.graphics.ApplyChanges();
                 LoadingScreen.Load(ScreenManager, true, new EditorScreen());
             }

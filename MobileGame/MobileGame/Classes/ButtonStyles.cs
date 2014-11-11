@@ -14,8 +14,8 @@ namespace MobileGame.Screens
     {
         public PlayButtonStyle(ContentManager content) : base(content)
         {
-            normalTexture = content.Load<Texture2D>("GUI Textures/MainMenu/PlayButton");
-            TextureToDraw = normalTexture;
+            NormalTexture = content.Load<Texture2D>("GUI Textures/MainMenu/PlayButton");
+            TextureToDraw = NormalTexture;
 
             hooverTexture = content.Load<Texture2D>("GUI Textures/MainMenu/PlayButtonHoover");
         }
@@ -25,8 +25,8 @@ namespace MobileGame.Screens
     {
         public LevelSelectStyle(ContentManager content) : base(content)
         {
-            normalTexture = content.Load<Texture2D>("GUI Textures/MainMenu/LevelSelectionButton");
-            TextureToDraw = normalTexture;
+            NormalTexture = content.Load<Texture2D>("GUI Textures/MainMenu/LevelSelectionButton");
+            TextureToDraw = NormalTexture;
 
             hooverTexture = content.Load<Texture2D>("GUI Textures/MainMenu/LevelSelectionButtonHoover");
         }
@@ -36,8 +36,8 @@ namespace MobileGame.Screens
     {
         public MenuButtonStyle(ContentManager content) : base(content)
         {
-            normalTexture = content.Load<Texture2D>("GUI Textures/LevelSelection/ReturnButton");
-            TextureToDraw = normalTexture;
+            NormalTexture = content.Load<Texture2D>("GUI Textures/LevelSelection/ReturnButton");
+            TextureToDraw = NormalTexture;
 
             hooverTexture = content.Load<Texture2D>("GUI Textures/LevelSelection/ReturnButtonHoover");
         }
@@ -47,8 +47,8 @@ namespace MobileGame.Screens
     {
         public RestartButtonStyle(ContentManager content) : base(content)
         {
-            normalTexture = content.Load<Texture2D>("GUI Textures/PausScreen/RestartButton");
-            TextureToDraw = normalTexture;
+            NormalTexture = content.Load<Texture2D>("GUI Textures/PausScreen/RestartButton");
+            TextureToDraw = NormalTexture;
 
             hooverTexture = content.Load<Texture2D>("GUI Textures/PausScreen/RestartButtonHoover");
         }
@@ -59,8 +59,8 @@ namespace MobileGame.Screens
         public CrossButtonStyle(ContentManager content)
             : base(content)
         {
-            normalTexture = content.Load<Texture2D>("GUI Textures/PausScreen/ExitButton");
-            TextureToDraw = normalTexture;
+            NormalTexture = content.Load<Texture2D>("GUI Textures/PausScreen/ExitButton");
+            TextureToDraw = NormalTexture;
 
             hooverTexture = content.Load<Texture2D>("GUI Textures/PausScreen/ExitButtonHoover");
         }

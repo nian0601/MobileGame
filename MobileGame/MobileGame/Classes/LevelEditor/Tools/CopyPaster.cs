@@ -52,7 +52,7 @@ namespace MobileGame.LevelEditor.Tools
             else if (ToolManager.HasActiveSelection && KeyMouseReader.isKeyDown(Keys.LeftControl) && KeyMouseReader.KeyClick(Keys.C))
             {
                 Console.WriteLine("Try to save current selection");
-                MakeCopy(ToolManager.SelectionTopLeft.X, ToolManager.SelectionTopLeft.Y, ToolManager.SelectionBottomRight.X, ToolManager.SelectionBottomRight.Y, 0);
+                MakeCopy(ToolManager.SelectionTopLeftIndex.X, ToolManager.SelectionTopLeftIndex.Y, ToolManager.SelectionBottomRightIndex.X, ToolManager.SelectionBottomRightIndex.Y, 0);
 
                 active = true;
             }
@@ -85,9 +85,11 @@ namespace MobileGame.LevelEditor.Tools
 
                         if (value != 255)
                         {
-                            Texture2D Texture = TextureManager.GameTextures[value];
+                            int sourceX = value % 8;
+                            int sourceY = value / 8;
+                            Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
 
-                            spritebatch.Draw(Texture, Pos, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
+                            spritebatch.Draw(TextureManager.TileSet, Pos, sourceRect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
                         }
                     }
 
@@ -103,8 +105,8 @@ namespace MobileGame.LevelEditor.Tools
             int xCounter = 0;
             int yCounter = 0;
 
-            Point topLeft = ToolManager.SelectionTopLeft;
-            Point bottomRight = ToolManager.SelectionBottomRight;
+            Point topLeft = ToolManager.SelectionTopLeftIndex;
+            Point bottomRight = ToolManager.SelectionBottomRightIndex;
 
             CopyWidth = bottomRight.X - topLeft.X;
             CopyHeight = bottomRight.Y - topLeft.Y;

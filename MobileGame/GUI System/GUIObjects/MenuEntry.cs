@@ -14,7 +14,6 @@ namespace GUI_System.GUIObjects
     {
         string text;
         float selectionFade;
-        float selectionPos;
         Vector2 position;
         Vector2 startPos;
 

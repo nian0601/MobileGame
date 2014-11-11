@@ -14,6 +14,8 @@ namespace GUI_System.GUIObjects
         public Texture2D TextureToPickFrom { get; set; }
         public Vector2 Position { get; set; }
         public Vector2 Origin { get; set; }
+        public Vector2 ColorAreaOffset { get; set; }
+        public Vector2 ColorAreaSize { get; set; }
         public Color Color { get; set; }
 
         public ColorPickerStyle(ContentManager Content)

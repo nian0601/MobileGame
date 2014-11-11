@@ -19,7 +19,6 @@ namespace GUI_System.GUIObjects
         internal MouseState oldState, currState;
         internal Point mousePos;
 
-        private Vector2 position;
         public Vector2 Position
         {
             get { return ListStyle.Position; }

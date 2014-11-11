@@ -101,7 +101,7 @@ namespace MobileGame.Units
         public Player() : base()
         {
             Position = new Vector2(150, 120);
-            playerTex = TextureManager.PlayerSheet;
+            playerTex = TextureManager.PlayerSheet2;
 
             velocity = new Vector2(0, 0);
             maxSpeed = 3f;
@@ -122,8 +122,9 @@ namespace MobileGame.Units
             FrameHeight = 60;
 
             animator = new Animator(FrameWidth, FrameHeight);
-            animator.AddAnimation(new Animation("right", 100, 0, 0, 8, 0));
-            animator.AddAnimation(new Animation("left", 100, 0, 1, 8, 1));
+            animator.AddAnimation(new Animation("right", 100, 0, 0, 8, 0, true));
+            animator.AddAnimation(new Animation("left", 100, 0, 1, 8, 1, true));
+            animator.AddAnimation(new Animation("jump", 200, 0, 2, 3, 2, false));
         }
 
         public void Update(float ElapsedTime)
@@ -181,6 +182,7 @@ namespace MobileGame.Units
             {
                 velocity.Y -= jumpPower * jumpMultiplier;
                 isOnGround = false;
+                animator.StartAnimation("jump");
             }
         }
 

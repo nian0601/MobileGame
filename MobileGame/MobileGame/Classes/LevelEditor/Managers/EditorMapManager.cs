@@ -37,6 +37,7 @@ namespace MobileGame.LevelEditor
 
         //The TILE that the mouse is currently hoovering, different from the mouse's pixelpos
         private int mouseX, mouseY;
+        private static Rectangle mouseSourceRect;
 
         //The tileValue of the currently selected tile, this gets set by the different tilebuttons
         public static int SelectedTileValue;
@@ -44,7 +45,7 @@ namespace MobileGame.LevelEditor
         //Used when we are trying to move the map around using space+mouse
         //Need to know in which direction the mouse is moving so we move the map in the correct way
         //We get that by getting the difference between these two variables
-        private Point mousePos, prevMousePos;
+        //private Point mousePos, prevMousePos;
 
         private Point selectionTopLeft, selectionBottomRight;
 
@@ -172,10 +173,7 @@ namespace MobileGame.LevelEditor
 
         public void Draw()
         {
-            
-            //Spritebatch.Draw(TextureManager.FilledSquare, new Rectangle((int)Offset.X, (int)Offset.Y, editorXTiles * TileSize, editorYTiles * TileSize), Color.CornflowerBlue);
-
-            //Background
+            //LightingMode
             if (EditorScreen.EditMode == 4)
             {
                 LightingManager.BeginDrawMainTarget();
@@ -186,17 +184,18 @@ namespace MobileGame.LevelEditor
                 {
                     for (int y = 0; y < yTiles; y++)
                     {
-                        Vector2 Pos = new Vector2(x * TileSize, y * TileSize);
-                        Texture2D Texture;
+                        Vector2 Pos = new Vector2(x * TileSize, y * TileSize) + offset;
 
                         #region Background
                         byte value = backgroundLayer[x, y];
 
                         if (value != 255)
                         {
-                            Texture = TextureManager.GameTextures[value];
+                            int sourceX = value % 8;
+                            int sourceY = value / 8;
+                            Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
 
-                            Spritebatch.Draw(Texture, Pos, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
+                            Spritebatch.Draw(TextureManager.TileSet, Pos, sourceRect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
                         }
                         #endregion
 
@@ -205,12 +204,15 @@ namespace MobileGame.LevelEditor
 
                         if (value != 255)
                         {
-                            Texture = TextureManager.GameTextures[value];
                             Color color = Color.White;
                             if (selectedLayerNum == 0)
                                 color *= 0.5f;
 
-                            Spritebatch.Draw(Texture, Pos, null, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
+                            int sourceX = value % 8;
+                            int sourceY = value / 8;
+                            Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+
+                            Spritebatch.Draw(TextureManager.TileSet, Pos, sourceRect, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
                         }
                         #endregion
 
@@ -219,7 +221,6 @@ namespace MobileGame.LevelEditor
 
                         if (value != 255)
                         {
-                            Texture = TextureManager.GameTextures[value];
                             Color color = Color.White;
 
                             if (selectedLayerNum == 0)
@@ -227,7 +228,11 @@ namespace MobileGame.LevelEditor
                             else if (selectedLayerNum == 1)
                                 color *= 0.5f;
 
-                            Spritebatch.Draw(Texture, Pos, null, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f);
+                            int sourceX = value % 8;
+                            int sourceY = value / 8;
+                            Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+
+                            Spritebatch.Draw(TextureManager.TileSet, Pos, sourceRect, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f);
                         }
                         #endregion
                     }
@@ -239,6 +244,7 @@ namespace MobileGame.LevelEditor
 
                 LightingManager.DrawLitScreen();
             }
+            //Non-Lighing mode
             else
             {
                 Spritebatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
@@ -248,16 +254,17 @@ namespace MobileGame.LevelEditor
                     for (int y = 0; y < yTiles; y++)
                     {
                         Vector2 Pos = new Vector2(x * TileSize, y * TileSize) + offset;
-                        Texture2D Texture;
 
                         #region Background
                         byte value = backgroundLayer[x, y];
 
                         if (value != 255)
                         {
-                            Texture = TextureManager.GameTextures[value];
+                            int sourceX = value % 8;
+                            int sourceY = value / 8;
+                            Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
 
-                            Spritebatch.Draw(Texture, Pos, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
+                            Spritebatch.Draw(TextureManager.TileSet, Pos, sourceRect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
                         }
                         #endregion
 
@@ -266,12 +273,15 @@ namespace MobileGame.LevelEditor
 
                         if (value != 255)
                         {
-                            Texture = TextureManager.GameTextures[value];
                             Color color = Color.White;
                             if (selectedLayerNum == 0)
                                 color *= 0.5f;
 
-                            Spritebatch.Draw(Texture, Pos, null, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
+                            int sourceX = value % 8;
+                            int sourceY = value / 8;
+                            Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+
+                            Spritebatch.Draw(TextureManager.TileSet, Pos, sourceRect, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
                         }
                         #endregion
 
@@ -280,7 +290,6 @@ namespace MobileGame.LevelEditor
 
                         if (value != 255)
                         {
-                            Texture = TextureManager.GameTextures[value];
                             Color color = Color.White;
 
                             if (selectedLayerNum == 0)
@@ -288,7 +297,11 @@ namespace MobileGame.LevelEditor
                             else if (selectedLayerNum == 1)
                                 color *= 0.5f;
 
-                            Spritebatch.Draw(Texture, Pos, null, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f);
+                            int sourceX = value % 8;
+                            int sourceY = value / 8;
+                            Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+
+                            Spritebatch.Draw(TextureManager.TileSet, Pos, sourceRect, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f);
                         }
                         #endregion
                     }
@@ -358,7 +371,7 @@ namespace MobileGame.LevelEditor
             Spritebatch.Draw(GridTexture, offset, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
 
             if (EditorScreen.EditMode == 0)
-                Spritebatch.Draw(CursorTexture, new Vector2((mouseX * TileSize) + Offset.X, (mouseY * TileSize) + Offset.Y), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
+                Spritebatch.Draw(CursorTexture, new Vector2((mouseX * TileSize) + Offset.X, (mouseY * TileSize) + Offset.Y), mouseSourceRect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
 
             ToolManager.Draw(Spritebatch);
 
@@ -369,8 +382,13 @@ namespace MobileGame.LevelEditor
         {
             if (TileValue != 255)
             {
-                CursorTexture = TextureManager.GameTextures[TileValue];
+                //CursorTexture = TextureManager.GameTextures[TileValue];
+                CursorTexture = TextureManager.TileSet;
                 SelectedTileValue = TileValue;
+
+                int x = TileValue % 8;
+                int y = TileValue / 8;
+                mouseSourceRect = new Rectangle(x * 20, y * 20, 20, 20);
             }
 
         }
@@ -384,8 +402,41 @@ namespace MobileGame.LevelEditor
             platformLayer = FileLoader.LoadedPlatformLayer;
             specialsLayer = FileLoader.LoadedSpecialsLayer;
 
-            GoalPlaced = true;
-            PlayerPlaced = true;
+            for (int i = 0; i < FileLoader.LoadedLevelNumPointLights; i++)
+            {
+                float x = FileLoader.LoadedPointLights[i, 0];
+                float y = FileLoader.LoadedPointLights[i, 1];
+                float radius = FileLoader.LoadedPointLights[i, 2];
+                float power = FileLoader.LoadedPointLights[i, 3];
+                float r = FileLoader.LoadedPointLights[i, 4];
+                float g = FileLoader.LoadedPointLights[i, 5];
+                float b = FileLoader.LoadedPointLights[i, 6];
+
+                Color color = new Color(r, g, b);
+
+                PointLight newLight = new PointLight(new Vector2(x, y), radius, power, color, false);
+                LightingManager.PointLights.Add(newLight);
+            }
+
+            for (int i = 0; i < FileLoader.LoadedLevelNumAmbientLights; i++)
+            {
+                float x = FileLoader.LoadedAmbientLights[i, 0];
+                float y = FileLoader.LoadedAmbientLights[i, 1];
+                float width = FileLoader.LoadedAmbientLights[i, 2];
+                float height = FileLoader.LoadedAmbientLights[i, 3];
+                float r = FileLoader.LoadedAmbientLights[i, 4];
+                float g = FileLoader.LoadedAmbientLights[i, 5];
+                float b = FileLoader.LoadedAmbientLights[i, 6];
+                float power = FileLoader.LoadedAmbientLights[i, 7];
+
+                Color color = new Color(r, g, b);
+
+                AmbientLight newLight = new AmbientLight((int)x, (int)y, (int)width, (int)height, color, power);
+                LightingManager.AmbientLights.Add(newLight);
+            }
+
+            GoalPlaced = false;
+            PlayerPlaced = false;
         }
 
         public static void SetSelectedLayer(int Value)

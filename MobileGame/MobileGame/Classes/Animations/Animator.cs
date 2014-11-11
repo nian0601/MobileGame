@@ -12,6 +12,7 @@ namespace MobileGame.Animations
     {
         private List<Animation> animationList;
         private Animation activeAnimation;
+        private Animation prevAnimation;
         private Rectangle sourceRect;
         private bool animating;
 
@@ -24,6 +25,8 @@ namespace MobileGame.Animations
         #region Properties
 
         public Rectangle SourceRectangle { get { return sourceRect; } }
+        public Animation ActiveAnimation { get { return activeAnimation; } }
+        public Animation PrevAnimation { get { return prevAnimation; } }
 
         #endregion
 
@@ -31,6 +34,7 @@ namespace MobileGame.Animations
         {
             animationList = new List<Animation>();
             activeAnimation = null;
+            prevAnimation = null;
             animating = false;
 
             frameWidth = FrameWidth;
@@ -62,12 +66,23 @@ namespace MobileGame.Animations
                         
                         if (currentRow > activeAnimation.EndRow)
                         {
+                            if(activeAnimation.Looping == true)
+                            {
+                                currentRow = activeAnimation.StartRow;
+                            }
+                            else
+                            {
+                                StopAnimation();
+                            }
                             
-                            currentRow = activeAnimation.StartRow;
                         }
                     }
 
-                    currentTime -= activeAnimation.TimePerFrame;
+                    if(activeAnimation != null)
+                    {
+                        currentTime -= activeAnimation.TimePerFrame;
+                    }
+                    
                 }
             }
         }
@@ -80,6 +95,7 @@ namespace MobileGame.Animations
                 {
                     if (Anim.Name == Animation)
                     {
+                        Console.WriteLine("STARTED ANIMATION: " + Animation);
                         activeAnimation = Anim;
                         currentCol = activeAnimation.StartCol;
                         currentRow = activeAnimation.StartRow;
@@ -100,7 +116,8 @@ namespace MobileGame.Animations
                 currentTime = 0;
 
                 UpdateSourceRect();
-
+                Console.WriteLine("STOPPED ANIMATION: " + activeAnimation.Name);
+                prevAnimation = activeAnimation;
                 activeAnimation = null;
             }
         }
@@ -118,6 +135,7 @@ namespace MobileGame.Animations
 
                     UpdateSourceRect();
 
+                    prevAnimation = activeAnimation;
                     activeAnimation = null;
                 }
             }
@@ -134,6 +152,11 @@ namespace MobileGame.Animations
 
             if (!animationList.Contains(NewAnimation))
                 animationList.Add(NewAnimation);
+        }
+
+        public void ResetPrevAnimation()
+        {
+            prevAnimation = null;
         }
 
         private void UpdateSourceRect()

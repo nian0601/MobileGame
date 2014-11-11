@@ -22,7 +22,12 @@ namespace MobileGame.Managers
 
         public static Texture2D SpriteSheet { get; private set; }
         public static Texture2D PlayerSheet { get; private set; }
+        public static Texture2D PlayerSheet2 { get; private set; }
         public static Texture2D PlayerColTex { get; private set; }
+
+        public static Texture2D TileSet { get; private set; }
+        public static Texture2D TileSetEditorEdition { get; private set; }
+        public static Texture2D BurningTorch { get; private set; }
 
         public static List<Texture2D> SpikeTextures { get; private set; }
 
@@ -50,12 +55,17 @@ namespace MobileGame.Managers
 
             SpriteSheet = Content.Load<Texture2D>("TestSpriteSheet");
             PlayerSheet = Content.Load<Texture2D>("Units/PlayerWalkingAnimation");
+            PlayerSheet2 = Content.Load<Texture2D>("Units/PlayerWalkingAnimation2");
             PlayerColTex = Content.Load<Texture2D>("Units/PlayerHitData");
 
             TileSheet = Content.Load<Texture2D>("Tiles/TileSet");
             BurningTorch = Content.Load<Texture2D>("Tiles/BurningTorch");
 
             FilledSquare = Content.Load<Texture2D>("DebugTextures/FilledSquare");
+
+            TileSet = Content.Load<Texture2D>("Tiles/TileSet");
+            TileSetEditorEdition = Content.Load<Texture2D>("Editor/ToolButtons/TileSetEditorButtons");
+            BurningTorch = Content.Load<Texture2D>("Tiles/BurningTorch");
 
             SpikeTextures = new List<Texture2D>();
             SpikeTextures.Add(Content.Load<Texture2D>("Tiles/NewTiles/Spike_00"));

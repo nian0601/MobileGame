@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Storage;
 
 using MobileGame.Managers;
 using MobileGame.LevelEditor;
+using MobileGame.Lights;
 
 namespace MobileGame.FileManagement
 {
@@ -41,11 +42,26 @@ namespace MobileGame.FileManagement
             get { return ConvertToMultiArray(LoadedLevel.SpecialsLayer); }
         }
 
+        public static float[,] LoadedPointLights
+        {
+            get { return ConvertToMultiArray(LoadedLevel.PointLights); }
+        }
+
+        public static float[,] LoadedAmbientLights
+        {
+            get { return ConvertToMultiArray(LoadedLevel.AmbientLights); }
+        }
+
+
         public static int LoadedLevelTileSize{ get { return LoadedLevel.TileSize; } }
 
         public static int LoadedLevelMapHeight { get { return LoadedLevel.MapHeight; } }
 
         public static int LoadedLevelMapWidth { get { return LoadedLevel.MapWidth; } }
+
+        public static int LoadedLevelNumPointLights { get { return LoadedLevel.NumPointLights; } }
+
+        public static int LoadedLevelNumAmbientLights { get { return LoadedLevel.NumAmbientLights; } }
 
         public static GameData LoadedGameData { get { return gameData; } }
         #endregion
@@ -125,6 +141,33 @@ namespace MobileGame.FileManagement
             byte[,] PlatformLayer = EditorMapManager.PlatformLayer;
             byte[,] SpecialsLayer = EditorMapManager.SpecialsLayer;
 
+            float[,] PointLights = new float[LightingManager.PointLights.Count, 7];
+
+            for (int y = 0; y < LightingManager.PointLights.Count; y++)
+            {
+                PointLights[y, 0] = LightingManager.PointLights[y].Position.X;
+                PointLights[y, 1] = LightingManager.PointLights[y].Position.Y;
+                PointLights[y, 2] = LightingManager.PointLights[y].Radius;
+                PointLights[y, 3] = LightingManager.PointLights[y].Power;
+                PointLights[y, 4] = LightingManager.PointLights[y].Color.R;
+                PointLights[y, 5] = LightingManager.PointLights[y].Color.G;
+                PointLights[y, 6] = LightingManager.PointLights[y].Color.B;
+            }
+
+            float[,] AmbientLights = new float[LightingManager.AmbientLights.Count, 8];
+
+            for (int y = 0; y < LightingManager.AmbientLights.Count; y++)
+            {
+                AmbientLights[y, 0] = LightingManager.AmbientLights[y].Position.X;
+                AmbientLights[y, 1] = LightingManager.AmbientLights[y].Position.Y;
+                AmbientLights[y, 2] = LightingManager.AmbientLights[y].Width;
+                AmbientLights[y, 3] = LightingManager.AmbientLights[y].Height;
+                AmbientLights[y, 4] = LightingManager.AmbientLights[y].Color.R;
+                AmbientLights[y, 5] = LightingManager.AmbientLights[y].Color.G;
+                AmbientLights[y, 6] = LightingManager.AmbientLights[y].Color.B;
+                AmbientLights[y, 7] = LightingManager.AmbientLights[y].Power;
+            }
+
 
             //First we read the GameData file so that we get access to the MapList
             //We will use that to propperly name the new map
@@ -154,6 +197,10 @@ namespace MobileGame.FileManagement
             LevelData.BackgroundLayer = ConvertToJaggedArray(BackgroundLayer);
             LevelData.PlatformLayer = ConvertToJaggedArray(PlatformLayer);
             LevelData.SpecialsLayer = ConvertToJaggedArray(SpecialsLayer);
+            LevelData.PointLights = ConvertToJaggedArray(PointLights);
+            LevelData.NumPointLights = LightingManager.PointLights.Count;
+            LevelData.AmbientLights = ConvertToJaggedArray(AmbientLights);
+            LevelData.NumAmbientLights = LightingManager.AmbientLights.Count;
 
             //And now its time to build the SavePath
             //The new level we want to save should get number "MapList.Count + 1"
@@ -407,6 +454,43 @@ namespace MobileGame.FileManagement
             int mapWidth = jaggedArray[0].Length;
 
             byte[,] tempArray = new byte[mapHeight, mapWidth];
+
+            for (int y = 0; y < mapHeight; y++)
+            {
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    tempArray[y, x] = jaggedArray[y][x];
+                }
+            }
+
+            return tempArray;
+        }
+
+        private static float[][] ConvertToJaggedArray(float[,] multiArray)
+        {
+            int mapHeight = multiArray.GetLength(0);
+            int mapWidth = multiArray.GetLength(1);
+
+            float[][] tempJaggedArray = new float[mapHeight][];
+
+            for (int y = 0; y < mapHeight; y++)
+            {
+                tempJaggedArray[y] = new float[mapWidth];
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    tempJaggedArray[y][x] = multiArray[y, x];
+                }
+            }
+
+            return tempJaggedArray;
+        }
+
+        private static float[,] ConvertToMultiArray(float[][] jaggedArray)
+        {
+            int mapHeight = jaggedArray.Length;
+            int mapWidth = jaggedArray[0].Length;
+
+            float[,] tempArray = new float[mapHeight, mapWidth];
 
             for (int y = 0; y < mapHeight; y++)
             {

@@ -14,9 +14,7 @@ namespace MobileGame.Tiles
     {
         public TeleportTile(int x, int y) : base(x, y)
         {
-            tileTexture = TextureManager.TeleportTile;
-
-            pixelPos = new Vector2(index.X * tileSize, index.Y * tileSize);
+            myPixelPos = new Vector2(x * MapManager.TileSize, y * MapManager.MapHeight);
         }
 
         public override void CollideWithUnit(Player Unit)
@@ -29,7 +27,7 @@ namespace MobileGame.Tiles
 
         public override Rectangle HitBox()
         {
-            return new Rectangle((int)pixelPos.X, (int)pixelPos.Y, tileTexture.Width, tileTexture.Height);
+            return new Rectangle((int)myPixelPos.X, (int)myPixelPos.Y, MapManager.TileSize, MapManager.TileSize);
         }
     }
 }

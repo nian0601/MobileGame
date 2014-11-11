@@ -23,6 +23,7 @@ namespace MobileGame.Managers
         internal MapManager mapManager;
         private static bool gameWon, gameLost;
 
+
         private LightRenderer LightRenderer;
         private List<PointLight> pointLightHandles;
         private List<SpotLight> spotLightHandles;
@@ -33,6 +34,10 @@ namespace MobileGame.Managers
         private int myCurrLight;
 
         public static RenderTarget2D finalRenderTarget;
+
+        private List<AmbientLight> ambientLightHandles;
+        private List<PointLight> pointLightHandles;
+
 
         public GameManager(){}
 
@@ -58,6 +63,7 @@ namespace MobileGame.Managers
             Camera.Position = mapManager.PlayerStartPos;
             Camera.Limits = new Rectangle(0, 0, MapManager.MapWidth, MapManager.MapHeight);
 
+
             pointLightHandles = new List<PointLight>();
             spotLightHandles = new List<SpotLight>();
 
@@ -80,11 +86,25 @@ namespace MobileGame.Managers
 
             myAffectLightDir = false;
             myCurrLight = 0;
+
+            ambientLightHandles = new List<AmbientLight>();
+            pointLightHandles = new List<PointLight>();
+
+            ambientLightHandles.Add(new AmbientLight(Color.White, 1f));
+            //pointLightHandles.Add(new PointLight(Player.Position, 200, 0.8f, Color.White, false));
+
+            //LightingManager.PointLights.Add(pointLightHandles[0]);
+
         }
 
         public void Update(float elapsedTime)
         {
+
             mapManager.Update();
+
+            LightingManager.Update(elapsedTime);
+            mapManager.Update(elapsedTime);
+
 
             //Collision against specialblocks is handled outside the player class
             for (int i = 0; i < mapManager.SpecialBlocksList.Count; i++)
@@ -108,8 +128,17 @@ namespace MobileGame.Managers
             Player.Update(elapsedTime);
 
 
-            spotLightHandles[0].Position.X = Player.Position.X;
-            spotLightHandles[0].Position.Y = Player.Position.Y;
+
+            if (KeyMouseReader.KeyClick(Keys.F))
+            {
+                if (LightingManager.AmbientLights.Contains(ambientLightHandles[0]))
+                    LightingManager.AmbientLights.Remove(ambientLightHandles[0]);
+                else
+                    LightingManager.AmbientLights.Add(ambientLightHandles[0]);
+            }
+
+
+            //pointLightHandles[0].SetPosition(Player.Position);
             //Console.WriteLine("FPS: " + (1000 / elapsedTime));
 
             if (KeyMouseReader.isKeyDown(Keys.Up))
@@ -162,6 +191,7 @@ namespace MobileGame.Managers
             //Draw the background
             mapManager.DrawBackground(spriteBatch);
             mapManager.DrawForeground(spriteBatch);
+            mapManager.DrawAnimatedTiles(spriteBatch);
 
             spriteBatch.End();
             LightRenderer.EndDrawBackground();

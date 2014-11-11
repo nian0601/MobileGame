@@ -14,11 +14,9 @@ namespace MobileGame.Tiles
 {
     class SpikeTile : SpecialTile
     {
-        public SpikeTile(int x, int y, int type): base(x, y)
+        public SpikeTile(int x, int y): base(x, y)
         {
-            tileTexture = TextureManager.SpikeTextures[type];
-
-            pixelPos = new Vector2(index.X * tileSize, index.Y * tileSize);
+            myPixelPos = new Vector2(x * MapManager.TileSize, y * MapManager.TileSize);
         }
 
         public override void CollideWithUnit(Player Unit)
@@ -28,7 +26,7 @@ namespace MobileGame.Tiles
 
         public override Rectangle HitBox()
         {
-            return new Rectangle((int)pixelPos.X, (int)pixelPos.Y, tileTexture.Width, tileTexture.Height);
+            return new Rectangle((int)myPixelPos.X, (int)myPixelPos.Y, MapManager.TileSize, MapManager.TileSize);
         }
     }
 }

@@ -29,7 +29,8 @@ namespace MobileGame.Managers
         private static int mapWidth;
         private static int mapHeight;
 
-        private List<SpecialTile> specialBlockList;
+        private List<SpecialTile> mySpecialTiles;
+        private List<AnimatedTile> myAnimatedTiles;
         private int mapYTiles;
         private int mapXTiles;
         private Vector2 playerStartPos;
@@ -40,7 +41,7 @@ namespace MobileGame.Managers
 
         public List<SpecialTile> SpecialBlocksList
         {
-            get { return specialBlockList; }
+            get { return mySpecialTiles; }
         }
 
         public Vector2 PlayerStartPos
@@ -62,13 +63,12 @@ namespace MobileGame.Managers
 
         public static byte[,] CollisionLayer { get { return collisionLayer; } }
 
-        public static Vector2 GoalPos { get; private set; }
-
         #endregion
 
         public MapManager()
         {
-            specialBlockList = new List<SpecialTile>();
+            mySpecialTiles = new List<SpecialTile>();
+            myAnimatedTiles = new List<AnimatedTile>();
             playerStartPos = new Vector2(200, 200);
         }
 
@@ -86,60 +86,17 @@ namespace MobileGame.Managers
             BuildLevel();
         }
 
-        public void Update()
+        public void Update(float aElaspedTime)
         {
             int mouseX = KeyMouseReader.GetMousePos().X;
             int mouseY = KeyMouseReader.GetMousePos().Y;
 
-            Vector2 MousePos = new Vector2(mouseX, mouseY) + new Vector2((int)Camera.Position.X - Camera.ViewPort.Width/2, (int)Camera.Position.Y - Camera.ViewPort.Height/2);
-            //Console.WriteLine(MousePos);
-
-            if (KeyMouseReader.isKeyDown(Keys.LeftControl) && KeyMouseReader.KeyClick(Keys.L))
-                LightingManager.PointLights.Add(new PointLight(MousePos, 200, 0.5f, Color.White));
-                //LightingManager.BasicLights.Add(new Lights.BasicLight((int)MousePos.X, (int)MousePos.Y, 400, 400, Color.White * 0.5f));
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            for (int x = 0; x < mapXTiles; x++)
+            for (int i = 0; i < myAnimatedTiles.Count; i++)
             {
-                for (int y = 0; y < mapYTiles; y++)
-                {
-                    Point pixelIndex = ConvertIndexToPixels(x, y);
-                    Color Color = Color.White;
-
-                    if (Game1.Debugging)
-                    {
-                        if (collisionLayer[x, y] == 1)
-                            Color = Color.PaleVioletRed;
-                    }
-
-                    Vector2 Pos = new Vector2(x * tileSize, y * tileSize);
-                    Texture2D Texture;
-
-                    byte value = backgroundLayer[x, y];
-                    if (value != 255)
-                    {
-                        Texture = TextureManager.GameTextures[value];
-                        spriteBatch.Draw(Texture, Pos, null, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
-                    }
-
-                    value = platformLayer[x, y];
-                    if (value != 255)
-                    {
-                        Texture = TextureManager.GameTextures[value];
-                        spriteBatch.Draw(Texture, Pos, null, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
-                    }
-
-                    value = specialsLayer[x, y];
-                    if (value != 255)
-                    {
-                        Texture = TextureManager.GameTextures[value];
-                        spriteBatch.Draw(Texture, Pos, null, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f);
-                    }
-                }
+                myAnimatedTiles[i].Update(aElaspedTime);
             }
         }
+
 
         public void DrawBackground(SpriteBatch spriteBatch)
         {
@@ -156,6 +113,8 @@ namespace MobileGame.Managers
                     }
 
 
+
+
                     byte value = backgroundLayer[x, y];
                     if (value != 255)
                     {
@@ -163,7 +122,11 @@ namespace MobileGame.Managers
                         int sourceX = value % 8;
                         int sourceY = value / 8;
                         Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+
                         spriteBatch.Draw(TextureManager.TileSheet, Pos, sourceRect, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
+
+                        spriteBatch.Draw(TextureManager.TileSet, Pos, sourceRect, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
+
                     }
                 }
             }
@@ -190,7 +153,11 @@ namespace MobileGame.Managers
                         int sourceX = value % 8;
                         int sourceY = value / 8;
                         Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+
                         spriteBatch.Draw(TextureManager.TileSheet, Pos, sourceRect, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
+
+                        spriteBatch.Draw(TextureManager.TileSet, Pos, sourceRect, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
+
                     }
                 }
             }
@@ -218,9 +185,21 @@ namespace MobileGame.Managers
                         int sourceX = value % 8;
                         int sourceY = value / 8;
                         Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+
                         spriteBatch.Draw(TextureManager.TileSheet, Pos, sourceRect, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
+
+                        spriteBatch.Draw(TextureManager.TileSet, Pos, sourceRect, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f); ;
+
                     }
                 }
+            }
+        }
+
+        public void DrawAnimatedTiles(SpriteBatch aSpriteBatch)
+        {
+            for (int i = 0; i < myAnimatedTiles.Count; i++)
+            {
+                myAnimatedTiles[i].Draw(aSpriteBatch);
             }
         }
 
@@ -267,7 +246,7 @@ namespace MobileGame.Managers
             platformLayer = new byte[mapXTiles, mapYTiles];
             specialsLayer = new byte[mapXTiles, mapYTiles];
 
-            specialBlockList.Clear();
+            mySpecialTiles.Clear();
 
             byte backgroundValue, platformValue, specialsValue;
 
@@ -282,27 +261,24 @@ namespace MobileGame.Managers
                     platformValue = FileLoader.LoadedPlatformLayer[x, y];
                     specialsValue = FileLoader.LoadedSpecialsLayer[x, y];
 
-                    #region BackgroundLayer
-                    if (backgroundValue == 16)
+                    if (backgroundValue == 25 || platformValue == 25 || specialsValue == 25) //JumpTile
                     {
-                        specialBlockList.Add(new JumpTile(x, y));
-                        backgroundLayer[x, y] = backgroundValue;
+                        mySpecialTiles.Add(new JumpTile(x, y));
                     }
-                    
-                    else if (backgroundValue == 17)
+                    else if (backgroundValue == 26 || platformValue == 26 || specialsValue == 26) //GoalTile
                     {
                         GoalTile temp = new GoalTile(x, y);
                         Camera.AddFocusObject(temp);
-                        specialBlockList.Add(temp);
-                        backgroundLayer[x, y] = backgroundValue;
-                        GoalPos = new Vector2(x * tileSize, y * tileSize);
-                        LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 250, 0.7f, Color.White));
+                        mySpecialTiles.Add(temp);
+                        LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 250, 0.7f, Color.White, false));
                     }
-                    else if (backgroundValue == 29)
+                    else if (backgroundValue == 27 || backgroundValue == 28 || backgroundValue == 29
+                            || platformValue == 27 || platformValue == 28 || platformValue == 29
+                            || specialsValue == 27 || specialsValue == 28 || specialsValue == 29) //SpikeTile
                     {
-                        playerStartPos = new Vector2(x * tileSize, y * tileSize);
-                        backgroundLayer[x, y] = 255;
+                        mySpecialTiles.Add(new SpikeTile(x, y));
                     }
+
                     else if (backgroundValue == 30)
                     {
                         //EnemyManager.AddEnemy(new SimpleEnemy(x, y, false));
@@ -317,16 +293,20 @@ namespace MobileGame.Managers
                     {
                         backgroundLayer[x, y] = backgroundValue;
 
-                    }
-                        
-                    #endregion
 
-                    #region PlatformLayer
-                    if (platformValue == 16)
+
+                    if (backgroundValue == 41 || platformValue == 41 || specialsValue == 41) // Torch
                     {
-                        specialBlockList.Add(new JumpTile(x, y));
-                        platformLayer[x, y] = platformValue;
+                        myAnimatedTiles.Add(new AnimatedTile(x, y, TextureManager.BurningTorch, 0, 0, 5, 0, 100));
+                        LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 150, 0.7f, Color.White, true));
+                        //Right now the torch is getting drawn two times:
+                        //The first is a static image of the first frame
+                        //The second is the acctual animation
+                        //This is because i did not want to do alot of if-checks for each backgroundvalue/platformvalue/specialvalue
+                        //and set the corresponding layer to 255 if a toirch was found
+                        //should figure out something to do this in a pretty way later
                     }
+
                     else if (platformValue == 31)
                     {
                         specialBlockList.Add(new TeleportTile(x, y));
@@ -396,10 +376,47 @@ namespace MobileGame.Managers
                         specialsLayer[x, y] = specialsValue;
                     #endregion
 
+
+                    backgroundLayer[x, y] = backgroundValue;
+                    platformLayer[x, y] = platformValue;
+                    specialsLayer[x, y] = specialsValue;
+
+
                 }
             }
 
-            
+            for (int i = 0; i < FileLoader.LoadedLevelNumPointLights; i++)
+            {
+                float x = FileLoader.LoadedPointLights[i, 0];
+                float y = FileLoader.LoadedPointLights[i, 1];
+                float radius = FileLoader.LoadedPointLights[i, 2];
+                float power = FileLoader.LoadedPointLights[i, 3];
+                float r = FileLoader.LoadedPointLights[i, 4];
+                float g = FileLoader.LoadedPointLights[i, 5];
+                float b = FileLoader.LoadedPointLights[i, 6];
+
+                Color color = new Color(r, g, b);
+
+                PointLight newLight = new PointLight(new Vector2(x, y), radius, power, color, false);
+                LightingManager.PointLights.Add(newLight);
+            }
+
+            for (int i = 0; i < FileLoader.LoadedLevelNumAmbientLights; i++)
+            {
+                float x = FileLoader.LoadedAmbientLights[i, 0];
+                float y = FileLoader.LoadedAmbientLights[i, 1];
+                float width = FileLoader.LoadedAmbientLights[i, 2];
+                float height = FileLoader.LoadedAmbientLights[i, 3];
+                float r = FileLoader.LoadedAmbientLights[i, 4];
+                float g = FileLoader.LoadedAmbientLights[i, 5];
+                float b = FileLoader.LoadedAmbientLights[i, 6];
+                float power = FileLoader.LoadedAmbientLights[i, 7];
+
+                Color color = new Color(r, g, b);
+
+                AmbientLight newLight = new AmbientLight((int)x, (int)y, (int)width, (int)height, color, power);
+                LightingManager.AmbientLights.Add(newLight);
+            }
         }
 
         /// <summary>

@@ -22,8 +22,6 @@ namespace GUI_System.GUIObjects
         private TextInputObject InputObject;
         public string Text { get { return InputObject.Text; } }
 
-        private bool focused;
-
         private InputFieldStyle FieldStyle;
 
         private MouseState oldState, currState;
@@ -34,7 +32,6 @@ namespace GUI_System.GUIObjects
             InputObject = new TextInputObject();
             InputObject.CharNumLimit = 12;
             this.FieldStyle = FieldStyle;
-            focused = false;
         }
 
         public void Update(MenuScreen screen, GameTime gameTime)

@@ -18,12 +18,12 @@ namespace MobileGame.LevelEditor.Tools
         {
             if (ToolManager.HasActiveSelection && KeyMouseReader.LeftClick())
             {
-                MakeSeveralCollidable(ToolManager.SelectionTopLeft.X, ToolManager.SelectionTopLeft.Y, ToolManager.SelectionBottomRight.X, ToolManager.SelectionBottomRight.Y);
+                MakeSeveralCollidable(ToolManager.SelectionTopLeftIndex.X, ToolManager.SelectionTopLeftIndex.Y, ToolManager.SelectionBottomRightIndex.X, ToolManager.SelectionBottomRightIndex.Y);
                 ToolManager.ClearSelection();
             }
             else if (ToolManager.HasActiveSelection && KeyMouseReader.RightClick())
             {
-                MakeSeveralUnCollidable(ToolManager.SelectionTopLeft.X, ToolManager.SelectionTopLeft.Y, ToolManager.SelectionBottomRight.X, ToolManager.SelectionBottomRight.Y);
+                MakeSeveralUnCollidable(ToolManager.SelectionTopLeftIndex.X, ToolManager.SelectionTopLeftIndex.Y, ToolManager.SelectionBottomRightIndex.X, ToolManager.SelectionBottomRightIndex.Y);
                 ToolManager.ClearSelection();
             }
             else if (KeyMouseReader.LeftMouseDown())
