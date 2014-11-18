@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 
 using MobileGame.FileManagement;
 using MobileGame.Managers;
-using MobileGame.Lights;
+using MobileGame.LightingSystem;
 
 namespace MobileGame.LevelEditor
 {
@@ -75,7 +75,9 @@ namespace MobileGame.LevelEditor
 
         public static int NumCollisionFlags { get; set; }
 
-
+        private static LightRenderer myLightRenderer;
+        public static LightRenderer LightRenderer { get { return myLightRenderer; } }
+        
         private static Texture2D myTileSetTexture;
 
         // LAYERING STUFF
@@ -140,6 +142,13 @@ namespace MobileGame.LevelEditor
             //myTileSetTexture = Content.Load<Texture2D>("Tiles/TileSet");
             //myTileSetTexture = Content.Load<Texture2D>("Tiles/LabTileSet");
             myTileSetTexture = Content.Load<Texture2D>("Tiles/LabTileSet40x40");
+
+            myLightRenderer = new LightRenderer(Game1.graphics);
+            myLightRenderer.Initialize((int)Offset.X, (int)Offset.Y, xTiles * 20, yTiles * 20);
+            myLightRenderer.LoadContent(Content);
+
+            myLightRenderer.minLight = 0.20f;
+            myLightRenderer.lightBias = 10f;
         }
 
         public void Initialize()
@@ -155,7 +164,9 @@ namespace MobileGame.LevelEditor
                 ResetMap();
 
                 ToolManager.Initialize();
-                Initialized = true; 
+                Initialized = true;
+
+                TileSize = 40;
             }
         }
 
@@ -166,7 +177,7 @@ namespace MobileGame.LevelEditor
                 mouseX = ConvertPixelsToIndex(KeyMouseReader.GetMousePos()).X;
                 mouseY = ConvertPixelsToIndex(KeyMouseReader.GetMousePos()).Y;
 
-                ToolManager.Update();
+                ToolManager.Update(myLightRenderer);
             }
 
             if (KeyMouseReader.isKeyDown(Keys.LeftShift) && KeyMouseReader.isKeyDown(Keys.LeftAlt) && KeyMouseReader.KeyClick(Keys.R))
@@ -182,7 +193,8 @@ namespace MobileGame.LevelEditor
             //LightingMode
             if (EditorScreen.EditMode == 4)
             {
-                LightingManager.BeginDrawMainTarget();
+                //BACKGROUND (STUFF THAT WONT BE CAST SHADOWS)
+                myLightRenderer.BeginDrawBackground();
 
                 Spritebatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
 
@@ -200,7 +212,7 @@ namespace MobileGame.LevelEditor
                             int sourceX = value % 8;
                             int sourceY = value / 8;
                             //Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
-                            Rectangle sourceRect = new Rectangle(sourceX * 40, sourceY * 40, 40, 40);
+                            Rectangle sourceRect = new Rectangle(sourceX * TileSize, sourceY * TileSize, TileSize, TileSize);
 
                             Spritebatch.Draw(myTileSetTexture, Pos, sourceRect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
                         }
@@ -218,7 +230,7 @@ namespace MobileGame.LevelEditor
                             int sourceX = value % 8;
                             int sourceY = value / 8;
                             //Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
-                            Rectangle sourceRect = new Rectangle(sourceX * 40, sourceY * 40, 40, 40);
+                            Rectangle sourceRect = new Rectangle(sourceX * TileSize, sourceY * TileSize, TileSize, TileSize);
 
                             Spritebatch.Draw(myTileSetTexture, Pos, sourceRect, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
                         }
@@ -239,7 +251,7 @@ namespace MobileGame.LevelEditor
                             int sourceX = value % 8;
                             int sourceY = value / 8;
                             //Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
-                            Rectangle sourceRect = new Rectangle(sourceX * 40, sourceY * 40, 40, 40);
+                            Rectangle sourceRect = new Rectangle(sourceX * TileSize, sourceY * TileSize, TileSize, TileSize);
 
                             Spritebatch.Draw(myTileSetTexture, Pos, sourceRect, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f);
                         }
@@ -249,9 +261,44 @@ namespace MobileGame.LevelEditor
 
                 Spritebatch.End();
 
-                LightingManager.EndDrawingMainTarget();
+                myLightRenderer.EndDrawBackground();
 
-                LightingManager.DrawLitScreen();
+                //SHADOW CASTERS (STUFF THAT WILL CAST SHADOWS)
+                myLightRenderer.BeginDrawShadowCasters();
+
+                Spritebatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
+
+                for (int x = 0; x < xTiles; x++)
+                {
+                    for (int y = 0; y < yTiles; y++)
+                    {
+                        #region Platforms
+                        Vector2 Pos = new Vector2(x * TileSize, y * TileSize) + offset;
+                       
+                        byte value = platformLayer[x, y];
+
+                        if (value != 255)
+                        {
+                            Color color = Color.White;
+                            if (selectedLayerNum == 0)
+                                color *= 0.5f;
+
+                            int sourceX = value % 8;
+                            int sourceY = value / 8;
+                            //Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+                            Rectangle sourceRect = new Rectangle(sourceX * TileSize, sourceY * TileSize, TileSize, TileSize);
+
+                            Spritebatch.Draw(myTileSetTexture, Pos, sourceRect, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
+                        }
+                        #endregion
+                    }
+                }
+
+                Spritebatch.End();
+
+                myLightRenderer.EndDrawShadowCasters();
+
+                myLightRenderer.DrawLitScene();
             }
             //Non-Lighing mode
             else
@@ -400,7 +447,7 @@ namespace MobileGame.LevelEditor
 
                 int x = TileValue % 8;
                 int y = TileValue / 8;
-                mouseSourceRect = new Rectangle(x * 40, y * 40, 40, 40);
+                mouseSourceRect = new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize);
                 //mouseSourceRect = new Rectangle(x * 20, y * 20, 20, 20);
             }
 
@@ -417,35 +464,18 @@ namespace MobileGame.LevelEditor
 
             for (int i = 0; i < FileLoader.LoadedLevelNumPointLights; i++)
             {
-                float x = FileLoader.LoadedPointLights[i, 0];
-                float y = FileLoader.LoadedPointLights[i, 1];
+                float x = FileLoader.LoadedPointLights[i, 0] + Offset.X;
+                float y = FileLoader.LoadedPointLights[i, 1] + Offset.Y;
                 float radius = FileLoader.LoadedPointLights[i, 2];
                 float power = FileLoader.LoadedPointLights[i, 3];
-                float r = FileLoader.LoadedPointLights[i, 4];
-                float g = FileLoader.LoadedPointLights[i, 5];
-                float b = FileLoader.LoadedPointLights[i, 6];
+                int r = (int)FileLoader.LoadedPointLights[i, 4];
+                int g = (int)FileLoader.LoadedPointLights[i, 5];
+                int b = (int)FileLoader.LoadedPointLights[i, 6];
 
                 Color color = new Color(r, g, b);
 
-                PointLight newLight = new PointLight(new Vector2(x, y), radius, power, color, false);
-                LightingManager.PointLights.Add(newLight);
-            }
-
-            for (int i = 0; i < FileLoader.LoadedLevelNumAmbientLights; i++)
-            {
-                float x = FileLoader.LoadedAmbientLights[i, 0];
-                float y = FileLoader.LoadedAmbientLights[i, 1];
-                float width = FileLoader.LoadedAmbientLights[i, 2];
-                float height = FileLoader.LoadedAmbientLights[i, 3];
-                float r = FileLoader.LoadedAmbientLights[i, 4];
-                float g = FileLoader.LoadedAmbientLights[i, 5];
-                float b = FileLoader.LoadedAmbientLights[i, 6];
-                float power = FileLoader.LoadedAmbientLights[i, 7];
-
-                Color color = new Color(r, g, b);
-
-                AmbientLight newLight = new AmbientLight((int)x, (int)y, (int)width, (int)height, color, power);
-                LightingManager.AmbientLights.Add(newLight);
+                PointLight newLight = new PointLight(new Vector2(x, y), power, radius, color);
+                myLightRenderer.pointLights.Add(newLight);
             }
 
             GoalPlaced = false;

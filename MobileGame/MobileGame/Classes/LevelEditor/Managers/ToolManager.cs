@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 using MobileGame.LevelEditor.Tools;
-using MobileGame.Lights;
+using MobileGame.LightingSystem;
 
 namespace MobileGame.LevelEditor
 {
@@ -51,7 +51,7 @@ namespace MobileGame.LevelEditor
             prevEditMode = 0;
         }
 
-        public static void Update()
+        public static void Update(LightRenderer aLightRenderer)
         {
             Point Offset = new Point((int)EditorMapManager.Offset.X, (int)EditorMapManager.Offset.Y);
             mouseX = ConvertPixelsToIndex(KeyMouseReader.GetMousePos()).X;
@@ -101,9 +101,9 @@ namespace MobileGame.LevelEditor
                 else if (EditorScreen.EditMode == 4)
                 {
                     if (prevEditMode != 4)
-                        LightPlacer.Init();
+                        LightPlacer.Init(aLightRenderer);
 
-                    LightPlacer.Update();
+                    LightPlacer.Update(aLightRenderer);
                 }
                 #endregion
 

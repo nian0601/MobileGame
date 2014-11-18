@@ -48,10 +48,10 @@ namespace MobileGame.Screens
         public override void HandleInput(GameTime gameTime)
         {
             //This will only ever be true when we leave the editor
-            if (Game1.ScreenHeight != 600 && Game1.ScreenWidth != 800)
+            if (Game1.ScreenHeight != 800 && Game1.ScreenWidth != 1000)
             {
-                Game1.graphics.PreferredBackBufferHeight = 600;
-                Game1.graphics.PreferredBackBufferWidth = 800;
+                Game1.graphics.PreferredBackBufferHeight = 800;
+                Game1.graphics.PreferredBackBufferWidth = 1000;
                 Game1.graphics.IsFullScreen = false;
                 Game1.graphics.ApplyChanges();
                 FileLoader.Initialize();

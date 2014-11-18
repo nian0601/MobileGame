@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 
-using MobileGame.Lights;
+using MobileGame.LightingSystem;
 using MobileGame.Managers;
 
 namespace MobileGame.LevelEditor.Tools
@@ -16,37 +16,48 @@ namespace MobileGame.LevelEditor.Tools
     {
         private List<Rectangle> pointLightHitBoxes;
         private List<Rectangle> ambientLightHitBoxes;
+        private List<Rectangle> spotLightHitBoxes;
 
 
         public LightsPlacer()
         {
             pointLightHitBoxes = new List<Rectangle>();
             ambientLightHitBoxes = new List<Rectangle>();
+            spotLightHitBoxes = new List<Rectangle>();
         }
 
-        public void Init()
+        public void Init(LightRenderer aLightRenderer)
         {
             pointLightHitBoxes.Clear();
-            for (int i = 0; i < LightingManager.PointLights.Count; i++)
+            for (int i = 0; i < aLightRenderer.pointLights.Count; i++)
             {
-                Rectangle hitBox = new Rectangle((int)LightingManager.PointLights[i].Position.X - 10 + (int)EditorMapManager.Offset.X, (int)LightingManager.PointLights[i].Position.Y - 10 + (int)EditorMapManager.Offset.Y, 20, 20);
+                Rectangle hitBox = new Rectangle((int)aLightRenderer.pointLights[i].Position.X - 10, (int)aLightRenderer.pointLights[i].Position.Y - 10, 20, 20);
                 pointLightHitBoxes.Add(hitBox);
             }
 
-            ambientLightHitBoxes.Clear();
-            int startX = 10;
-            int startY = 10;
-            for (int i = 0; i < LightingManager.AmbientLights.Count; i++)
-            {
-                startX += startX * 0 + 40;
 
-                Rectangle hitBox = new Rectangle(startX + (int)EditorMapManager.Offset.X, startY + (int)EditorMapManager.Offset.Y, 20, 20);
-                ambientLightHitBoxes.Add(hitBox);
+            spotLightHitBoxes.Clear();
+            for(int i = 0; i < aLightRenderer.spotLights.Count; i++)
+            {
+                Rectangle hitBox = new Rectangle((int)aLightRenderer.spotLights[i].Position.X - 10, (int)aLightRenderer.spotLights[i].Position.Y - 10, 20, 20);
+                spotLightHitBoxes.Add(hitBox);
             }
+
+            //ambientLightHitBoxes.Clear();
+            //int startX = 10;
+            //int startY = 10;
+            //for (int i = 0; i < LightingManager.AmbientLights.Count; i++)
+            //{
+            //    startX += startX * 0 + 40;
+
+            //    Rectangle hitBox = new Rectangle(startX + (int)EditorMapManager.Offset.X, startY + (int)EditorMapManager.Offset.Y, 20, 20);
+            //    ambientLightHitBoxes.Add(hitBox);
+            //}
         }
 
-        public void Update()
+        public void Update(LightRenderer aLightRenderer)
         {
+            //POINTLIGHTS
             if (ToolManager.HasActiveSelection && KeyMouseReader.LeftClick())
             {
                 int x1 = ToolManager.SelectionTopLeftIndex.X * EditorMapManager.TileSize;
@@ -61,36 +72,36 @@ namespace MobileGame.LevelEditor.Tools
                 float radius = (x2 - x1) / 2;
                 Vector2 pos = new Vector2(centerx, centery);
 
-                PointLight tempLight = new PointLight(pos, radius, 0.5f, EditorScreen.ColorPicker.SelectedColor, false);
-                LightingManager.PointLights.Add(tempLight);
+                PointLight tempPointLight = new PointLight(pos, 1f, radius, EditorScreen.ColorPicker.SelectedColor);
+                aLightRenderer.pointLights.Add(tempPointLight);
 
 
-                Rectangle hitBox = new Rectangle((int)tempLight.Position.X - 10 + (int)EditorMapManager.Offset.X, (int)tempLight.Position.Y - 10 + (int)EditorMapManager.Offset.Y, 20, 20);
+                Rectangle hitBox = new Rectangle((int)tempPointLight.Position.X - 10, (int)tempPointLight.Position.Y - 10, 20, 20);
                 pointLightHitBoxes.Add(hitBox);
             }
             else if (KeyMouseReader.KeyClick(Keys.Q))
             {
-                LightingManager.AmbientLights.Add(new AmbientLight(0, 0, EditorMapManager.NumXTiles * 20, EditorMapManager.NumYTiles * 20, EditorScreen.ColorPicker.SelectedColor, 0.5f));
+                //LightingManager.AmbientLights.Add(new AmbientLight(0, 0, EditorMapManager.NumXTiles * 20, EditorMapManager.NumYTiles * 20, EditorScreen.ColorPicker.SelectedColor, 0.5f));
 
-                int x = 10 + (LightingManager.AmbientLights.Count * 30);
-                int y = 10;
+                //int x = 10 + (LightingManager.AmbientLights.Count * 30);
+                //int y = 10;
 
-                Rectangle hitBox = new Rectangle(x + (int)EditorMapManager.Offset.X, y + (int)EditorMapManager.Offset.Y, 20, 20);
-                ambientLightHitBoxes.Add(hitBox);
+                //Rectangle hitBox = new Rectangle(x + (int)EditorMapManager.Offset.X, y + (int)EditorMapManager.Offset.Y, 20, 20);
+                //ambientLightHitBoxes.Add(hitBox);
             }
 
             else if (KeyMouseReader.LeftClick())
             {
-                Vector2 mousePos = new Vector2(KeyMouseReader.GetMousePos().X, KeyMouseReader.GetMousePos().Y) - EditorMapManager.Offset;
-                Rectangle hitBox = new Rectangle((int)mousePos.X - 10 + (int)EditorMapManager.Offset.X, (int)mousePos.Y - 10 + (int)EditorMapManager.Offset.Y, 20, 20);
-                PointLight tempLight = new PointLight(mousePos, 300, 0.5f, EditorScreen.ColorPicker.SelectedColor, false);
-                LightingManager.PointLights.Add(tempLight);
+                Vector2 mousePos = new Vector2(KeyMouseReader.GetMousePos().X, KeyMouseReader.GetMousePos().Y);
+                Rectangle hitBox = new Rectangle((int)mousePos.X - 10, (int)mousePos.Y - 10, 20, 20);
+                PointLight tempPointLight = new PointLight(mousePos, 1f, 250f, EditorScreen.ColorPicker.SelectedColor);
+                aLightRenderer.pointLights.Add(tempPointLight);
                 pointLightHitBoxes.Add(hitBox);
             }
             else if (KeyMouseReader.RightClick())
             {
-                RemovePointLight(KeyMouseReader.GetMousePos());
-                RemoveAmbientLight(KeyMouseReader.GetMousePos());
+                RemovePointLight(KeyMouseReader.GetMousePos(), aLightRenderer);
+                RemoveAmbientLight(KeyMouseReader.GetMousePos(), aLightRenderer);
             }
         }
 
@@ -107,26 +118,26 @@ namespace MobileGame.LevelEditor.Tools
             }
         }
 
-        private void RemovePointLight(Point aMousePos)
+        private void RemovePointLight(Point aMousePos, LightRenderer aLightRenderer)
         {
             for (int i = 0; i < pointLightHitBoxes.Count; i++)
             {
                 if (pointLightHitBoxes[i].Contains(aMousePos))
                 {
-                    LightingManager.PointLights.RemoveAt(i);
+                    aLightRenderer.pointLights.RemoveAt(i);
                     pointLightHitBoxes.RemoveAt(i);
                     return;
                 }
             }
         }
 
-        private void RemoveAmbientLight(Point aMousePos)
+        private void RemoveAmbientLight(Point aMousePos, LightRenderer aLightRenderer)
         {
             for (int i = 0; i < ambientLightHitBoxes.Count; i++)
             {
                 if (ambientLightHitBoxes[i].Contains(aMousePos))
                 {
-                    LightingManager.AmbientLights.RemoveAt(i);
+                    //LightingManager.AmbientLights.RemoveAt(i);
                     ambientLightHitBoxes.RemoveAt(i);
                     return;
                 }

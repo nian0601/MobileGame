@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Storage;
 
 using MobileGame.Managers;
 using MobileGame.LevelEditor;
-using MobileGame.Lights;
+using MobileGame.LightingSystem;
 
 namespace MobileGame.FileManagement
 {
@@ -112,7 +112,7 @@ namespace MobileGame.FileManagement
             }
         }
 
-        public static void LoadLevel(string MapName)
+        public static void LoadLevelToEditor(string MapName)
         {
             string LoadPath = LevelDirectoryPath + @"\" + MapName + ".xml";
 
@@ -131,7 +131,7 @@ namespace MobileGame.FileManagement
             EditorMapManager.BuildMap();
         }
 
-        public static void SaveLevel(string LevelName)
+        public static void SaveLevel(string LevelName, LightRenderer aLightRenderer)
         {
             int MapHeight = EditorMapManager.NumYTiles;
             int MapWidth = EditorMapManager.NumXTiles;
@@ -141,32 +141,32 @@ namespace MobileGame.FileManagement
             byte[,] PlatformLayer = EditorMapManager.PlatformLayer;
             byte[,] SpecialsLayer = EditorMapManager.SpecialsLayer;
 
-            float[,] PointLights = new float[LightingManager.PointLights.Count, 7];
+            float[,] PointLights = new float[aLightRenderer.pointLights.Count, 7];
 
-            for (int y = 0; y < LightingManager.PointLights.Count; y++)
+            for (int y = 0; y < aLightRenderer.pointLights.Count; y++)
             {
-                PointLights[y, 0] = LightingManager.PointLights[y].Position.X;
-                PointLights[y, 1] = LightingManager.PointLights[y].Position.Y;
-                PointLights[y, 2] = LightingManager.PointLights[y].Radius;
-                PointLights[y, 3] = LightingManager.PointLights[y].Power;
-                PointLights[y, 4] = LightingManager.PointLights[y].Color.R;
-                PointLights[y, 5] = LightingManager.PointLights[y].Color.G;
-                PointLights[y, 6] = LightingManager.PointLights[y].Color.B;
+                PointLights[y, 0] = aLightRenderer.pointLights[y].Position.X - EditorMapManager.Offset.X;
+                PointLights[y, 1] = aLightRenderer.pointLights[y].Position.Y - EditorMapManager.Offset.Y;
+                PointLights[y, 2] = aLightRenderer.pointLights[y].Radius;
+                PointLights[y, 3] = aLightRenderer.pointLights[y].Power;
+                PointLights[y, 4] = aLightRenderer.pointLights[y].Color.R;
+                PointLights[y, 5] = aLightRenderer.pointLights[y].Color.G;
+                PointLights[y, 6] = aLightRenderer.pointLights[y].Color.B;
             }
 
-            float[,] AmbientLights = new float[LightingManager.AmbientLights.Count, 8];
+            //float[,] AmbientLights = new float[LightingManager.AmbientLights.Count, 8];
 
-            for (int y = 0; y < LightingManager.AmbientLights.Count; y++)
-            {
-                AmbientLights[y, 0] = LightingManager.AmbientLights[y].Position.X;
-                AmbientLights[y, 1] = LightingManager.AmbientLights[y].Position.Y;
-                AmbientLights[y, 2] = LightingManager.AmbientLights[y].Width;
-                AmbientLights[y, 3] = LightingManager.AmbientLights[y].Height;
-                AmbientLights[y, 4] = LightingManager.AmbientLights[y].Color.R;
-                AmbientLights[y, 5] = LightingManager.AmbientLights[y].Color.G;
-                AmbientLights[y, 6] = LightingManager.AmbientLights[y].Color.B;
-                AmbientLights[y, 7] = LightingManager.AmbientLights[y].Power;
-            }
+            //for (int y = 0; y < LightingManager.AmbientLights.Count; y++)
+            //{
+            //    AmbientLights[y, 0] = LightingManager.AmbientLights[y].Position.X;
+            //    AmbientLights[y, 1] = LightingManager.AmbientLights[y].Position.Y;
+            //    AmbientLights[y, 2] = LightingManager.AmbientLights[y].Width;
+            //    AmbientLights[y, 3] = LightingManager.AmbientLights[y].Height;
+            //    AmbientLights[y, 4] = LightingManager.AmbientLights[y].Color.R;
+            //    AmbientLights[y, 5] = LightingManager.AmbientLights[y].Color.G;
+            //    AmbientLights[y, 6] = LightingManager.AmbientLights[y].Color.B;
+            //    AmbientLights[y, 7] = LightingManager.AmbientLights[y].Power;
+            //}
 
 
             //First we read the GameData file so that we get access to the MapList
@@ -198,9 +198,9 @@ namespace MobileGame.FileManagement
             LevelData.PlatformLayer = ConvertToJaggedArray(PlatformLayer);
             LevelData.SpecialsLayer = ConvertToJaggedArray(SpecialsLayer);
             LevelData.PointLights = ConvertToJaggedArray(PointLights);
-            LevelData.NumPointLights = LightingManager.PointLights.Count;
-            LevelData.AmbientLights = ConvertToJaggedArray(AmbientLights);
-            LevelData.NumAmbientLights = LightingManager.AmbientLights.Count;
+            LevelData.NumPointLights = aLightRenderer.pointLights.Count;
+            //LevelData.AmbientLights = ConvertToJaggedArray(AmbientLights);
+            //LevelData.NumAmbientLights = LightingManager.AmbientLights.Count;
 
             //And now its time to build the SavePath
             //The new level we want to save should get number "MapList.Count + 1"

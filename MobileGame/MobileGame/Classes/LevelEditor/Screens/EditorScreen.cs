@@ -91,7 +91,7 @@ namespace MobileGame.LevelEditor
 
             #endregion
 
-            for (int i = 0; i < 43; i++)
+            for (int i = 0; i < 56; i++)
             {
                 int x = i % 8;
                 int y = i / 8;

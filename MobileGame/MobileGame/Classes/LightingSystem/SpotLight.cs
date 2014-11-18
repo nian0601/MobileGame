@@ -19,7 +19,7 @@ namespace MobileGame.LightingSystem
             direction = dir;
             innerAngle = inner;
             outerAngle = outer;
-            radius = _radius;
+            Radius = _radius;
         }
 
         public SpotLight(Vector2 pos, Vector2 dir, float angle, float power, Color col)

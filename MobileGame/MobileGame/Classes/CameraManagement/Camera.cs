@@ -281,7 +281,6 @@ namespace MobileGame.CameraManagement
 
                     sb.Draw(Object.InterestCircle, InterestPos, null, Color.Pink, 1f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
                     sb.Draw(Object.ControlCircle, ControlPos, null, Color.Black, 1f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
-
                 }
 
                 //Draw debugtexture for cameratarget

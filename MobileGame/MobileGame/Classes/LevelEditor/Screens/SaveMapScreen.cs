@@ -123,7 +123,7 @@ namespace MobileGame.LevelEditor
 
         private void ConfirmSaveBoxAccepted(object sender, EventArgs e)
         {
-            FileManagement.FileLoader.SaveLevel(NameInput.Text);
+            FileManagement.FileLoader.SaveLevel(NameInput.Text, EditorMapManager.LightRenderer);
             ExitScreen();
         }
     }

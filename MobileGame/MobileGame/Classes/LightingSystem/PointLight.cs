@@ -17,7 +17,7 @@ namespace MobileGame.LightingSystem
         public PointLight(Vector2 pos, float power, float radius)
             : base(pos, 0f, Color.White)
         {
-            this.radius = radius;
+            this.Radius = radius;
         }
 
         public PointLight(Vector2 pos, Color color)
@@ -28,13 +28,13 @@ namespace MobileGame.LightingSystem
         public PointLight(Vector2 pos, float radius)
             : base(pos, 0f, Color.White)
         {
-            this.radius = radius;
+            this.Radius = radius;
         }
 
         public PointLight(Vector2 pos, float power, float radius, Color color)
             : base(pos, power, color)
         {
-            this.radius = radius;
+            this.Radius = radius;
         }
     }
 }

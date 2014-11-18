@@ -167,7 +167,7 @@ namespace MobileGame.LevelEditor
 
         private void ConfirmLoadBoxAccept(Object sender, EventArgs e)
         {
-            FileLoader.LoadLevel(SavedMapList.SelectedItem.Text);
+            FileLoader.LoadLevelToEditor(SavedMapList.SelectedItem.Text);
             ExitScreen();
         }
     }

@@ -11,8 +11,8 @@ namespace MobileGame.LightingSystem
     {
         public Vector2 Position;
         public float Power = 0f;
-        public Color color;
-        public float radius;
+        public Color Color;
+        public float Radius;
 
         public Light(Vector2 pos)
             : this(pos, 0f, Color.White)
@@ -23,7 +23,7 @@ namespace MobileGame.LightingSystem
         {
             Position = pos;
             Power = power;
-            this.color = color;
+            this.Color = color;
         }
     }
 }

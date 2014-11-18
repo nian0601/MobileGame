@@ -56,24 +56,26 @@ namespace MobileGame.LightingSystem
         public LightRenderer(GraphicsDeviceManager _graphics)
         {
             graphics = _graphics;
-        }
-
-        public void Initialize()
-        {
             spotLights = new List<SpotLight>();
             pointLights = new List<PointLight>();
+        }
 
-            backBufferCache = new RenderTarget2D(graphics.GraphicsDevice, MapManager.MapWidth, MapManager.MapHeight);
-            midGroundTarget = new RenderTarget2D(graphics.GraphicsDevice, MapManager.MapWidth, MapManager.MapHeight);
-            lightMap = new RenderTarget2D(graphics.GraphicsDevice, MapManager.MapWidth, MapManager.MapHeight, false, SurfaceFormat.Color, DepthFormat.None, 1, RenderTargetUsage.PreserveContents);
-            unwrapTarget = new RenderTarget2D(graphics.GraphicsDevice, MapManager.MapWidth, MapManager.MapWidth, false, SurfaceFormat.HdrBlendable, DepthFormat.None);
-            occlusionMap = new RenderTarget2D(graphics.GraphicsDevice, MapManager.MapWidth, 1, false, SurfaceFormat.HdrBlendable, DepthFormat.None);
-            postProcessTarget = new RenderTarget2D(graphics.GraphicsDevice, MapManager.MapWidth, MapManager.MapHeight);
-            horizontalBlurTarget = new RenderTarget2D(graphics.GraphicsDevice, MapManager.MapWidth, MapManager.MapHeight);
-            verticalBlurTarget = new RenderTarget2D(graphics.GraphicsDevice, MapManager.MapWidth, MapManager.MapHeight);
-            ambientTarget = new RenderTarget2D(graphics.GraphicsDevice, MapManager.MapWidth, MapManager.MapHeight);
+        public void Initialize(int topLeftX, int topLeftY, int aMapWidth, int aMapHeight)
+        {
+            //spotLights = new List<SpotLight>();
+            //pointLights = new List<PointLight>();
 
-            fullScreen = new Rectangle(0, 0, MapManager.MapWidth, MapManager.MapHeight);
+            backBufferCache = new RenderTarget2D(graphics.GraphicsDevice, aMapWidth, aMapHeight);
+            midGroundTarget = new RenderTarget2D(graphics.GraphicsDevice, aMapWidth, aMapHeight);
+            lightMap = new RenderTarget2D(graphics.GraphicsDevice, aMapWidth, aMapHeight, false, SurfaceFormat.Color, DepthFormat.None, 1, RenderTargetUsage.PreserveContents);
+            unwrapTarget = new RenderTarget2D(graphics.GraphicsDevice, aMapWidth, aMapWidth, false, SurfaceFormat.HdrBlendable, DepthFormat.None);
+            occlusionMap = new RenderTarget2D(graphics.GraphicsDevice, aMapWidth, 1, false, SurfaceFormat.HdrBlendable, DepthFormat.None);
+            postProcessTarget = new RenderTarget2D(graphics.GraphicsDevice, aMapWidth, aMapHeight);
+            horizontalBlurTarget = new RenderTarget2D(graphics.GraphicsDevice, aMapWidth, aMapHeight);
+            verticalBlurTarget = new RenderTarget2D(graphics.GraphicsDevice, aMapWidth, aMapHeight);
+            ambientTarget = new RenderTarget2D(graphics.GraphicsDevice, aMapWidth, aMapHeight);
+
+            fullScreen = new Rectangle(0, 0, aMapWidth, aMapHeight);
 
             collapseBlendState = new BlendState();
             collapseBlendState.ColorBlendFunction = BlendFunction.Min;
@@ -83,7 +85,7 @@ namespace MobileGame.LightingSystem
             collapseBlendState.AlphaSourceBlend = Blend.One;
             collapseBlendState.AlphaDestinationBlend = Blend.One;
 
-            screenDims = new Vector2(MapManager.MapWidth, MapManager.MapHeight);
+            screenDims = new Vector2(aMapWidth, aMapHeight);
             cameraTopLeft = new Vector2(Camera.Position.X - Camera.ViewPort.Width / 2, Camera.Position.Y - Camera.ViewPort.Height / 2);
         }
 
@@ -243,7 +245,7 @@ namespace MobileGame.LightingSystem
 
             spotLight.Parameters["LightPos"].SetValue(sLight.Position);
             spotLight.Parameters["LightPow"].SetValue(sLight.Power);
-            spotLight.Parameters["Radius"].SetValue(sLight.radius);
+            spotLight.Parameters["Radius"].SetValue(sLight.Radius);
             spotLight.Parameters["OuterMinAngle"].SetValue(lightDirAngle - (sLight.outerAngle / 2f));
             spotLight.Parameters["OuterMaxAngle"].SetValue(lightDirAngle + (sLight.outerAngle / 2f));
             spotLight.Parameters["CenterAngle"].SetValue(lightDirAngle);
@@ -264,7 +266,7 @@ namespace MobileGame.LightingSystem
             //Set params
             pointLight.Parameters["LightPos"].SetValue(pLight.Position);
             pointLight.Parameters["LightPow"].SetValue(pLight.Power);
-            pointLight.Parameters["Radius"].SetValue(pLight.radius);
+            pointLight.Parameters["Radius"].SetValue(pLight.Radius);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.PointClamp, null, null, pointLight);
             spriteBatch.Draw(occlusionMap, fullScreen, Color.White);
@@ -278,7 +280,7 @@ namespace MobileGame.LightingSystem
 
             //Set some params
             horizontalBlur.Parameters["LightPos"].SetValue(light.Position);
-            horizontalBlur.Parameters["Radius"].SetValue(light.radius);
+            horizontalBlur.Parameters["Radius"].SetValue(light.Radius);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, null, null, null, horizontalBlur);
             spriteBatch.Draw(postProcessTarget, fullScreen, Color.White);
@@ -289,7 +291,7 @@ namespace MobileGame.LightingSystem
 
             //Set some more params
             verticalBlur.Parameters["LightPos"].SetValue(light.Position);
-            verticalBlur.Parameters["Radius"].SetValue(light.radius);
+            verticalBlur.Parameters["Radius"].SetValue(light.Radius);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, null, null, null, verticalBlur);
             spriteBatch.Draw(horizontalBlurTarget, fullScreen, Color.White);
@@ -301,7 +303,7 @@ namespace MobileGame.LightingSystem
             graphics.GraphicsDevice.SetRenderTarget(lightMap);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, null, null, null);
-            spriteBatch.Draw(verticalBlurTarget, fullScreen, light.color);
+            spriteBatch.Draw(verticalBlurTarget, fullScreen, light.Color);
             spriteBatch.End();
         }
 

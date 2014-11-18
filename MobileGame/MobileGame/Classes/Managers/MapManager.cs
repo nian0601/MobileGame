@@ -14,7 +14,7 @@ using MobileGame.FileManagement;
 using MobileGame.CameraManagement;
 using MobileGame.Tiles;
 using MobileGame.Enemies;
-using MobileGame.Lights;
+using MobileGame.LightingSystem;
 
 namespace MobileGame.Managers
 {
@@ -72,19 +72,21 @@ namespace MobileGame.Managers
             playerStartPos = new Vector2(200, 200);
         }
 
-        public void Initialize()
+        public void Initialize(LightRenderer aLightRenderer)
         {
             tileSize = FileLoader.LoadedLevelTileSize;
             mapYTiles = FileLoader.LoadedLevelMapHeight;
             mapXTiles = FileLoader.LoadedLevelMapWidth;
 
-
+            tileSize = 40;
             mapHeight = mapYTiles * tileSize;
             mapWidth = mapXTiles * tileSize;
 
+            
+
             //PerformanceCheck();
 
-            BuildLevel();
+            BuildLevel(aLightRenderer);
         }
 
         public void Update(float aElaspedTime)
@@ -119,8 +121,8 @@ namespace MobileGame.Managers
                         Vector2 Pos = new Vector2(x * tileSize, y * tileSize);
                         int sourceX = value % 8;
                         int sourceY = value / 8;
-                        //Rectangle sourceRect = new Rectangle(sourceX * tileSize, sourceY * tileSize, tileSize, tileSize);
-                        Rectangle sourceRect = new Rectangle(sourceX * 40, sourceY * 40, 40, 40);
+                        Rectangle sourceRect = new Rectangle(sourceX * tileSize, sourceY * tileSize, tileSize, tileSize);
+                        //Rectangle sourceRect = new Rectangle(sourceX * 40, sourceY * 40, 40, 40);
 
                         spriteBatch.Draw(TextureManager.TileSet, Pos, sourceRect, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
 
@@ -232,7 +234,7 @@ namespace MobileGame.Managers
         /// <summary>
         /// The function which takes the loaded level and builds it
         /// </summary>
-        private void BuildLevel()
+        private void BuildLevel(LightRenderer aLightRenderer)
         {
             collisionLayer = new byte[mapXTiles, mapYTiles];
             backgroundLayer = new byte[mapXTiles, mapYTiles];
@@ -263,7 +265,7 @@ namespace MobileGame.Managers
                         GoalTile temp = new GoalTile(x, y);
                         Camera.AddFocusObject(temp);
                         mySpecialTiles.Add(temp);
-                        LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 250, 0.7f, Color.White, false));
+                        //LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 250, 0.7f, Color.White, false));
                     }
                     else if (backgroundValue == 27 || backgroundValue == 28 || backgroundValue == 29
                             || platformValue == 27 || platformValue == 28 || platformValue == 29
@@ -276,7 +278,7 @@ namespace MobileGame.Managers
                     if (backgroundValue == 41 || platformValue == 41 || specialsValue == 41) // Torch
                     {
                         myAnimatedTiles.Add(new AnimatedTile(x, y, TextureManager.BurningTorch, 0, 0, 5, 0, 100));
-                        LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 150, 0.7f, Color.White, true));
+                        //LightingManager.PointLights.Add(new PointLight(new Vector2(x * TileSize, y * tileSize), 150, 0.7f, Color.White, true));
                         //Right now the torch is getting drawn two times:
                         //The first is a static image of the first frame
                         //The second is the acctual animation
@@ -298,31 +300,14 @@ namespace MobileGame.Managers
                 float y = FileLoader.LoadedPointLights[i, 1];
                 float radius = FileLoader.LoadedPointLights[i, 2];
                 float power = FileLoader.LoadedPointLights[i, 3];
-                float r = FileLoader.LoadedPointLights[i, 4];
-                float g = FileLoader.LoadedPointLights[i, 5];
-                float b = FileLoader.LoadedPointLights[i, 6];
+                int r = (int)FileLoader.LoadedPointLights[i, 4];
+                int g = (int)FileLoader.LoadedPointLights[i, 5];
+                int b = (int)FileLoader.LoadedPointLights[i, 6];
 
                 Color color = new Color(r, g, b);
 
-                PointLight newLight = new PointLight(new Vector2(x, y), radius, power, color, false);
-                LightingManager.PointLights.Add(newLight);
-            }
-
-            for (int i = 0; i < FileLoader.LoadedLevelNumAmbientLights; i++)
-            {
-                float x = FileLoader.LoadedAmbientLights[i, 0];
-                float y = FileLoader.LoadedAmbientLights[i, 1];
-                float width = FileLoader.LoadedAmbientLights[i, 2];
-                float height = FileLoader.LoadedAmbientLights[i, 3];
-                float r = FileLoader.LoadedAmbientLights[i, 4];
-                float g = FileLoader.LoadedAmbientLights[i, 5];
-                float b = FileLoader.LoadedAmbientLights[i, 6];
-                float power = FileLoader.LoadedAmbientLights[i, 7];
-
-                Color color = new Color(r, g, b);
-
-                AmbientLight newLight = new AmbientLight((int)x, (int)y, (int)width, (int)height, color, power);
-                LightingManager.AmbientLights.Add(newLight);
+                PointLight newLight = new PointLight(new Vector2(x, y), power, radius, color);
+                aLightRenderer.pointLights.Add(newLight); 
             }
         }
 
@@ -424,7 +409,7 @@ namespace MobileGame.Managers
 
                 //PASTE WHAT EVER CODE YOU WANNA TEST HERE
 
-                BuildLevel();
+                //BuildLevel();
 
                 //AND STOP HERE
 

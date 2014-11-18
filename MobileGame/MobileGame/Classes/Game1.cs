@@ -52,8 +52,8 @@ namespace MobileGame
 
             graphics.ApplyChanges();
 
-            ScreenWidth = 800;
-            ScreenHeight = 600;
+            ScreenWidth = 1000;
+            ScreenHeight = 800;
 
             IsMouseVisible = true;
             Debugging = false;
