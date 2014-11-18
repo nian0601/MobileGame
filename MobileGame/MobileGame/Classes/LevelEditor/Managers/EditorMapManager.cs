@@ -76,6 +76,8 @@ namespace MobileGame.LevelEditor
         public static int NumCollisionFlags { get; set; }
 
 
+        private static Texture2D myTileSetTexture;
+
         // LAYERING STUFF
         private static byte[,] collisionLayer;
         public static byte[,] CollisionLayer
@@ -134,6 +136,10 @@ namespace MobileGame.LevelEditor
 
             selectionTopLeft = new Point(0, 0);
             selectionBottomRight = new Point(0, 0);
+
+            //myTileSetTexture = Content.Load<Texture2D>("Tiles/TileSet");
+            //myTileSetTexture = Content.Load<Texture2D>("Tiles/LabTileSet");
+            myTileSetTexture = Content.Load<Texture2D>("Tiles/LabTileSet40x40");
         }
 
         public void Initialize()
@@ -193,9 +199,10 @@ namespace MobileGame.LevelEditor
                         {
                             int sourceX = value % 8;
                             int sourceY = value / 8;
-                            Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+                            //Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+                            Rectangle sourceRect = new Rectangle(sourceX * 40, sourceY * 40, 40, 40);
 
-                            Spritebatch.Draw(TextureManager.TileSet, Pos, sourceRect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
+                            Spritebatch.Draw(myTileSetTexture, Pos, sourceRect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
                         }
                         #endregion
 
@@ -210,9 +217,10 @@ namespace MobileGame.LevelEditor
 
                             int sourceX = value % 8;
                             int sourceY = value / 8;
-                            Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+                            //Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+                            Rectangle sourceRect = new Rectangle(sourceX * 40, sourceY * 40, 40, 40);
 
-                            Spritebatch.Draw(TextureManager.TileSet, Pos, sourceRect, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
+                            Spritebatch.Draw(myTileSetTexture, Pos, sourceRect, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
                         }
                         #endregion
 
@@ -230,9 +238,10 @@ namespace MobileGame.LevelEditor
 
                             int sourceX = value % 8;
                             int sourceY = value / 8;
-                            Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+                            //Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+                            Rectangle sourceRect = new Rectangle(sourceX * 40, sourceY * 40, 40, 40);
 
-                            Spritebatch.Draw(TextureManager.TileSet, Pos, sourceRect, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f);
+                            Spritebatch.Draw(myTileSetTexture, Pos, sourceRect, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f);
                         }
                         #endregion
                     }
@@ -262,9 +271,10 @@ namespace MobileGame.LevelEditor
                         {
                             int sourceX = value % 8;
                             int sourceY = value / 8;
-                            Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+                            //Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+                            Rectangle sourceRect = new Rectangle(sourceX * 40, sourceY * 40, 40, 40);
 
-                            Spritebatch.Draw(TextureManager.TileSet, Pos, sourceRect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
+                            Spritebatch.Draw(myTileSetTexture, Pos, sourceRect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
                         }
                         #endregion
 
@@ -279,9 +289,10 @@ namespace MobileGame.LevelEditor
 
                             int sourceX = value % 8;
                             int sourceY = value / 8;
-                            Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+                            //Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+                            Rectangle sourceRect = new Rectangle(sourceX * 40, sourceY * 40, 40, 40);
 
-                            Spritebatch.Draw(TextureManager.TileSet, Pos, sourceRect, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
+                            Spritebatch.Draw(myTileSetTexture, Pos, sourceRect, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
                         }
                         #endregion
 
@@ -299,9 +310,10 @@ namespace MobileGame.LevelEditor
 
                             int sourceX = value % 8;
                             int sourceY = value / 8;
-                            Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+                            //Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+                            Rectangle sourceRect = new Rectangle(sourceX * 40, sourceY * 40, 40, 40);
 
-                            Spritebatch.Draw(TextureManager.TileSet, Pos, sourceRect, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f);
+                            Spritebatch.Draw(myTileSetTexture, Pos, sourceRect, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f);
                         }
                         #endregion
                     }
@@ -383,12 +395,13 @@ namespace MobileGame.LevelEditor
             if (TileValue != 255)
             {
                 //CursorTexture = TextureManager.GameTextures[TileValue];
-                CursorTexture = TextureManager.TileSet;
+                CursorTexture = myTileSetTexture;
                 SelectedTileValue = TileValue;
 
                 int x = TileValue % 8;
                 int y = TileValue / 8;
-                mouseSourceRect = new Rectangle(x * 20, y * 20, 20, 20);
+                mouseSourceRect = new Rectangle(x * 40, y * 40, 40, 40);
+                //mouseSourceRect = new Rectangle(x * 20, y * 20, 20, 20);
             }
 
         }

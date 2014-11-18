@@ -65,13 +65,14 @@ namespace MobileGame.Managers
 
             LightRenderer = new LightRenderer(Game1.graphics);
             LightRenderer.Initialize();
-            LightRenderer.minLight = 0f;
+
+            LightRenderer.minLight = 0.15f;
             LightRenderer.lightBias = 10f;
             spotLightDir = Vector2.UnitX * -1.00001f;
 
-            pointLightHandles.Add(new PointLight(new Vector2(ScreenManager.Game.GraphicsDevice.Viewport.Width / 2, ScreenManager.Game.GraphicsDevice.Viewport.Height / 2), 1f, 300f, Color.White));
-            spotLightHandles.Add(new SpotLight(new Vector2(200, 200), spotLightDir, 1f, 2f, 2f, 500f, Color.Green));
-            spotLightHandles.Add(new SpotLight(new Vector2(200, 200), spotLightDir, 1f, 2f, 2f, 500f, Color.Red));
+            pointLightHandles.Add(new PointLight(new Vector2(200, 200), 1f, 300f, Color.White));
+            spotLightHandles.Add(new SpotLight(new Vector2(200, 200), spotLightDir, 1f, 2f, 0.5f, 500f, Color.LightBlue));
+            spotLightHandles.Add(new SpotLight(new Vector2(200, 200), spotLightDir, 1f, 2f, 0.5f, 500f, Color.Red));
 
             LightRenderer.pointLights.Add(pointLightHandles[0]);
             LightRenderer.spotLights.Add(spotLightHandles[0]);
@@ -138,6 +139,9 @@ namespace MobileGame.Managers
                     spotLightDir = Vector2.UnitX * -1.00001f;
             }
 
+            if (KeyMouseReader.KeyClick(Keys.F))
+                myAffectLightDir = !myAffectLightDir;
+
 
             if (KeyMouseReader.KeyClick(Keys.F))
                 myAffectLightDir = !myAffectLightDir;
@@ -151,7 +155,8 @@ namespace MobileGame.Managers
             spotLightHandles[myCurrLight].Position.Y = lightPos.Y;
             spotLightHandles[myCurrLight].direction = spotLightDir;
             pointLightHandles[0].Position = Player.Position;
-            Console.WriteLine("FPS: " + (1000 / elapsedTime));
+
+            //Console.WriteLine("FPS: " + (1000 / elapsedTime));
         }
 
         public void Draw(SpriteBatch spriteBatch)
