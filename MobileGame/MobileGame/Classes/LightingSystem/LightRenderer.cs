@@ -318,9 +318,9 @@ namespace MobileGame.LightingSystem
             spriteBatch.End();
             graphics.GraphicsDevice.Textures[1] = null;
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-            spriteBatch.Draw(midGroundTarget, fullScreen, Color.White);
-            spriteBatch.End();
+            //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            //spriteBatch.Draw(midGroundTarget, fullScreen, Color.White);
+            //spriteBatch.End();
 
             graphics.GraphicsDevice.SetRenderTarget(GameManager.finalRenderTarget);
             graphics.GraphicsDevice.Clear(Color.Black);

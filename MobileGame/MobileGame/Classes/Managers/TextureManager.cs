@@ -57,7 +57,9 @@ namespace MobileGame.Managers
 
             FilledSquare = Content.Load<Texture2D>("DebugTextures/FilledSquare");
 
-            TileSet = Content.Load<Texture2D>("Tiles/TileSet");
+            //TileSet = Content.Load<Texture2D>("Tiles/TileSet");
+            //TileSet = Content.Load<Texture2D>("Tiles/LabTileSet");
+            TileSet = Content.Load<Texture2D>("Tiles/LabTileSet40x40");
             TileSetEditorEdition = Content.Load<Texture2D>("Editor/ToolButtons/TileSetEditorButtons");
             BurningTorch = Content.Load<Texture2D>("Tiles/BurningTorch");
 

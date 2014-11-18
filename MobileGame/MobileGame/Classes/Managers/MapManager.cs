@@ -78,6 +78,7 @@ namespace MobileGame.Managers
             mapYTiles = FileLoader.LoadedLevelMapHeight;
             mapXTiles = FileLoader.LoadedLevelMapWidth;
 
+
             mapHeight = mapYTiles * tileSize;
             mapWidth = mapXTiles * tileSize;
 
@@ -118,7 +119,8 @@ namespace MobileGame.Managers
                         Vector2 Pos = new Vector2(x * tileSize, y * tileSize);
                         int sourceX = value % 8;
                         int sourceY = value / 8;
-                        Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+                        //Rectangle sourceRect = new Rectangle(sourceX * tileSize, sourceY * tileSize, tileSize, tileSize);
+                        Rectangle sourceRect = new Rectangle(sourceX * 40, sourceY * 40, 40, 40);
 
                         spriteBatch.Draw(TextureManager.TileSet, Pos, sourceRect, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.15f);
 
@@ -147,7 +149,8 @@ namespace MobileGame.Managers
                         Vector2 Pos = new Vector2(x * tileSize, y * tileSize);
                         int sourceX = value % 8;
                         int sourceY = value / 8;
-                        Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+                        //Rectangle sourceRect = new Rectangle(sourceX * tileSize, sourceY * tileSize, tileSize, tileSize);
+                        Rectangle sourceRect = new Rectangle(sourceX * 40, sourceY * 40, 40, 40);
 
                         spriteBatch.Draw(TextureManager.TileSet, Pos, sourceRect, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.25f);
                     }
@@ -176,7 +179,8 @@ namespace MobileGame.Managers
                         Vector2 Pos = new Vector2(x * tileSize, y * tileSize);
                         int sourceX = value % 8;
                         int sourceY = value / 8;
-                        Rectangle sourceRect = new Rectangle(sourceX * 20, sourceY * 20, 20, 20);
+                        //Rectangle sourceRect = new Rectangle(sourceX * tileSize, sourceY * tileSize, tileSize, tileSize);
+                        Rectangle sourceRect = new Rectangle(sourceX * 40, sourceY * 40, 40, 40);
 
                         spriteBatch.Draw(TextureManager.TileSet, Pos, sourceRect, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.5f); ;
                     }
