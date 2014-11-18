@@ -194,7 +194,7 @@ namespace MobileGame.LightingSystem
             ambientLight.Parameters["lightColor"].SetValue(Color.White.ToVector4() * 0.5f);
 
             graphics.GraphicsDevice.SetRenderTarget(lightMap);
-            graphics.GraphicsDevice.Clear(Color.Black);
+            graphics.GraphicsDevice.Clear(Color.Transparent);
         }
 
         private void UnwrapShadowCasters(SpotLight sLight, float lightDirAngle, float angleBias)
@@ -259,7 +259,7 @@ namespace MobileGame.LightingSystem
         private void CreateLightMap(PointLight pLight)
         {
             graphics.GraphicsDevice.SetRenderTarget(postProcessTarget);
-            graphics.GraphicsDevice.Clear(Color.Black);
+            graphics.GraphicsDevice.Clear(Color.Transparent);
 
             //Set params
             pointLight.Parameters["LightPos"].SetValue(pLight.Position);
@@ -318,9 +318,9 @@ namespace MobileGame.LightingSystem
             spriteBatch.End();
             graphics.GraphicsDevice.Textures[1] = null;
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-            spriteBatch.Draw(midGroundTarget, fullScreen, Color.White);
-            spriteBatch.End();
+            //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            //spriteBatch.Draw(midGroundTarget, fullScreen, Color.White);
+            //spriteBatch.End();
 
             graphics.GraphicsDevice.SetRenderTarget(GameManager.finalRenderTarget);
             graphics.GraphicsDevice.Clear(Color.Black);
